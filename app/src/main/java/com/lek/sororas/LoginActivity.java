@@ -1,10 +1,19 @@
 package com.lek.sororas;
 
+import android.app.ProgressDialog;
+import android.graphics.Typeface;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -14,18 +23,30 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.lek.sororas.Fragments.FragmentSingIn;
+import com.lek.sororas.Fragments.FragmentSingUp;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends AppCompatActivity{
 
     private static final int RC_SIGN_IN = 0;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
 
+    TabLayout tabLayout;
+    ViewPager viewPager;
+
+    String id;
+
+    ProgressDialog mProgressDialog;
+
+    FragmentSingIn fragmentSingIn;
+    FragmentSingUp fragmentSingUp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -36,7 +57,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+        findViews();
+        inicializeTabs();
+        viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+
+        tabLayout.setupWithViewPager(viewPager);
+
+        setCustomFont("roboto_medium.ttf");
+
 
     }
 
@@ -73,17 +105,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
-            // ...
-        }
+    public void clickGoogleLogin(View v){
+
+        GoogleSignIn();
+
     }
 
-    private void signIn() {
+    private void GoogleSignIn() {
+
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -101,6 +130,102 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.w("login", "signInResult:failed code=" + e.getStatusCode());
             Log.i("login","nao logou");
             //updateUI(null);
+        }
+    }
+
+
+    public void findViews(){
+
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.pager);
+
+    }
+
+    public void inicializeTabs(){
+
+
+        String[] tabNames = getResources().getStringArray(R.array.loginTabsNames);
+
+        for (int i = 0; i < tabNames.length; i++)
+            tabLayout.addTab(tabLayout.newTab());
+    }
+
+    public void setCustomFont(String font) {
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+
+            int tabChildsCount = vgTab.getChildCount();
+
+            for (int i = 0; i < tabChildsCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    //Put your font in assests folder
+                    //assign name of the font here (Must be case sensitive)
+                    Typeface face = Typeface.createFromAsset(getAssets(), font);
+
+                    ((TextView) tabViewChild).setTypeface(face);
+                    ((TextView) tabViewChild).setAllCaps(false);
+                }
+            }
+        }
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Carregando...");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    public class PagerAdapter extends FragmentPagerAdapter {
+        int mNumOfTabs;
+
+        public PagerAdapter(FragmentManager fm, int NumOfTabs) {
+            super(fm);
+            this.mNumOfTabs = NumOfTabs;
+
+
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+                    fragmentSingIn = new FragmentSingIn();
+                    return fragmentSingIn;
+                case 1:
+                    fragmentSingUp = new FragmentSingUp();
+                    return fragmentSingUp;
+
+                default:
+                    return null;
+            }
+        }
+        @Override
+        public CharSequence getPageTitle(int position) {
+
+            String[] tabNames = getResources().getStringArray(R.array.loginTabsNames);
+
+            return tabNames[position];
+        }
+
+        @Override
+        public int getCount() {
+            return mNumOfTabs;
         }
     }
 

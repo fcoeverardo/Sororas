@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+        <item
+            android:color="@drawable/gradient_statusbar"
+            android:state_active="@drawable/gradient_statusbar"
+            android:state_activated="@drawable/gradient_statusbar">
+
+        </item>
+</selector>

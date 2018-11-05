@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFCC25</color>
+    <color name="colorPrimaryDark">#F29514</color>
+    <color name="colorAccent">#009cd4</color>
+
+    <color name="white">#fafafa</color>
+    <color name="branco">#fafafa</color>
+    <color name="preto">#121212</color>
+    <color name="fundo">#efefef</color>
+    <color name="textoCinza">#7f7f7f</color>
+    <color name="textoCinzaEscuro">#4C4C4C</color>
+    <color name="textocinzaDark">#605d5d</color>
+    <color name="rosa">#D80027</color>
+
+
+    <color name="azul">#009cd4</color>
+    <color name="amarelo">#ffca24</color>
+    <color name="vermelho">#fab2a9</color>
+    <color name="verde">#91ed97</color>
+    <color name="cinza">#565656</color>
+    <color name="cinzaLight">#6e6d6e</color>
+
+    <color name="facebookcolor">#3B5998</color>
+
+
+    <color name="categorybg1">#F5A5A1</color>
+    <color name="categorybg2">#ffbcb0</color>
+
+    <color name="statusbar1">#C37910</color>
+    <color name="statusbar2">#E5B721</color>
+    <color name="statusbar3">#D98712</color>
+    <color name="statusbar4">#E0B320</color>
+</resources>

@@ -1,0 +1,175 @@
+<resources>
+    <string name="app_name">Sororas</string>
+
+    <string name="web_client_id">359149552466-1ign1ariqa6limo1e44f00d70eob48vs.apps.googleusercontent.com</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="auth_no_internet_connection">Sem conexão com a internet</string>
+
+    <string name="subscribe_to_news">Subscribe To News</string>
+    <string name="log_token">Log Token</string>
+    <string name="msg_subscribed">Subscribed to news topic</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="default_notification_channel_name" translatable="true">News</string>
+
+
+    <string name="menu_mecanica">Mecânica de automóveis</string>
+    <string name="menu_acertos">Acertos e consertos</string>
+    <string name="menu_hidraulicos">Consertos Hidráulicos</string>
+    <string name="menu_cabelo">Corte de\n cabelo</string>
+
+    <array name="tabsNames">
+        <item>Trabalhos</item>
+        <item>Avaliações</item>
+        <item>Favoritos</item>
+
+    </array>
+
+    <array name="loginTabsNames">
+        <item>ENTRAR</item>
+        <item>CRIE SUA CONTA</item>
+
+    </array>
+
+    <string name="termosDeUso">\n\u2000\u2000O aplicativo Sororas tem como objetivo auxiliar o empoderamento feminino, além de promover a união entre as mulheres.
+        Desse modo, uma de suas funções principais é o guia de serviços e/ou produtos oferecidos por elas e para elas.\n\n
+        \u2000\u2000Ressalta-se que o aplicativo só permite mulheres como usuárias da rede e que ele não tem nenhuma responsabilidade
+        com relação aos itens envolvidos nas transações entre elas, ou qualquer outro acontecimento que se dê em contatos e relações,
+        seja online e/ou offline.\n\n
+        \u2000Para que o objetivo do aplicativo seja alcançado, algumas normas devem ser respeitadas. É importante ressaltar que,
+        caso elas sejam ignoradas, as postagens poderão ser excluídas e, dependendo da gravidade, a usuária ter sua conta
+        bloqueada por tempo indeterminado.\n\n
+        \u2000As usuárias também podem denunciar uma oferta como sendo inadequada, caso em que a
+        equipe de moderação irá avaliar a postagem e determinar se ela será apagada ou não.\n\n
+
+        Diante do apresentado, é proibido:\n\n
+           \u26AC Postagens com conteúdo sexual.\n\n
+           \u26AC Postagens buscando parceiros amorosos.\n\n
+           \u26AC Postagens com oferecimento e/ou pedido de drogas e/ou medicamentos.\n\n
+           \u26AC Postagens de cunho preconceituoso ou discriminatório.
+
+
+
+    </string>
+
+    <array name="categorias">
+        <item>Artesanato</item>
+        <item>Moda</item>
+        <item>Serviços Gerais</item>
+        <item>Veículos</item>
+        <item>Beleza</item>
+
+    </array>
+
+    <array name="artesanato">
+        <item>Aniversário</item>
+        <item>Biscuit</item>
+        <item>Bordado</item>
+        <item>Casamento</item>
+        <item>Cerâmica</item>
+        <item>Crochê</item>
+        <item>Customização</item>
+        <item>Decoração</item>
+        <item>Decoupage</item>
+        <item>EVA</item>
+        <item>Feltro</item>
+        <item>Fuxico</item>
+        <item>Lembrancinhas</item>
+        <item>Pano de prato</item>
+        <item>Papel</item>
+        <item>Papel machê</item>
+        <item>Pintura em tecido</item>
+        <item>Tapetes</item>
+        <item>Tecido</item>
+        <item>Tricô</item>
+
+    </array>
+
+    <array name="moda">
+        <item>Academia</item>
+        <item>Acessórios</item>
+        <item>Blusa</item>
+        <item>Bolsa</item>
+        <item>Calça</item>
+        <item>Calçado</item>
+        <item>Camiseta</item>
+        <item>Chapéu</item>
+        <item>Festa</item>
+        <item>Lingerie</item>
+        <item>Mochila</item>
+        <item>Pijama</item>
+        <item>Plus Size</item>
+        <item>Praia</item>
+        <item>Saia</item>
+        <item>Sandália</item>
+        <item>Sapatilha</item>
+        <item>Shorts</item>
+        <item>Tênis</item>
+        <item>Vestido</item>
+
+    </array>
+
+    <array name="servicos">
+        <item>Elétrica</item>
+        <item>Encanamento</item>
+        <item>Hidráulica</item>
+        <item>Marcenaria</item>
+        <item>Montagem de móveis</item>
+        <item>Obra</item>
+        <item>Pedreira</item>
+        <item>Pintura</item>
+        <item>Reforma</item>
+        <item>Reparo</item>
+
+    </array>
+
+    <array name="veiculos">
+        <item>Alarme</item>
+        <item>Alinhamento</item>
+        <item>Ar condicionado</item>
+        <item>Balanceamento</item>
+        <item>Borracharia</item>
+        <item>Capotaria</item>
+        <item>Conserto</item>
+        <item>Direção</item>
+        <item>Escapamento</item>
+        <item>Funilaria</item>
+        <item>Injeção Eletrônica</item>
+        <item>Mecânica</item>
+        <item>Motor</item>
+        <item>Pintura</item>
+        <item>Pneus</item>
+        <item>Polimento</item>
+        <item>Serviços Elétricos</item>
+        <item>Som</item>
+        <item>Troca de Óleo</item>
+        <item>Vidraçaria</item>
+
+    </array>
+
+    <array name="beleza">
+        <item>Banhos</item>
+        <item>Corte</item>
+        <item>Depilação</item>
+        <item>Design de sobrancelhas/micropigmentação</item>
+        <item>Escova</item>
+        <item>Estética corporal</item>
+        <item>Estética facial</item>
+        <item>Grávidas</item>
+        <item>Infantil</item>
+        <item>Manicure</item>
+        <item>Maquiagem</item>
+        <item>Mega hair</item>
+        <item>Penteado</item>
+        <item>Podologia</item>
+        <item>Tratamento capilar</item>
+        <item>Tratamento pés/mãos</item>
+
+    </array>
+</resources>

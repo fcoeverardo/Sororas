@@ -1,118 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/fundo"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="0dp"
-        android:layout_height="128dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayout4"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/singName"
-            android:layout_width="match_parent"
+
+        <FrameLayout
+            android:id="@+id/createFacebbokButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="80dp"
+            android:background="@drawable/button_facebook"
+            android:paddingLeft="5dp"
+            android:elevation="2dp"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView10"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/createFacebbokButton"
+            app:layout_constraintStart_toStartOf="@+id/createFacebbokButton"
+            app:layout_constraintTop_toTopOf="@+id/createFacebbokButton"
+            app:srcCompat="@drawable/com_facebook_button_icon_white" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Digite seu nome completo"
-            android:inputType="textPersonName|textWebEmailAddress" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_marginStart="8dp"
+            android:elevation="4dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Entre com o Facebook"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/createFacebbokButton"
+            app:layout_constraintStart_toEndOf="@+id/imageView10"
+            app:layout_constraintTop_toTopOf="@+id/createFacebbokButton" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayout6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
+        <FrameLayout
+            android:id="@+id/sign_up_google_button"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_gmail"
+            android:clickable="true"
+            android:onClick="clickGoogleLogin"
+            app:layout_constraintEnd_toEndOf="@+id/createFacebbokButton"
+            app:layout_constraintStart_toStartOf="@+id/createFacebbokButton"
+            app:layout_constraintTop_toBottomOf="@+id/createFacebbokButton" />
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/singEmail"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imageView11"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/sign_up_google_button"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_google_button"
+            app:layout_constraintTop_toTopOf="@+id/sign_up_google_button"
+            app:srcCompat="@drawable/googleg_standard_color_18" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:elevation="4dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Entre com o Gmail"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/sign_up_google_button"
+            app:layout_constraintStart_toEndOf="@+id/imageView11"
+            app:layout_constraintTop_toTopOf="@+id/sign_up_google_button" />
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/roboto_light"
+            android:text="Ou entre com seu E-mail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_google_button" />
+
+        <EditText
+            android:id="@+id/createEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawablePadding="10dp"
             android:hint="Email"
-            android:inputType="textEmailAddress|textWebEmailAddress" />
-    </android.support.design.widget.TextInputLayout>
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayout7"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout6">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/singPassword"
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/createname"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableLeft="@drawable/ic_account"
+            android:drawablePadding="10dp"
+            android:hint="Nome completo"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/createEmail"
+            app:layout_constraintStart_toStartOf="@+id/createEmail"
+            app:layout_constraintTop_toBottomOf="@+id/createEmail">
+
+        </EditText>
+
+        <EditText
+            android:id="@+id/createdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawableRight="@drawable/ic_menu_down"
+            android:drawablePadding="10dp"
+            android:hint="Data de nascimento"
+            android:inputType="date"
+            app:layout_constraintStart_toStartOf="@+id/createname"
+            app:layout_constraintTop_toBottomOf="@+id/createname">
+
+        </EditText>
+
+        <EditText
+            android:id="@+id/createlocal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:drawableLeft="@drawable/ic_local"
+            android:drawablePadding="10dp"
+            android:hint="Localidade"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="@+id/confirmCreatesenha"
+            app:layout_constraintStart_toStartOf="@+id/createdate"
+            app:layout_constraintTop_toBottomOf="@+id/createdate">
+
+        </EditText>
+
+        <EditText
+            android:id="@+id/createsenha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableLeft="@drawable/ic_password"
+            android:drawablePadding="10dp"
             android:hint="Senha"
-            android:inputType="textPassword" />
-    </android.support.design.widget.TextInputLayout>
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="@+id/createname"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/createname"
+            app:layout_constraintTop_toBottomOf="@+id/createlocal">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayout5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7">
+        </EditText>
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/singConfirmPassword"
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/confirmCreatesenha"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Confirmação de senha"
-            android:inputType="textPassword" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_marginTop="8dp"
+            android:drawableLeft="@drawable/ic_password"
+            android:drawablePadding="10dp"
+            android:hint="Confirmar senha"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="@+id/createsenha"
+            app:layout_constraintStart_toStartOf="@+id/createsenha"
+            app:layout_constraintTop_toBottomOf="@+id/createsenha">
 
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/ripplebutton"
-        android:onClick="clickSingIn"
-        android:text="Fazer cadastro"
-        android:textAllCaps="false"
-        android:textColor="@color/branco"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="@+id/textInputLayout5"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5" />
+        </EditText>
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="92dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="92dp"
+            android:background="@drawable/ripplebutton"
+            android:text="ENTRAR"
+            android:textAllCaps="false"
+            android:textColor="@color/branco"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/confirmCreatesenha"
+            app:layout_constraintStart_toStartOf="@+id/confirmCreatesenha"
+            app:layout_constraintTop_toBottomOf="@+id/confirmCreatesenha" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.NestedScrollView>

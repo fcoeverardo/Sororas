@@ -1,8 +1,17 @@
 package com.lek.sororas;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
@@ -14,23 +23,35 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.lek.sororas.Fragments.FragmentSingIn;
 import com.lek.sororas.Fragments.FragmentSingUp;
 
-public class LoginActivity extends AppCompatActivity{
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 0;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+    //private FusedLocationProviderClient mFusedLocationClient;
+
 
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -41,6 +62,8 @@ public class LoginActivity extends AppCompatActivity{
 
     FragmentSingIn fragmentSingIn;
     FragmentSingUp fragmentSingUp;
+
+    private PlaceDetectionClient mPlaceDetectionClient;
 
 
     @Override
@@ -53,6 +76,7 @@ public class LoginActivity extends AppCompatActivity{
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
+                .requestProfile()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -69,7 +93,6 @@ public class LoginActivity extends AppCompatActivity{
 
         setCustomFont("roboto_medium.ttf");
 
-
     }
 
     @Override
@@ -81,14 +104,8 @@ public class LoginActivity extends AppCompatActivity{
             Log.i("login","logado");
         else
             Log.i("login","nao logado");
-        //updateUI(currentUser);
 
-
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        if(account != null)
-//            Log.i("login","logado");
-
-        //updateUI(account);
+        mGoogleSignInClient.signOut();
 
     }
 
@@ -107,29 +124,28 @@ public class LoginActivity extends AppCompatActivity{
 
     public void clickGoogleLogin(View v){
 
-        GoogleSignIn();
-
-    }
-
-    private void GoogleSignIn() {
+        showProgressDialog();
 
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            // Signed in successfully, show authenticated UI.
-            Log.i("login","logou");
-            //updateUI(account);
+            //Log.i("login","logou");
+            //account.
+            login(account);
+
+
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("login", "signInResult:failed code=" + e.getStatusCode());
             Log.i("login","nao logou");
-            //updateUI(null);
+
+            Toast.makeText(getApplicationContext(),"Falha no login",Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -139,6 +155,14 @@ public class LoginActivity extends AppCompatActivity{
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.pager);
 
+    }
+
+    public boolean login(GoogleSignInAccount account){
+        boolean sucess = true;
+
+        hideProgressDialog();
+
+        return  sucess;
     }
 
     public void inicializeTabs(){

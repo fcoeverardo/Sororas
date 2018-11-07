@@ -57,6 +57,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/button_gmail"
         android:clickable="true"
+        android:tag="0"
         android:onClick="clickGoogleLogin"
         app:layout_constraintEnd_toEndOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="@+id/loginButton"

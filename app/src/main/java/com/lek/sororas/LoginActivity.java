@@ -9,7 +9,10 @@ import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.Image;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -30,26 +33,48 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.lek.sororas.Fragments.FragmentSingIn;
 import com.lek.sororas.Fragments.FragmentSingUp;
+import com.lek.sororas.Models.User;
+import com.lek.sororas.Utils.CurrentUser;
+import com.lek.sororas.Utils.ImageHelper;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 0;
+    private static final int RC_SIGN_UP = 1;
+
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+    FirebaseFirestore db;
+    FirebaseStorage storage;
+    StorageReference storageRef;
     //private FusedLocationProviderClient mFusedLocationClient;
 
 
@@ -63,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
     FragmentSingIn fragmentSingIn;
     FragmentSingUp fragmentSingUp;
 
-    private PlaceDetectionClient mPlaceDetectionClient;
 
 
     @Override
@@ -72,11 +96,20 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+
+        db.setFirestoreSettings(settings);
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference().child("images");
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
-                //.requestProfile()
+                .requestProfile()
+                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -120,14 +153,22 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
+        else if (requestCode == RC_SIGN_UP) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignUpResult(task);
+        }
     }
 
     public void clickGoogleLogin(View v){
 
         showProgressDialog();
 
+        int code = Integer.parseInt(v.getTag().toString());
+
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(signInIntent, code);
 
     }
 
@@ -135,9 +176,8 @@ public class LoginActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            Log.i("login","logou");
             //account.
-            login(account);
+            firebaseAuthWithGoogle(account);
 
 
         } catch (ApiException e) {
@@ -150,6 +190,22 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void handleSignUpResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            fragmentSingUp.writeInformations(account);
+            hideProgressDialog();
+
+        } catch (ApiException e) {
+            Log.w("login", "signInResult:failed code=" + e.getStatusCode());
+            Log.i("login","nao logou");
+
+            Toast.makeText(getApplicationContext(),"Falha em obter informações de cadastro",Toast.LENGTH_SHORT).show();
+
+            hideProgressDialog();
+        }
+    }
 
     public void findViews(){
 
@@ -158,12 +214,176 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public boolean login(GoogleSignInAccount account){
-        boolean sucess = true;
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d("login", "firebaseAuthWithGoogle:" + acct.getId());
 
-        hideProgressDialog();
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.i("login","logou");
+                            FirebaseUser user = mAuth.getCurrentUser();
 
-        return  sucess;
+
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.i("login","nao logou");
+                            Toast.makeText(getApplicationContext(),"Falha no login",Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        hideProgressDialog();
+                        // ...
+                    }
+                });
+    }
+
+    public void loginWithEmail(String email, String password){
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            hideProgressDialog();
+                            Log.d("login", "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+
+//                            Intent i = new Intent(getApplicationContext(),MainActivity.class);
+//                            startActivity(i);
+//                            finish();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("login", "signInWithEmail:failure", task.getException());
+
+                            String errorCode = ((FirebaseAuthInvalidUserException)task.getException()).getErrorCode();
+
+                            if(errorCode.equals("ERROR_USER_NOT_FOUND")){
+                                Toast.makeText(LoginActivity.this, "Usuário não encontrado",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else if(errorCode.equals("INVALID_PASSWORD")){
+                                Toast.makeText(LoginActivity.this, "Senha incorreta",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else if(errorCode.equals("EMAIL_ALREADY_IN_USE")){
+                                Toast.makeText(LoginActivity.this, "Já existe uma conta associada a esse email",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+
+                                Toast.makeText(LoginActivity.this, "Falha no login",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            //updateUI(null);
+
+
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
+    public void createUser(final String email, final String password, final String nome, final String dataNascimento,
+                            final String local, final Uri photoPerfil){
+
+        showProgressDialog();
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                            hideProgressDialog();
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("Sing In", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            InputStream iStream = null;
+
+                            try {
+                                UploadTask uploadTask = storageRef.putBytes(
+                                        ImageHelper.uriToByteArray(new URL(photoPerfil.toString()))
+                                );
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            User newUser = new User(nome,email,dataNascimento,local);
+                            newUser.setId(user.getUid());
+
+                            firebaseCreateUser(newUser);
+
+//
+//                            myRef.child("users").child(user.getUid()).setValue(newUser);
+//
+//                            Intent i = new Intent(getApplicationContext(),MainActivity.class);
+//                            startActivity(i);
+//                            finish();
+
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("Sing In", "createUserWithEmail:failure", task.getException());
+
+                            //int errorCode = task.getException().getLocalizedMessage();
+                            String errorCode = ((FirebaseAuthUserCollisionException)task.getException()).getErrorCode();
+
+                            if(errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE")){
+                                Toast.makeText(LoginActivity.this, "Email já possui cadastro",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, "Falha no cadastro",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+
+                            hideProgressDialog();
+                        }
+
+                        // ...
+                    }
+                });
+
+    }
+
+
+    public void clickSingUp(View v){
+
+        createUser("teste@gmail.com","123123","Teste","12/12/1990","Fortaleza",fragmentSingUp.photoPerfil);
+
+    }
+
+    public void firebaseCreateUser(final User user){
+
+        db.collection("users").document(user.getId())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("create", "Usuario criado com sucesso");
+
+                        CurrentUser.getUser(user);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("create", "Error adding document", e);
+                    }
+                });
+
     }
 
     public void inicializeTabs(){

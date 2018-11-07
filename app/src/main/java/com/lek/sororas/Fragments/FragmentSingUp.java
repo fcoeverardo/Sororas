@@ -1,6 +1,7 @@
 package com.lek.sororas.Fragments;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.DatePickerDialog;
 import android.support.v4.app.DialogFragment;
@@ -14,9 +15,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.lek.sororas.LoginActivity;
 import com.lek.sororas.R;
 import com.lek.sororas.LoginActivity;
+import com.lek.sororas.Utils.DateInputMask;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
@@ -27,7 +30,8 @@ public class FragmentSingUp extends Fragment{
     Context context;
     LoginActivity main;
 
-    EditText nome,email,senha,local,dataNascimento;
+    public EditText nome,email,senha,local,dataNascimento;
+    public Uri photoPerfil;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,23 +61,35 @@ public class FragmentSingUp extends Fragment{
         nome = view.findViewById(R.id.createname);
         email = view.findViewById(R.id.createEmail);
         senha = view.findViewById(R.id.createsenha);
+
         dataNascimento = view.findViewById(R.id.createdate);
+        new DateInputMask(dataNascimento);
+
         local = view.findViewById(R.id.createlocal);
 
-
-
-        dataNascimento.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                DialogFragment newFragment = new MyDatePickerFragment();
-                ((MyDatePickerFragment) newFragment).setDisplay(dataNascimento);
-                newFragment.show(main.getSupportFragmentManager(), "date picker");
-
-            }
-        });
+//        dataNascimento.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                DialogFragment newFragment = new MyDatePickerFragment();
+//                ((MyDatePickerFragment) newFragment).setDisplay(dataNascimento);
+//                newFragment.show(main.getSupportFragmentManager(), "date picker");
+//
+//            }
+//        });
 
     }
+
+    public void writeInformations(GoogleSignInAccount account){
+
+        email.setText(account.getEmail());
+        nome.setText(account.getDisplayName());
+
+        photoPerfil = account.getPhotoUrl();
+
+    }
+
+
 
     @Override
     public void onResume() {

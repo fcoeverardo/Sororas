@@ -138,7 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:drawableLeft="@drawable/ic_email"
+            android:drawableLeft="@drawable/ic_calendar"
             android:drawableRight="@drawable/ic_menu_down"
             android:drawablePadding="10dp"
             android:hint="Data de nascimento"

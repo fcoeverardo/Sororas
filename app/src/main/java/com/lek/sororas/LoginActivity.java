@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
-                .requestProfile()
+                //.requestProfile()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            //Log.i("login","logou");
+            Log.i("login","logou");
             //account.
             login(account);
 
@@ -146,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(),"Falha no login",Toast.LENGTH_SHORT).show();
 
+            hideProgressDialog();
         }
     }
 

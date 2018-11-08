@@ -19,6 +19,8 @@
     <string name="default_notification_channel_name" translatable="true">News</string>
 
 
+    <string name="api_localizacao_key">b697082b731c3b8c4cff59209aa3ec92</string>
+
     <string name="menu_mecanica">Mecânica de automóveis</string>
     <string name="menu_acertos">Acertos e consertos</string>
     <string name="menu_hidraulicos">Consertos Hidráulicos</string>

@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 
         db.setFirestoreSettings(settings);
         storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference().child("images");
+        storageRef = storage.getReference();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
@@ -310,16 +310,23 @@ public class LoginActivity extends AppCompatActivity {
 
                             InputStream iStream = null;
 
-                            try {
-                                UploadTask uploadTask = storageRef.putBytes(
-                                        ImageHelper.uriToByteArray(new URL(photoPerfil.toString()))
-                                );
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
                             User newUser = new User(nome,email,dataNascimento,local);
                             newUser.setId(user.getUid());
+
+                            if(photoPerfil != null)
+                                try {
+
+                                    String fotoId = user.getUid() + "_perfil";
+                                    UploadTask uploadTask = storageRef.child(fotoId).putBytes(
+                                            ImageHelper.uriToByteArray(new URL(photoPerfil.toString()))
+                                    );
+
+                                    newUser.setPhotoPerfil(fotoId);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+
 
                             firebaseCreateUser(newUser);
 
@@ -360,7 +367,15 @@ public class LoginActivity extends AppCompatActivity {
 
     public void clickSingUp(View v){
 
-        createUser("teste@gmail.com","123123","Teste","12/12/1990","Fortaleza",fragmentSingUp.photoPerfil);
+        String email = fragmentSingUp.email.getText().toString();
+        String nome = fragmentSingUp.nome.getText().toString();
+        String password = fragmentSingUp.senha.getText().toString();
+        String data = fragmentSingUp.dataNascimento.getText().toString();
+        String local = fragmentSingUp.local.getText().toString();
+
+
+
+        createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
 
     }
 

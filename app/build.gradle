@@ -41,6 +41,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'me.zhanghai.android.materialratingbar:library:1.2.0'
     implementation 'me.himanshusoni.chatmessageview:chat-message-view:1.0.7'
+    implementation 'com.google.code.gson:gson:2.8.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

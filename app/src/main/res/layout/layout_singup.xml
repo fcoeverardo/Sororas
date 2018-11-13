@@ -158,7 +158,7 @@
             android:drawableLeft="@drawable/ic_local"
             android:drawablePadding="10dp"
             android:hint="Localidade"
-            android:inputType="textPassword"
+            android:focusableInTouchMode="true"
             app:layout_constraintEnd_toEndOf="@+id/confirmCreatesenha"
             app:layout_constraintStart_toStartOf="@+id/createdate"
             app:layout_constraintTop_toBottomOf="@+id/createdate">

@@ -3,14 +3,20 @@ package com.lek.sororas.Fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.net.DhcpInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.DatePickerDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -30,9 +36,19 @@ import com.lek.sororas.R;
 import com.lek.sororas.LoginActivity;
 import com.lek.sororas.Utils.DateInputMask;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executor;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
+
+import static android.content.Context.WIFI_SERVICE;
 
 public class FragmentSingUp extends Fragment {
 
@@ -47,6 +63,8 @@ public class FragmentSingUp extends Fragment {
     public Uri photoPerfil;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    String city = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,19 +87,11 @@ public class FragmentSingUp extends Fragment {
 
         findViews();
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
-        verifyPermission();
-//        mFusedLocationClient.getLastLocation()
-//                .addOnSuccessListener((Executor) this, new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        // Got last known location. In some rare situations this can be null.
-//                        if (location != null) {
-//                            // Logic to handle location object
-//                        }
-//                    }
-//                });
+        //URL url = new URL("http://api.ipstack.com/134.201.250.155?access_key=b697082b731c3b8c4cff59209aa3ec92")
+        //new checkLocal().execute();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
         return view;
     }
@@ -96,6 +106,16 @@ public class FragmentSingUp extends Fragment {
         new DateInputMask(dataNascimento);
 
         local = view.findViewById(R.id.createlocal);
+
+
+        local.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(hasFocus)
+                    verifyPermission();
+            }
+        });
 
 //        dataNascimento.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -151,20 +171,40 @@ public class FragmentSingUp extends Fragment {
             }
         }else{
 
-            mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(main, new OnSuccessListener<Location>() {
+           getCity();
+
+        }
+    }
+
+
+    public void getCity(){
+
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
 
+                            Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                            List<Address> addresses = null;
+                            try {
+                                addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                if (addresses.size() > 0) {
 
-                            Log.i("local","teste");
+                                    city = addresses.get(0).getLocality();
+                                    local.setText(city);
+                                    local.setSelection(local.getText().length());
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
                         }
                     }
                 });
 
-        }
+
     }
 
     @Override
@@ -176,17 +216,7 @@ public class FragmentSingUp extends Fragment {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    mFusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(main, new OnSuccessListener<Location>() {
-                                @Override
-                                public void onSuccess(Location location) {
-                                    // Got last known location. In some rare situations this can be null.
-                                    if (location != null) {
-
-                                        Log.i("local","teste");
-                                    }
-                                }
-                            });
+                   getCity();
 
                 } else {
 
@@ -196,6 +226,58 @@ public class FragmentSingUp extends Fragment {
                 return;
             }
 
+        }
+    }
+
+
+    class checkLocal extends AsyncTask<Void, Void, String> {
+
+
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            WifiManager wm = (WifiManager) context.getSystemService(WIFI_SERVICE);
+            DhcpInfo info = wm.getDhcpInfo();
+            String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            try {
+
+                URL url = new URL("http://api.ipstack.com/" + ip + "?access_key=" + getString(R.string.api_localizacao_key));
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                InputStream inputStream = urlConnection.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                String linha;
+                StringBuffer buffer = new StringBuffer();
+                while((linha = reader.readLine()) != null) {
+                    buffer.append(linha);
+                    buffer.append("\n");
+                }
+                return buffer.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String dados) {
+
+           Log.i("webservice",dados);
+            // Faça alguma coisa com os dados
         }
     }
 

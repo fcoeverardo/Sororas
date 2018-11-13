@@ -56,6 +56,7 @@ import com.lek.sororas.Fragments.FragmentSingUp;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.Utils.CurrentUser;
 import com.lek.sororas.Utils.ImageHelper;
+import com.lek.sororas.Utils.NetworkConnection;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -87,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
 
     FragmentSingIn fragmentSingIn;
     FragmentSingUp fragmentSingUp;
-
 
 
     @Override
@@ -133,8 +133,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null)
+        if(currentUser != null){
             Log.i("login","logado");
+            toMainActivity();
+        }
+
         else
             Log.i("login","nao logado");
 
@@ -170,6 +173,33 @@ public class LoginActivity extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, code);
 
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d("login", "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("login", "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            toMainActivity();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("login", "signInWithCredential:failure", task.getException());
+                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+
+                        }
+
+                        // ...
+                    }
+                });
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -214,33 +244,33 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("login", "firebaseAuthWithGoogle:" + acct.getId());
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.i("login","logou");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-
-                            //updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.i("login","nao logou");
-                            Toast.makeText(getApplicationContext(),"Falha no login",Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
-
-                        hideProgressDialog();
-                        // ...
-                    }
-                });
-    }
+//    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+//        Log.d("login", "firebaseAuthWithGoogle:" + acct.getId());
+//
+//        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+//        mAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            Log.i("login","logou");
+//                            FirebaseUser user = mAuth.getCurrentUser();
+//
+//
+//                            //updateUI(user);
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+//                            Log.i("login","nao logou");
+//                            Toast.makeText(getApplicationContext(),"Falha no login",Toast.LENGTH_SHORT).show();
+//                            //updateUI(null);
+//                        }
+//
+//                        hideProgressDialog();
+//                        // ...
+//                    }
+//                });
+//    }
 
     public void loginWithEmail(String email, String password){
 
@@ -254,34 +284,31 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("login", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-
-//                            Intent i = new Intent(getApplicationContext(),MainActivity.class);
-//                            startActivity(i);
-//                            finish();
+                            toMainActivity();
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("login", "signInWithEmail:failure", task.getException());
 
-                            String errorCode = ((FirebaseAuthInvalidUserException)task.getException()).getErrorCode();
-
-                            if(errorCode.equals("ERROR_USER_NOT_FOUND")){
-                                Toast.makeText(LoginActivity.this, "Usuário não encontrado",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                            else if(errorCode.equals("INVALID_PASSWORD")){
-                                Toast.makeText(LoginActivity.this, "Senha incorreta",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                            else if(errorCode.equals("EMAIL_ALREADY_IN_USE")){
-                                Toast.makeText(LoginActivity.this, "Já existe uma conta associada a esse email",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-
-                                Toast.makeText(LoginActivity.this, "Falha no login",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+//                            String errorCode = ((FirebaseAuthInvalidUserException)task.getException()).getErrorCode();
+//
+//                            if(errorCode.equals("ERROR_USER_NOT_FOUND")){
+//                                Toast.makeText(LoginActivity.this, "Usuário não encontrado",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//                            else if(errorCode.equals("INVALID_PASSWORD")){
+//                                Toast.makeText(LoginActivity.this, "Senha incorreta",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//                            else if(errorCode.equals("EMAIL_ALREADY_IN_USE")){
+//                                Toast.makeText(LoginActivity.this, "Já existe uma conta associada a esse email",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//                            else{
+//
+//                                Toast.makeText(LoginActivity.this, "Falha no login",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
 
                             //updateUI(null);
 
@@ -326,17 +353,7 @@ public class LoginActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-
-
                             firebaseCreateUser(newUser);
-
-//
-//                            myRef.child("users").child(user.getUid()).setValue(newUser);
-//
-//                            Intent i = new Intent(getApplicationContext(),MainActivity.class);
-//                            startActivity(i);
-//                            finish();
-
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -379,6 +396,20 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void clickSingIn(View v){
+
+        if(!NetworkConnection.isNetworkConnected(this))
+            Toast.makeText(this,"Sem conexão com a internet",Toast.LENGTH_SHORT).show();
+
+        else{
+            String email = fragmentSingIn.loginEmail.getText().toString();
+            String password = fragmentSingIn.loginPassword.getText().toString();
+
+            loginWithEmail(email,password);
+        }
+
+    }
+
     public void firebaseCreateUser(final User user){
 
         db.collection("users").document(user.getId())
@@ -389,6 +420,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d("create", "Usuario criado com sucesso");
 
                         CurrentUser.getUser(user);
+                        toMainActivity();
 
                     }
                 })
@@ -448,6 +480,13 @@ public class LoginActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+    }
+
+    public void toMainActivity(){
+
+        Intent i = new Intent(this,MainActivity.class);
+        startActivity(i);
+        finish();
     }
 
     public class PagerAdapter extends FragmentPagerAdapter {

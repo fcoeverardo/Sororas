@@ -1,17 +1,27 @@
 package com.lek.sororas.Utils;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.lek.sororas.Models.User;
 
 public class FirebaseHelper {
 
-    FirebaseFirestore db;
-    FirebaseStorage storage;
-    StorageReference storageRef;
+    static FirebaseFirestore db;
+    static FirebaseStorage storage;
+    static StorageReference storageRef;
 
-    public void firebaseDbInit(){
+    static User user;
+
+    public static void firebaseDbInit(){
 
         db = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
@@ -19,6 +29,36 @@ public class FirebaseHelper {
                 .build();
 
         db.setFirestoreSettings(settings);
+    }
+
+    public static User getUserById(String id){
+
+        firebaseDbInit();
+
+        DocumentReference docRef = db.collection("users").document(id);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                        user = document.toObject(User.class);
+                        Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                    } else {
+                        Log.d("getUser", "No such document");
+                    }
+                } else {
+                    Log.d("getUser", "get failed with ", task.getException());
+                }
+            }
+        });
+
+
+        return user;
+
     }
 
 

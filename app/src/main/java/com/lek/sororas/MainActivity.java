@@ -18,6 +18,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,9 +26,18 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Fragments.FragmentHome;
 import com.lek.sororas.Models.User;
+import com.lek.sororas.Utils.CurrentUser;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -44,6 +54,9 @@ public class MainActivity extends AppCompatActivity
 //    FirebaseDatabase database;
 //    public DatabaseReference myRef;
     FirebaseAuth auth;
+    FirebaseFirestore db;
+    FirebaseStorage storage;
+    StorageReference storageRef;
 
     public FrameLayout blankLayout;
 
@@ -74,15 +87,23 @@ public class MainActivity extends AppCompatActivity
 //        database = FirebaseDatabase.getInstance();
 //        myRef = database.getReference();
         auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        db.setFirestoreSettings(settings);
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         logo = findViewById(R.id.logo);
         title = findViewById(R.id.title);
 
         blankLayout = findViewById(R.id.blank);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.setDrawerIndicatorEnabled(false);
@@ -349,34 +370,44 @@ public class MainActivity extends AppCompatActivity
 
     public void getCurrentUser(){
 
-//        myRef.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                currentUser = new User((HashMap<String, Object>) dataSnapshot.getValue());
-//                CurrentUser.getUser(currentUser);
-//
-//                updateNavigationView();
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//        getPhotos();
+       User a = CurrentUser.getUser();
+
+        //if(a == (new User()) ){
+
+           DocumentReference docRef = db.collection("users").document(auth.getUid());
+           docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                   if (task.isSuccessful()) {
+                       DocumentSnapshot document = task.getResult();
+                       if (document.exists()) {
+                           Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                           //User user = document.toObject(User.class);
+                           CurrentUser.setUser(document.toObject(User.class));
+                          updateNavigationView();
+                           Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                       } else {
+                           Log.d("getUser", "No such document");
+                       }
+                   } else {
+                       Log.d("getUser", "get failed with ", task.getException());
+                   }
+               }
+           });
+
+       //}
 
     }
 
     public void updateNavigationView(){
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.user_name);
-        name.setText(currentUser.getNome());
+        name.setText(CurrentUser.getUser().getNome());
 
         TextView city = navigationView.getHeaderView(0).findViewById(R.id.user_city);
-        city.setText(currentUser.getCidade());
+        city.setText(CurrentUser.getUser().getCidade());
 
     }
 

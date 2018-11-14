@@ -6,12 +6,9 @@ public class CurrentUser {
 
     private static User currentUser = null;
 
-    public static User getUser(User user){
+    public static User setUser(User user){
 
-        if(currentUser == null){
-
-            currentUser = user;
-        }
+        currentUser = user;
 
         return currentUser;
     }

@@ -55,6 +55,7 @@ import com.lek.sororas.Fragments.FragmentSingIn;
 import com.lek.sororas.Fragments.FragmentSingUp;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.Utils.CurrentUser;
+import com.lek.sororas.Utils.FirebaseHelper;
 import com.lek.sororas.Utils.ImageHelper;
 import com.lek.sororas.Utils.NetworkConnection;
 
@@ -135,6 +136,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             Log.i("login","logado");
+
+            //CurrentUser.getUser(FirebaseHelper.getUserById(currentUser.getUid()));
             toMainActivity();
         }
 
@@ -419,7 +422,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Log.d("create", "Usuario criado com sucesso");
 
-                        CurrentUser.getUser(user);
+                        CurrentUser.setUser(user);
                         toMainActivity();
 
                     }

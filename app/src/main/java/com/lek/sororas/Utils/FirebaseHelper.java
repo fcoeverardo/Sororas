@@ -1,8 +1,11 @@
 package com.lek.sororas.Utils;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -12,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Models.User;
+import com.lek.sororas.R;
 
 public class FirebaseHelper {
 
@@ -62,5 +66,15 @@ public class FirebaseHelper {
     }
 
 
+    public static void setPhotoInImageView(Context context, String id, ImageView imageView){
+
+        storageRef = FirebaseStorage.getInstance().getReference().child(id + "_peril");
+
+        Glide.with(context)
+                .load(storageRef)
+                .into(imageView);
+
+
+    }
 
 }

@@ -24,8 +24,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Fragments.FragmentHome;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.Utils.CurrentUser;
+import com.lek.sororas.Utils.FirebaseHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -370,10 +373,6 @@ public class MainActivity extends AppCompatActivity
 
     public void getCurrentUser(){
 
-       User a = CurrentUser.getUser();
-
-        //if(a == (new User()) ){
-
            DocumentReference docRef = db.collection("users").document(auth.getUid());
            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                @Override
@@ -385,7 +384,8 @@ public class MainActivity extends AppCompatActivity
 
                            //User user = document.toObject(User.class);
                            CurrentUser.setUser(document.toObject(User.class));
-                          updateNavigationView();
+
+                           updateNavigationView();
                            Log.d("getUser", "DocumentSnapshot data: " + document.getData());
 
                        } else {
@@ -397,9 +397,9 @@ public class MainActivity extends AppCompatActivity
                }
            });
 
-       //}
-
     }
+
+
 
     public void updateNavigationView(){
 
@@ -408,6 +408,9 @@ public class MainActivity extends AppCompatActivity
 
         TextView city = navigationView.getHeaderView(0).findViewById(R.id.user_city);
         city.setText(CurrentUser.getUser().getCidade());
+
+        ImageView photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
+        FirebaseHelper.setPhotoInImageView(this,CurrentUser.getUser().getId(),photo);
 
     }
 

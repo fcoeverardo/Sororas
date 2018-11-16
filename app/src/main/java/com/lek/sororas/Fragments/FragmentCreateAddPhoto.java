@@ -46,7 +46,7 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
     Button photoAdvanceBtn;
 
-    ArrayList<ImageView> photos;
+    public ArrayList<ImageView> photos;
     ArrayList<ImageView> deleteBtns;
     ArrayList<Uri> images;
     Dialog dialog;
@@ -120,7 +120,7 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
 
-                imagesToStrings();
+               // imagesToStrings();
                 main.nextPage(v);
                 main.images = images;
             }
@@ -255,7 +255,6 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
                     //Glide.with(getApplicationContext()).load(imageUri).into(photoViewer);
                     updateImages();
 
-
                 }
 
                 break;
@@ -321,7 +320,7 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             photos.get(i).setScaleX(0.6f);
             photos.get(i).setScaleY(0.6f);
             photos.get(i).setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(this).load(R.drawable.ic_addphoto).apply(new RequestOptions().dontTransform()).into(photos.get(i));
+            Glide.with(this).load(R.drawable.ic_addphoto).into(photos.get(i));
 
             deleteBtns.get(i).setVisibility(View.GONE);
 
@@ -333,7 +332,8 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             photos.get(i).setScaleY(0.95f);
             photos.get(i).setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Glide.with(this).load(images.get(i)).apply(new RequestOptions().dontTransform()).into(photos.get(i));
+            int w = photos.get(i).getWidth();
+            Glide.with(this).load(images.get(i)).into(photos.get(i));
 
             deleteBtns.get(i).setVisibility(View.VISIBLE);
 

@@ -1,10 +1,14 @@
 package com.lek.sororas.Utils;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -53,7 +57,7 @@ public class ImageHelper {
         return imageBytes;
     }
 
-    public static byte[] uriToByteArray(URL url) throws IOException {
+    public static byte[] urlToByteArray(URL url) throws IOException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         InputStream is = null;
@@ -84,5 +88,25 @@ public class ImageHelper {
         return baos.toByteArray();
     }
 
+    public static byte[] uriToByteArray(Context context, Uri uri) throws IOException {
 
+        InputStream iStream =   context.getContentResolver().openInputStream(uri);
+        byte[] inputData;
+
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = iStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+
+    public int dpToPx(Context context,int dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
 }

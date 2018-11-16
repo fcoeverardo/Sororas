@@ -47,6 +47,7 @@ dependencies {
     implementation 'me.himanshusoni.chatmessageview:chat-message-view:1.0.7'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'co.lujun:androidtagview:1.1.4'
+    implementation 'com.github.hkk595:Resizer:v1.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,38 +1,35 @@
 package com.lek.sororas;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.lek.sororas.Fragments.FragmentCreateAddPhoto;
 import com.lek.sororas.Fragments.FragmentCreateCategoty;
 import com.lek.sororas.Fragments.FragmentCreateDescription;
@@ -43,8 +40,12 @@ import com.lek.sororas.Fragments.FragmentCreateType;
 import com.lek.sororas.Models.Anuncio;
 import com.lek.sororas.Utils.CurrentUser;
 import com.lek.sororas.Utils.FirebaseHelper;
+import com.lek.sororas.Utils.ImageHelper;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class CreateActivity extends AppCompatActivity {
@@ -84,7 +85,7 @@ public class CreateActivity extends AppCompatActivity {
 //        database = FirebaseDatabase.getInstance();
 //        myRef = database.getReference();
 
-        FirebaseHelper.firebaseInit(db,storage,storageRef,auth);
+        //FirebaseHelper.firebaseInit(db,storage,storageRef,auth);
 
         images = new ArrayList<>();
         photos = new ArrayList<>();
@@ -134,16 +135,35 @@ public class CreateActivity extends AppCompatActivity {
 
     public void salvarAnuncio(View v){
 
-        anuncio.setProprietaria(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        db = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
 
-        db.collection("advertisement").document(CurrentUser.getUser().getId())
-                .set(anuncio)
+        db.setFirestoreSettings(settings);
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+        anuncio.setProprietaria(CurrentUser.getUser().getNome());
+        DocumentReference ref = db.collection("advertisement").document();
+
+        final String anuncioId = ref.getId();
+
+        try {
+            savePhotos(anuncioId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ref.set(anuncio)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("create", "Anuncio criado com sucesso");
 
                         Toast.makeText(getApplicationContext(),"Anuncio criado com sucesso",Toast.LENGTH_SHORT).show();
+
+
                         //CurrentUser.setUser(user);
                        // toMainActivity();
                         finish();
@@ -159,6 +179,43 @@ public class CreateActivity extends AppCompatActivity {
                 });
         finish();
 
+    }
+
+    public void savePhotos(String anuncioId) throws IOException {
+
+        for(int i= 0; i < images.size(); i++){
+
+            final String fotoId = anuncioId + "_foto" + i;
+            fragmentCreateAddPhoto.photos.get(i).setDrawingCacheEnabled(true);
+            fragmentCreateAddPhoto.photos.get(i).buildDrawingCache();
+            Bitmap bitmap = ((BitmapDrawable) fragmentCreateAddPhoto.photos.get(i).getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = storageRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Log.w("create", "Error Criando usiario");
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                    anuncio.getFotos().add(fotoId);
+                }
+            });
+
+//            UploadTask uploadTask = storageRef.child(fotoId).putBytes(
+//                    ImageHelper.uriToByteArray(this, images.get(i))
+//            );
+
+
+
+        }
     }
 
     @Override
@@ -218,8 +275,8 @@ public class CreateActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
 
-            //String[] tabNames = getResources().getStringArray(R.array.tabsNames);
-            return "Wololo";
+            String[] tabNames = getResources().getStringArray(R.array.tabsNames);
+            return tabNames[position];
         }
 
         @Override

@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity
     TextView tv;
     Button create;
 
-//    FirebaseDatabase database;
-//    public DatabaseReference myRef;
     FirebaseAuth auth;
     FirebaseFirestore db;
     FirebaseStorage storage;
@@ -208,8 +206,8 @@ public class MainActivity extends AppCompatActivity
 
     public void clickCreate(View v){
 
-//        Intent i = new Intent(this,CreateActivity.class);
-//        startActivity(i);
+        Intent i = new Intent(this,CreateActivity.class);
+        startActivity(i);
 
     }
 
@@ -409,8 +407,10 @@ public class MainActivity extends AppCompatActivity
         TextView city = navigationView.getHeaderView(0).findViewById(R.id.user_city);
         city.setText(CurrentUser.getUser().getCidade());
 
+
+        String id = CurrentUser.getUser().getId();
         ImageView photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
-        FirebaseHelper.setPhotoInImageView(this,CurrentUser.getUser().getId(),photo);
+        FirebaseHelper.setPhotoInImageView(this,id,photo);
 
     }
 
@@ -481,7 +481,6 @@ public class MainActivity extends AppCompatActivity
 
 
     public void backToLogin(){
-
 
         openConfirmaDialog();
 

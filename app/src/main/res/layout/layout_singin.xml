@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fundo">
-
+    android:background="@color/fundo_branco">
 
     <FrameLayout
         android:id="@+id/loginButton"
@@ -15,10 +14,10 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="80dp"
         android:background="@drawable/button_facebook"
-        android:paddingLeft="5dp"
-        android:elevation="2dp"
         android:clickable="true"
+        android:elevation="2dp"
         android:onClick="clickLoginfacebook"
+        android:paddingLeft="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,15 +37,13 @@
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="12dp"
         android:elevation="4dp"
         android:fontFamily="@font/roboto_regular"
-        android:text="Entre com o Facebook"
+        android:text="Entrar com o Facebook"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/loginButton"
-        app:layout_constraintEnd_toEndOf="@+id/loginButton"
         app:layout_constraintStart_toEndOf="@+id/imageView10"
         app:layout_constraintTop_toTopOf="@+id/loginButton" />
 
@@ -57,8 +54,9 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/button_gmail"
         android:clickable="true"
-        android:tag="0"
+        android:elevation="4dp"
         android:onClick="clickGoogleLogin"
+        android:tag="0"
         app:layout_constraintEnd_toEndOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="@+id/loginButton"
         app:layout_constraintTop_toBottomOf="@+id/loginButton" />
@@ -81,7 +79,7 @@
         android:elevation="4dp"
         android:fontFamily="@font/roboto_regular"
         android:text="Entre com o Gmail"
-        android:textSize="15sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/sign_in_button"
         app:layout_constraintStart_toStartOf="@+id/textView20"
         app:layout_constraintTop_toTopOf="@+id/sign_in_button" />
@@ -94,8 +92,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:fontFamily="@font/roboto_light"
+        android:fontFamily="@font/roboto_regular"
         android:text="Ou entre com seu E-mail"
+        android:textColor="@color/cinza_ic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
@@ -112,7 +111,8 @@
         android:fontFamily="@font/roboto_regular"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:textSize="14sp"
+        android:textColor="@color/cinza_ic"
+        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -127,21 +127,48 @@
         android:fontFamily="@font/roboto_regular"
         android:hint="Senha"
         android:inputType="textPassword"
-        android:textSize="14sp"
+        android:textColor="@color/cinza_ic"
+        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="@+id/loginEmail"
         app:layout_constraintStart_toStartOf="@+id/loginEmail"
         app:layout_constraintTop_toBottomOf="@+id/loginEmail">
 
     </EditText>
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Mínimo de 6 caracteres"
+        android:textColor="@color/cinza_text_light"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/loginPassword"
+        app:layout_constraintTop_toBottomOf="@+id/loginPassword" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="ESQUECI MINHA SENHA"
+        android:textColor="@color/azul_text_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="92dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="92dp"
         android:background="@drawable/ripplebutton"
+        android:elevation="4dp"
         android:onClick="clickSingIn"
         android:text="ENTRAR"
         android:textAllCaps="false"
@@ -149,6 +176,6 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/loginPassword"
         app:layout_constraintStart_toStartOf="@+id/loginPassword"
-        app:layout_constraintTop_toBottomOf="@+id/loginPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
 </android.support.constraint.ConstraintLayout>

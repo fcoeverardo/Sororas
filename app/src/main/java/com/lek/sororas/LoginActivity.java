@@ -28,6 +28,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -59,11 +71,14 @@ import com.lek.sororas.Utils.FirebaseHelper;
 import com.lek.sororas.Utils.ImageHelper;
 import com.lek.sororas.Utils.NetworkConnection;
 
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -90,6 +105,9 @@ public class LoginActivity extends AppCompatActivity {
     FragmentSingIn fragmentSingIn;
     FragmentSingUp fragmentSingUp;
 
+    CallbackManager callbackManager;
+    ProfileTracker profileTracker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +123,13 @@ public class LoginActivity extends AppCompatActivity {
         db.setFirestoreSettings(settings);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
+        final AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
@@ -126,6 +151,57 @@ public class LoginActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         setCustomFont("roboto_medium.ttf");
+
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                 loginResult.getAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(
+                                            JSONObject object,
+                                            GraphResponse response) {
+
+                                        Log.i("login", "Login facebook sucess");
+                                        // Application code
+                                    }
+                                });
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,name,email");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+                        Log.i("login", "Login facebook sucess");
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                        Log.i("login", "Login facebook fail");
+                    }
+                });
+
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(
+                    Profile oldProfile,
+                    Profile currentProfile) {
+
+
+                // App code
+            }
+        };
 
     }
 
@@ -150,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -166,6 +243,8 @@ public class LoginActivity extends AppCompatActivity {
             handleSignUpResult(task);
         }
     }
+
+
 
     public void clickGoogleLogin(View v){
 
@@ -247,34 +326,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-//    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-//        Log.d("login", "firebaseAuthWithGoogle:" + acct.getId());
-//
-//        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//        mAuth.signInWithCredential(credential)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.i("login","logou");
-//                            FirebaseUser user = mAuth.getCurrentUser();
-//
-//
-//                            //updateUI(user);
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-//                            Log.i("login","nao logou");
-//                            Toast.makeText(getApplicationContext(),"Falha no login",Toast.LENGTH_SHORT).show();
-//                            //updateUI(null);
-//                        }
-//
-//                        hideProgressDialog();
-//                        // ...
-//                    }
-//                });
-//    }
+    public void clickLoginfacebook(View v){
 
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile","email"));
+
+    }
     public void loginWithEmail(String email, String password){
 
         mAuth.signInWithEmailAndPassword(email, password)

@@ -1,13 +1,17 @@
 package com.lek.sororas.Utils;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -66,15 +70,43 @@ public class FirebaseHelper {
     }
 
 
-    public static void setPhotoInImageView(Context context, String id, ImageView imageView){
+    public static void setPhotoInImageView(final Context context, String id, final ImageView imageView){
 
-        storageRef = FirebaseStorage.getInstance().getReference().child(id + "_peril");
 
-        Glide.with(context)
-                .load(storageRef)
-                .into(imageView);
+        storageRef = FirebaseStorage.getInstance().getReference();
+        storageRef.child(id + "_perfil").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                Glide.with(context)
+                        .load(uri)
+                        .into(imageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
+
 
 
     }
+
+    public static void firebaseInit(FirebaseFirestore db,FirebaseStorage storage,StorageReference storageRef,FirebaseAuth auth){
+
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+
+        db.setFirestoreSettings(settings);
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+    }
+
 
 }

@@ -18,7 +18,7 @@
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="default_notification_channel_name" translatable="true">News</string>
 
-
+    <string name="facebook_app_id">2021960611397790</string> <string name="fb_login_protocol_scheme">fb2021960611397790</string>
     <string name="api_localizacao_key">b697082b731c3b8c4cff59209aa3ec92</string>
 
     <string name="menu_mecanica">Mecânica de automóveis</string>

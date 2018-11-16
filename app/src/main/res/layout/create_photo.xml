@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_bg_amarelo">
+
+    <Button
+        android:id="@+id/photoadvanceBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/ripplebutton"
+        android:onClick="clickCreate"
+        android:text="Pronto! Próxima etapa"
+        android:textAllCaps="false"
+        android:textColor="@color/branco"
+        android:textSize="22sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/addphoto_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/textView9"
+        app:layout_constraintStart_toStartOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/textView9">
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/bordergrey"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/photo1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="false"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                app:srcCompat="@drawable/ic_addphoto"
+                tools:layout_editor_absoluteX="100dp"
+                tools:layout_editor_absoluteY="294dp" />
+
+            <ImageView
+                android:id="@+id/delete1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="top|right"
+                android:layout_margin="5dp"
+                android:tag="0"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_lixo" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bordergrey"
+            app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline2">
+
+            <ImageView
+                android:id="@+id/photo5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:onClick="clickAddPhoto"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                app:srcCompat="@drawable/ic_addphoto"
+                tools:layout_editor_absoluteX="100dp"
+                tools:layout_editor_absoluteY="294dp" />
+
+            <ImageView
+                android:id="@+id/delete5"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="top|right"
+                android:layout_margin="5dp"
+                android:onClick="removePhoto"
+                android:tag="4"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_lixo" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/bordergrey"
+            app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline">
+
+            <ImageView
+                android:id="@+id/photo4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="false"
+                android:onClick="clickAddPhoto"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                app:srcCompat="@drawable/ic_addphoto"
+                tools:layout_editor_absoluteX="100dp"
+                tools:layout_editor_absoluteY="294dp" />
+
+            <ImageView
+                android:id="@+id/delete4"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="top|right"
+                android:layout_margin="5dp"
+                android:onClick="removePhoto"
+                android:tag="3"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_lixo" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayout4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bordergrey"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/photo3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="false"
+                android:onClick="clickAddPhoto"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                app:srcCompat="@drawable/ic_addphoto"
+                tools:layout_editor_absoluteX="100dp"
+                tools:layout_editor_absoluteY="294dp" />
+
+            <ImageView
+                android:id="@+id/delete3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="top|right"
+                android:layout_margin="5dp"
+                android:onClick="removePhoto"
+                android:tag="2"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_lixo" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/bordergrey"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/photo2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="false"
+                android:onClick="clickAddPhoto"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                app:srcCompat="@drawable/ic_addphoto"
+                tools:layout_editor_absoluteX="100dp"
+                tools:layout_editor_absoluteY="294dp" />
+
+            <ImageView
+                android:id="@+id/delete2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="top|right"
+                android:layout_margin="5dp"
+                android:onClick="removePhoto"
+                android:tag="1"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_lixo" />
+        </FrameLayout>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75" />
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="Destaque seu trabalho com fotos bem iluminadas e em vários ângulos!"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="Escolha uma foto!"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+
+</android.support.constraint.ConstraintLayout>

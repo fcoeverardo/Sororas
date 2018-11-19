@@ -17,6 +17,7 @@
         android:clickable="true"
         android:elevation="2dp"
         android:onClick="clickLoginfacebook"
+        android:tag="0"
         android:paddingLeft="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

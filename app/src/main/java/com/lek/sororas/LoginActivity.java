@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,10 +60,12 @@ import com.lek.sororas.Utils.CurrentUser;
 import com.lek.sororas.Utils.ImageHelper;
 import com.lek.sororas.Utils.NetworkConnection;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -83,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     ViewPager viewPager;
 
     String id;
+
 
     ProgressDialog mProgressDialog;
 
@@ -138,44 +142,6 @@ public class LoginActivity extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
 
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-
-                        GraphRequest request = GraphRequest.newMeRequest(
-                                 loginResult.getAccessToken(),
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(
-                                            JSONObject object,
-                                            GraphResponse response) {
-
-                                        Log.i("login", "Login facebook sucess");
-                                        // Application code
-                                    }
-                                });
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,name,email");
-                        request.setParameters(parameters);
-                        request.executeAsync();
-                        Log.i("login", "Login facebook sucess");
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                        Log.i("login", "Login facebook fail");
-                    }
-                });
-
-
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(
@@ -198,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("login","logado");
 
             //CurrentUser.getUser(FirebaseHelper.getUserById(currentUser.getUid()));
-            toMainActivity();
+            //toMainActivity();
         }
 
         else
@@ -268,6 +234,32 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    private void firebaseAuthWithFacebook(AccessToken token){
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("login", "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("login", "signInWithCredential:failure", task.getException());
+                            Toast.makeText(getApplicationContext(), "Falha no Login",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -314,7 +306,67 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile","email"));
 
+        final int code = Integer.parseInt(v.getTag().toString());
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+
+                        if(code == 1){
+
+                            GraphRequest request = GraphRequest.newMeRequest(
+                                    loginResult.getAccessToken(),
+                                    new GraphRequest.GraphJSONObjectCallback() {
+                                        @Override
+                                        public void onCompleted(
+                                                JSONObject object,
+                                                GraphResponse response) {
+                                            String id = "";
+                                            try {
+
+                                                fragmentSingUp.writeInformations(object);
+
+                                            } catch (JSONException e) {
+
+                                                e.printStackTrace();
+                                            } catch (MalformedURLException e) {
+                                                e.printStackTrace();
+                                            }
+                                            Log.i("login", "Login facebook sucess");
+                                            // Application code
+                                        }
+                                    });
+
+                            Bundle parameters = new Bundle();
+                            parameters.putString("fields", "id,name,email");
+                            request.setParameters(parameters);
+                            request.executeAsync();
+                            Log.i("login", "Login facebook sucess");
+
+                        }
+                        else{
+                            firebaseAuthWithFacebook(loginResult.getAccessToken());
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                        Log.i("login", "Login facebook fail");
+                    }
+                });
+
     }
+
+
     public void loginWithEmail(String email, String password){
 
         mAuth.signInWithEmailAndPassword(email, password)
@@ -424,6 +476,66 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void createUser(final String email, final String password, final String nome, final String dataNascimento,
+                           final String local, final URL photoPerfil){
+
+        showProgressDialog();
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                            hideProgressDialog();
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("Sing In", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            InputStream iStream = null;
+
+                            User newUser = new User(nome,email,dataNascimento,local);
+                            newUser.setId(user.getUid());
+
+                            if(photoPerfil != null)
+                                try {
+
+                                    String fotoId = user.getUid() + "_perfil";
+                                    UploadTask uploadTask = storageRef.child(fotoId).putBytes(
+                                            ImageHelper.urlToByteArray(photoPerfil)
+                                    );
+
+                                    newUser.setPhotoPerfil(fotoId);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                            //firebaseCreateUser(newUser);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("Sing In", "createUserWithEmail:failure", task.getException());
+
+                            //int errorCode = task.getException().getLocalizedMessage();
+                            String errorCode = ((FirebaseAuthUserCollisionException)task.getException()).getErrorCode();
+
+                            if(errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE")){
+                                Toast.makeText(LoginActivity.this, "Email já possui cadastro",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, "Falha no cadastro",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+
+                            hideProgressDialog();
+                        }
+
+                        // ...
+                    }
+                });
+
+    }
 
     public void clickSingUp(View v){
 
@@ -435,7 +547,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
+        //createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
+        createUser(email,password,nome,data,local,fragmentSingUp.photoUrl);
 
     }
 

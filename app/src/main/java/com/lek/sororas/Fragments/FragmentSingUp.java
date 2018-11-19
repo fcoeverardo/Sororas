@@ -36,11 +36,15 @@ import com.lek.sororas.R;
 import com.lek.sororas.LoginActivity;
 import com.lek.sororas.Utils.DateInputMask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +65,7 @@ public class FragmentSingUp extends Fragment {
 
     public EditText nome, email, senha, local, dataNascimento;
     public Uri photoPerfil;
+    public URL photoUrl;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
@@ -136,6 +141,18 @@ public class FragmentSingUp extends Fragment {
         nome.setText(account.getDisplayName());
 
         photoPerfil = account.getPhotoUrl();
+
+    }
+
+    public void writeInformations(JSONObject object) throws JSONException, MalformedURLException {
+
+        email.setText(object.get("email").toString());
+        nome.setText(object.get("name").toString());
+
+        String id = object.get("id").toString();
+        photoUrl = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
+
+        Log.i("TEste","Wololo");
 
     }
 

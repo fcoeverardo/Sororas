@@ -5,10 +5,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,7 +30,11 @@ import com.lek.sororas.CreateActivity;
 import com.lek.sororas.R;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -50,6 +56,8 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
     ArrayList<ImageView> deleteBtns;
     ArrayList<Uri> images;
     Dialog dialog;
+
+    String mCurrentPhotoPath;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -197,6 +205,7 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
                         MY_PERMISSIONS_REQUEST_USE_CAMERA);
             }
         }else{
+
             Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(takePicture, OPEN_MEDIA_CAMERA);
 
@@ -261,8 +270,15 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             case OPEN_MEDIA_CAMERA:
                 if(resultCode == RESULT_OK){
 
-                    images.add(data.getData());
-                    updateImages();
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+                    photos.get(0).setImageBitmap(imageBitmap);
+
+//                    Uri tempUri = getImageUri(context, imageBitmap);
+//                    images.add (tempUri);
+//
+//                    updateImages();
 
                 }
                 break;
@@ -366,5 +382,46 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
 
 
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private Uri galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        context.sendBroadcast(mediaScanIntent);
+
+        return contentUri;
     }
 }

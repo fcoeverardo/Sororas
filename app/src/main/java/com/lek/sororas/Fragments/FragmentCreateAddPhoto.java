@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.InflateException;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -58,6 +60,7 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
     Dialog dialog;
 
     String mCurrentPhotoPath;
+    String imageFilePath;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -207,7 +210,22 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
         }else{
 
             Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(takePicture, OPEN_MEDIA_CAMERA);
+            if(takePicture.resolveActivity(context.getPackageManager()) != null){
+                //Create a file to store the image
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(context,"com.lek.sororas.provider", photoFile);
+                    takePicture.putExtra(MediaStore.EXTRA_OUTPUT,
+                            photoURI);
+                    startActivityForResult(takePicture,
+                            OPEN_MEDIA_CAMERA);
+                }
+            }
 
         }
 
@@ -270,15 +288,12 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             case OPEN_MEDIA_CAMERA:
                 if(resultCode == RESULT_OK){
 
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-                    photos.get(0).setImageBitmap(imageBitmap);
-
+                    //imageFilePath
+                    images.add( Uri.fromFile(new File(imageFilePath)));
 //                    Uri tempUri = getImageUri(context, imageBitmap);
 //                    images.add (tempUri);
 //
-//                    updateImages();
+                    updateImages();
 
                 }
                 break;
@@ -316,7 +331,22 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
 
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, OPEN_MEDIA_CAMERA);
+                    if(takePicture.resolveActivity(context.getPackageManager()) != null){
+                        //Create a file to store the image
+                        File photoFile = null;
+                        try {
+                            photoFile = createImageFile();
+                        } catch (IOException ex) {
+                            // Error occurred while creating the File
+                        }
+                        if (photoFile != null) {
+                            Uri photoURI = FileProvider.getUriForFile(context,"com.lek.sororas.provider", photoFile);
+                            takePicture.putExtra(MediaStore.EXTRA_OUTPUT,
+                                    photoURI);
+                            startActivityForResult(takePicture,
+                                    OPEN_MEDIA_CAMERA);
+                        }
+                    }
 
                 } else {
 
@@ -400,28 +430,27 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
 
     private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir =
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
+        imageFilePath = image.getAbsolutePath();
         return image;
     }
 
-    private Uri galleryAddPic() {
+    private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
+        File f = new File(imageFilePath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         context.sendBroadcast(mediaScanIntent);
-
-        return contentUri;
     }
 }

@@ -45,9 +45,13 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
@@ -69,24 +73,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BasicActivity {
 
     private static final int RC_SIGN_IN = 0;
     private static final int RC_SIGN_UP = 1;
 
-    private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth mAuth;
-    FirebaseFirestore db;
-    FirebaseStorage storage;
-    StorageReference storageRef;
-    //private FusedLocationProviderClient mFusedLocationClient;
+    private static final int NO_PROVIDER = 0;
+    private static final int FACEBOOK_PROVIDER = 1;
+    private static final int GOOGLE_PROVIDER = 2;
 
+    private GoogleSignInClient mGoogleSignInClient;
+
+    //private FusedLocationProviderClient mFusedLocationClient;
 
     TabLayout tabLayout;
     ViewPager viewPager;
 
     String id;
-
+    int code = 0;
 
     ProgressDialog mProgressDialog;
 
@@ -101,16 +105,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-
-        db.setFirestoreSettings(settings);
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
 
 
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -164,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("login","logado");
 
             //CurrentUser.getUser(FirebaseHelper.getUserById(currentUser.getUid()));
-            //toMainActivity();
+            toMainActivity();
         }
 
         else
@@ -198,6 +192,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void clickGoogleLogin(View v){
 
+        code = GOOGLE_PROVIDER;
+
         showProgressDialog();
 
         int code = Integer.parseInt(v.getTag().toString());
@@ -220,7 +216,33 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("login", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            toMainActivity();
+                            DocumentReference docRef = db.collection("users").document(user.getUid());
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                                            User user = document.toObject(User.class);
+                                            CurrentUser.setUser(user);
+
+                                            toMainActivity();
+
+                                            Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                                        } else {
+                                            viewPager.setCurrentItem(1);
+                                            Log.d("getUser", "No such document");
+                                        }
+                                    } else {
+                                        Log.d("getUser", "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+
+                            //toMainActivity();
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -244,7 +266,38 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("login", "signInWithCredential:success");
+
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            //getUser
+                            DocumentReference docRef = db.collection("users").document(user.getUid());
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                                            User user = document.toObject(User.class);
+                                            CurrentUser.setUser(user);
+
+                                            Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                                        } else {
+
+                                            viewPager.setCurrentItem(1);
+
+                                            Log.d("getUser", "No such document");
+                                        }
+                                    } else {
+                                        Log.d("getUser", "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+                            //ver se tem data de nascimento e local
+                            //passa pra singup fragment
+
 
                             //updateUI(user);
                         } else {
@@ -265,6 +318,7 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             //account.
+            fragmentSingUp.writeInformations(account);
             firebaseAuthWithGoogle(account);
 
 
@@ -306,6 +360,8 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile","email"));
 
+        code = FACEBOOK_PROVIDER;
+
         final int code = Integer.parseInt(v.getTag().toString());
 
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -313,43 +369,41 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         // App code
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                loginResult.getAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(
+                                            JSONObject object,
+                                            GraphResponse response) {
+                                        String id = "";
+                                        try {
 
-                        if(code == 1){
+                                            fragmentSingUp.writeInformations(object);
 
-                            GraphRequest request = GraphRequest.newMeRequest(
-                                    loginResult.getAccessToken(),
-                                    new GraphRequest.GraphJSONObjectCallback() {
-                                        @Override
-                                        public void onCompleted(
-                                                JSONObject object,
-                                                GraphResponse response) {
-                                            String id = "";
-                                            try {
+                                        } catch (JSONException e) {
 
-                                                fragmentSingUp.writeInformations(object);
-
-                                            } catch (JSONException e) {
-
-                                                e.printStackTrace();
-                                            } catch (MalformedURLException e) {
-                                                e.printStackTrace();
-                                            }
-                                            Log.i("login", "Login facebook sucess");
-                                            // Application code
+                                            e.printStackTrace();
+                                        } catch (MalformedURLException e) {
+                                            e.printStackTrace();
                                         }
-                                    });
+                                        Log.i("login", "Login facebook sucess");
+                                        // Application code
+                                    }
+                                });
 
-                            Bundle parameters = new Bundle();
-                            parameters.putString("fields", "id,name,email");
-                            request.setParameters(parameters);
-                            request.executeAsync();
-                            Log.i("login", "Login facebook sucess");
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,name,email");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+                        Log.i("login", "Login facebook sucess");
 
-                        }
-                        else{
+
+                        if(code == 0){
+
                             firebaseAuthWithFacebook(loginResult.getAccessToken());
-                        }
 
+                        }
                     }
 
                     @Override
@@ -365,7 +419,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
     }
-
 
     public void loginWithEmail(String email, String password){
 
@@ -384,6 +437,18 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("login", "signInWithEmail:failure", task.getException());
+
+                            try {
+                                throw task.getException();
+                            } catch(FirebaseAuthWeakPasswordException e) {
+                                Log.e("create", e.getMessage());
+                            } catch(FirebaseAuthInvalidCredentialsException e) {
+                                Log.e("create", e.getMessage());
+                            } catch(FirebaseAuthUserCollisionException e) {
+                                Log.e("create", e.getMessage());
+                            } catch(Exception e) {
+                                Log.e("creaate", e.getMessage());
+                            }
 
 //                            String errorCode = ((FirebaseAuthInvalidUserException)task.getException()).getErrorCode();
 //
@@ -458,8 +523,17 @@ public class LoginActivity extends AppCompatActivity {
                             String errorCode = ((FirebaseAuthUserCollisionException)task.getException()).getErrorCode();
 
                             if(errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE")){
-                                Toast.makeText(LoginActivity.this, "Email já possui cadastro",
-                                        Toast.LENGTH_SHORT).show();
+
+                                if(mAuth.getCurrentUser() == null){
+                                    Toast.makeText(LoginActivity.this, "Email já possui cadastro",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    Toast.makeText(LoginActivity.this, "já possui cadastro",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+
                             }
                             else{
                                 Toast.makeText(LoginActivity.this, "Falha no cadastro",
@@ -509,7 +583,7 @@ public class LoginActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                            //firebaseCreateUser(newUser);
+                            firebaseCreateUser(newUser);
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -537,6 +611,31 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void saveUser(final String email, final String password, final String nome, final String dataNascimento,
+                         final String local, final URL photoPerfil){
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        User newUser = new User(nome,email,dataNascimento,local);
+        newUser.setId(user.getUid());
+
+        if(photoPerfil != null)
+            try {
+
+                String fotoId = user.getUid() + "_perfil";
+                UploadTask uploadTask = storageRef.child(fotoId).putBytes(
+                        ImageHelper.urlToByteArray(photoPerfil)
+                );
+
+                newUser.setPhotoPerfil(fotoId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        firebaseCreateUser(newUser);
+
+    }
+
     public void clickSingUp(View v){
 
         String email = fragmentSingUp.email.getText().toString();
@@ -545,10 +644,19 @@ public class LoginActivity extends AppCompatActivity {
         String data = fragmentSingUp.dataNascimento.getText().toString();
         String local = fragmentSingUp.local.getText().toString();
 
+        switch (code){
+            case NO_PROVIDER:
+                createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
+                return;
 
+            case FACEBOOK_PROVIDER:
+                createUser(email,password,nome,data,local,fragmentSingUp.photoUrl);
+                return;
 
-        //createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
-        createUser(email,password,nome,data,local,fragmentSingUp.photoUrl);
+            case GOOGLE_PROVIDER:
+                createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
+                return;
+        }
 
     }
 
@@ -590,7 +698,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void inicializeTabs(){
-
 
         String[] tabNames = getResources().getStringArray(R.array.loginTabsNames);
 

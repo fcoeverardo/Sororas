@@ -11,9 +11,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.DatePickerDialog;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.format.Formatter;
@@ -22,10 +20,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -33,7 +28,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.lek.sororas.LoginActivity;
 import com.lek.sororas.R;
-import com.lek.sororas.LoginActivity;
 import com.lek.sororas.Utils.DateInputMask;
 
 import org.json.JSONException;
@@ -48,9 +42,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executor;
-
-import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.content.Context.WIFI_SERVICE;
 
@@ -64,7 +55,7 @@ public class FragmentSingUp extends Fragment {
     LoginActivity main;
 
     public EditText nome, email, senha, local, dataNascimento;
-    public Uri photoPerfil;
+    public Uri photoUri;
     public URL photoUrl;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -140,7 +131,7 @@ public class FragmentSingUp extends Fragment {
         email.setText(account.getEmail());
         nome.setText(account.getDisplayName());
 
-        photoPerfil = account.getPhotoUrl();
+        photoUri = account.getPhotoUrl();
 
     }
 

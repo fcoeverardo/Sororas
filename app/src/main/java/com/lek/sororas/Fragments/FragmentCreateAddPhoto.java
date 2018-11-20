@@ -290,6 +290,7 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
                     //imageFilePath
                     images.add( Uri.fromFile(new File(imageFilePath)));
+                    galleryAddPic();
 //                    Uri tempUri = getImageUri(context, imageBitmap);
 //                    images.add (tempUri);
 //
@@ -379,7 +380,7 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             photos.get(i).setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             int w = photos.get(i).getWidth();
-            Glide.with(this).load(images.get(i)).into(photos.get(i));
+            Glide.with(this).load(images.get(i)).apply(new RequestOptions().encodeQuality(100)).into(photos.get(i));
 
             deleteBtns.get(i).setVisibility(View.VISIBLE);
 

@@ -48,13 +48,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class CreateActivity extends AppCompatActivity {
+public class CreateActivity extends BasicActivity {
 
-
-    FirebaseAuth auth;
-    FirebaseFirestore db;
-    FirebaseStorage storage;
-    StorageReference storageRef;
 
     ConstraintLayout addPhotoLayout;
     Button photoAdvanceBtn;
@@ -135,16 +130,9 @@ public class CreateActivity extends AppCompatActivity {
 
     public void salvarAnuncio(View v){
 
-        db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
+        showProgressDialog();
 
-        db.setFirestoreSettings(settings);
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
-
-        anuncio.setProprietaria(CurrentUser.getUser().getNome());
+        anuncio.setProprietaria(mAuth.getCurrentUser().getUid());
         DocumentReference ref = db.collection("advertisement").document();
 
         final String anuncioId = ref.getId();
@@ -154,31 +142,6 @@ public class CreateActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        ref.set(anuncio)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("create", "Anuncio criado com sucesso");
-
-                        Toast.makeText(getApplicationContext(),"Anuncio criado com sucesso",Toast.LENGTH_SHORT).show();
-
-
-                        //CurrentUser.setUser(user);
-                       // toMainActivity();
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("create", "Error Criando usiario");
-                        Toast.makeText(getApplicationContext(),"Falha na criação do anuncio",Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-        finish();
-
     }
 
     public void savePhotos(String anuncioId) throws IOException {
@@ -188,17 +151,17 @@ public class CreateActivity extends AppCompatActivity {
             final String fotoId = anuncioId + "_foto" + i;
             fragmentCreateAddPhoto.photos.get(i).setDrawingCacheEnabled(true);
             fragmentCreateAddPhoto.photos.get(i).buildDrawingCache();
-            Bitmap bitmap = ((BitmapDrawable) fragmentCreateAddPhoto.photos.get(i).getDrawable()).getBitmap();
+            final Bitmap bitmap = ((BitmapDrawable) fragmentCreateAddPhoto.photos.get(i).getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
 
-            UploadTask uploadTask = storageRef.putBytes(data);
+            UploadTask uploadTask = storageRef.child(fotoId).putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle unsuccessful uploads
-                    Log.w("create", "Error Criando usiario");
+                    Log.w("create", "Error Criando usuario");
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -206,6 +169,41 @@ public class CreateActivity extends AppCompatActivity {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
                     anuncio.getFotos().add(fotoId);
+                    DocumentReference ref = db.collection("advertisement").document();
+
+                    ArrayList<String> ids = CurrentUser.getUser().getAnunciosIds();
+
+                    if(ids == null)
+                        ids = new ArrayList<>();
+
+                    ids.add(ref.getId());
+
+                    CurrentUser.getUser().setAnunciosIds(ids);
+                    db.collection("users").document(mAuth.getCurrentUser().getUid()).set( CurrentUser.getUser());
+
+                    ref.set(anuncio)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("create", "Anuncio criado com sucesso");
+
+                                    Toast.makeText(getApplicationContext(),"Anuncio criado com sucesso",Toast.LENGTH_SHORT).show();
+
+                                    hideProgressDialog();
+                                    //CurrentUser.setUser(user);
+                                    // toMainActivity();
+                                    finish();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("create", "Error Criando usuario");
+                                    Toast.makeText(getApplicationContext(),"Falha na criação do anuncio",Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+
                 }
             });
 
@@ -217,6 +215,7 @@ public class CreateActivity extends AppCompatActivity {
 
         }
     }
+
 
     @Override
     public void onBackPressed() {

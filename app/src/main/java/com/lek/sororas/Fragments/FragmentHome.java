@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,20 +14,19 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
 import com.lek.sororas.R;
 
 import java.util.ArrayList;
 
-public class FragmentHome extends android.support.v4.app.Fragment {
+public class FragmentHome extends BasicFragment {
 
 
-    private View view;
-    Context context;
-    MainActivity main;
-//    FirebaseDatabase database;
-//    DatabaseReference myRef;
     ArrayList<Anuncio> anuncios;
     ArrayList<String> anunciosIds;
     ProgressBar progress;
@@ -51,11 +51,10 @@ public class FragmentHome extends android.support.v4.app.Fragment {
 
         }
 
+        initFirebase();
+
         context = inflater.getContext();
         main = (MainActivity) context;
-
-//        database = FirebaseDatabase.getInstance();
-//        myRef = database.getReference();
 
         anuncios = new ArrayList<>();
         anunciosIds = new ArrayList<>();
@@ -95,6 +94,24 @@ public class FragmentHome extends android.support.v4.app.Fragment {
     }
 
     public void loadAnuncios(){
+
+        DocumentReference docRef = db.collection("cities").document("SF");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("loadAnuncio", "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d("loadAnuncio", "No such document");
+                    }
+                } else {
+                    Log.d("loadAnuncio", "get failed with ", task.getException());
+                }
+            }
+        });
+
 
 //        myRef.child("advertisement").addValueEventListener(new ValueEventListener() {
 //            @Override

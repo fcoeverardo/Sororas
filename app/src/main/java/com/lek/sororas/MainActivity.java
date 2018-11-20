@@ -398,7 +398,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     public void updateNavigationView(){
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.user_name);
@@ -413,72 +412,6 @@ public class MainActivity extends AppCompatActivity
         FirebaseHelper.setPhotoInImageView(this,id,photo);
 
     }
-
-    public void getPhotos(){
-
-//        myRef.child("photos").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                if(dataSnapshot.hasChildren()){
-//
-//                    HashMap<String,String> data = (HashMap<String, String>) dataSnapshot.getValue();
-//
-//                    User u = CurrentUser.getUser();
-//
-//                    if(data.get("fotoperfil") != null){
-//
-//                        String foto64 = data.get("fotoperfil");
-//                        fotoPerfil = StringToBitMap(foto64);
-//
-//                        ImageView foto = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
-//                        Glide.with(getApplicationContext()).load(fotoPerfil).into(foto);
-//
-//                        u.setFoto(fotoPerfil);
-//                        u.setFotoperfil(foto64);
-//                    }
-//
-//                    if(data.get("fotobanner") != null){
-//
-//                        String banner64 = data.get("fotobanner");
-//                        fotoBanner = StringToBitMap(banner64);
-//
-//                        ImageView banner = navigationView.getHeaderView(0).findViewById(R.id.banner);
-//                        Glide.with(getApplicationContext()).load(fotoBanner).into(banner);
-//
-//                        u.setBanner(fotoBanner);
-//                        u.setFotobanner(banner64);
-//                    }
-//
-//                    CurrentUser.getUser(u);
-//
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-    }
-
-    public Bitmap StringToBitMap(String image){
-        try{
-            byte [] encodeByte= Base64.decode(image,Base64.DEFAULT);
-
-            InputStream inputStream  = new ByteArrayInputStream(encodeByte);
-
-            Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
-
-            return bitmap;
-        }catch(Exception e){
-            e.getMessage();
-            return null;
-        }
-    }
-
 
     public void backToLogin(){
 

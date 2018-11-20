@@ -15,10 +15,10 @@
         android:layout_marginEnd="80dp"
         android:background="@drawable/button_facebook"
         android:clickable="true"
-        android:elevation="2dp"
+        android:elevation="4dp"
         android:onClick="clickLoginfacebook"
-        android:tag="0"
         android:paddingLeft="5dp"
+        android:tag="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,21 +32,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="@+id/loginButton"
         app:layout_constraintTop_toTopOf="@+id/loginButton"
-        app:srcCompat="@drawable/com_facebook_button_icon_white" />
+        app:srcCompat="@drawable/com_facebook_button_icon_white"/>
 
     <TextView
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="8dp"
         android:elevation="4dp"
         android:fontFamily="@font/roboto_regular"
-        android:text="Entrar com o Facebook"
+        android:text="Entre com o Facebook"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/loginButton"
         app:layout_constraintStart_toEndOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="@+id/loginButton" />
+        app:layout_constraintTop_toTopOf="@+id/loginButton"  />
 
     <FrameLayout
         android:id="@+id/sign_in_button"
@@ -57,7 +57,7 @@
         android:clickable="true"
         android:elevation="4dp"
         android:onClick="clickGoogleLogin"
-        android:tag="0"
+        android:tag="1"
         app:layout_constraintEnd_toEndOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="@+id/loginButton"
         app:layout_constraintTop_toBottomOf="@+id/loginButton" />
@@ -77,12 +77,13 @@
         android:id="@+id/textView21"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:elevation="4dp"
         android:fontFamily="@font/roboto_regular"
         android:text="Entre com o Gmail"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/sign_in_button"
-        app:layout_constraintStart_toStartOf="@+id/textView20"
+        app:layout_constraintStart_toEndOf="@+id/imageView11"
         app:layout_constraintTop_toTopOf="@+id/sign_in_button" />
 
 

@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +43,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -52,10 +50,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.lek.sororas.Fragments.FragmentSingIn;
 import com.lek.sororas.Fragments.FragmentSingUp;
@@ -92,7 +86,6 @@ public class LoginActivity extends BasicActivity {
     String id;
     int code = 0;
 
-    ProgressDialog mProgressDialog;
 
     FragmentSingIn fragmentSingIn;
     FragmentSingUp fragmentSingUp;
@@ -153,6 +146,8 @@ public class LoginActivity extends BasicActivity {
     protected void onStart(){
         super.onStart();
 
+        mGoogleSignInClient.signOut();
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             Log.i("login","logado");
@@ -163,6 +158,7 @@ public class LoginActivity extends BasicActivity {
 
         else
             Log.i("login","nao logado");
+
 
         mGoogleSignInClient.signOut();
 
@@ -187,8 +183,6 @@ public class LoginActivity extends BasicActivity {
             handleSignUpResult(task);
         }
     }
-
-
 
     public void clickGoogleLogin(View v){
 
@@ -233,6 +227,7 @@ public class LoginActivity extends BasicActivity {
                                             Log.d("getUser", "DocumentSnapshot data: " + document.getData());
 
                                         } else {
+
                                             viewPager.setCurrentItem(1);
                                             Log.d("getUser", "No such document");
                                         }
@@ -550,92 +545,6 @@ public class LoginActivity extends BasicActivity {
 
     }
 
-    public void createUser(final String email, final String password, final String nome, final String dataNascimento,
-                           final String local, final URL photoPerfil){
-
-        showProgressDialog();
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-
-                            hideProgressDialog();
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("Sing In", "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                            InputStream iStream = null;
-
-                            User newUser = new User(nome,email,dataNascimento,local);
-                            newUser.setId(user.getUid());
-
-                            if(photoPerfil != null)
-                                try {
-
-                                    String fotoId = user.getUid() + "_perfil";
-                                    UploadTask uploadTask = storageRef.child(fotoId).putBytes(
-                                            ImageHelper.urlToByteArray(photoPerfil)
-                                    );
-
-                                    newUser.setPhotoPerfil(fotoId);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                            firebaseCreateUser(newUser);
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("Sing In", "createUserWithEmail:failure", task.getException());
-
-                            //int errorCode = task.getException().getLocalizedMessage();
-                            String errorCode = ((FirebaseAuthUserCollisionException)task.getException()).getErrorCode();
-
-                            if(errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE")){
-                                Toast.makeText(LoginActivity.this, "Email já possui cadastro",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                Toast.makeText(LoginActivity.this, "Falha no cadastro",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-
-
-                            hideProgressDialog();
-                        }
-
-                        // ...
-                    }
-                });
-
-    }
-
-    public void saveUser(final String email, final String password, final String nome, final String dataNascimento,
-                         final String local, final URL photoPerfil){
-
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        User newUser = new User(nome,email,dataNascimento,local);
-        newUser.setId(user.getUid());
-
-        if(photoPerfil != null)
-            try {
-
-                String fotoId = user.getUid() + "_perfil";
-                UploadTask uploadTask = storageRef.child(fotoId).putBytes(
-                        ImageHelper.urlToByteArray(photoPerfil)
-                );
-
-                newUser.setPhotoPerfil(fotoId);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        firebaseCreateUser(newUser);
-
-    }
-
     public void clickSingUp(View v){
 
         String email = fragmentSingUp.email.getText().toString();
@@ -644,23 +553,60 @@ public class LoginActivity extends BasicActivity {
         String data = fragmentSingUp.dataNascimento.getText().toString();
         String local = fragmentSingUp.local.getText().toString();
 
+        User newUser = new User();
         switch (code){
             case NO_PROVIDER:
-                createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
+                createUser(email,password,nome,data,local,fragmentSingUp.photoUri);
                 return;
 
             case FACEBOOK_PROVIDER:
-                createUser(email,password,nome,data,local,fragmentSingUp.photoUrl);
+                newUser = new User(nome,email,data,local);
+                newUser.setId(mAuth.getUid());
+
+                if(fragmentSingUp.photoUrl != null)
+                    try {
+
+                        String fotoId = mAuth.getUid() + "_perfil";
+                        storageRef.child(fotoId).putBytes(
+                                ImageHelper.urlToByteArray(fragmentSingUp.photoUrl)
+                        );
+
+                        newUser.setPhotoPerfil(fotoId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    firebaseCreateUser(newUser);
+                //createUser(email,password,nome,data,local,fragmentSingUp.photoUrl);
                 return;
 
             case GOOGLE_PROVIDER:
-                createUser(email,password,nome,data,local,fragmentSingUp.photoPerfil);
+
+                newUser = new User(nome,email,data,local);
+                newUser.setId(mAuth.getUid());
+
+                if(fragmentSingUp.photoUrl != null)
+                    try {
+
+                        String fotoId = mAuth.getUid() + "_perfil";
+                        storageRef.child(fotoId).putBytes(
+                                ImageHelper.urlToByteArray(fragmentSingUp.photoUrl)
+                        );
+
+                        newUser.setPhotoPerfil(fotoId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                firebaseCreateUser(newUser);
                 return;
         }
 
     }
 
     public void clickSingIn(View v){
+
+        showProgressDialog();
 
         if(!NetworkConnection.isNetworkConnected(this))
             Toast.makeText(this,"Sem conexão com a internet",Toast.LENGTH_SHORT).show();
@@ -726,22 +672,6 @@ public class LoginActivity extends BasicActivity {
                     ((TextView) tabViewChild).setAllCaps(false);
                 }
             }
-        }
-    }
-
-    public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Carregando...");
-            mProgressDialog.setIndeterminate(true);
-        }
-
-        mProgressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
         }
     }
 

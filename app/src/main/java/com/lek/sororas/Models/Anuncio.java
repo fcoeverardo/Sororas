@@ -1,5 +1,7 @@
 package com.lek.sororas.Models;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.util.ArrayList;
 
 public class Anuncio {
@@ -8,7 +10,7 @@ public class Anuncio {
     String tipo;
     String descricao;
     String categoria;
-    String proprietaria;
+    DocumentReference proprietaria;
     String tags;
     ArrayList<String> fotos;
 
@@ -21,7 +23,7 @@ public class Anuncio {
     }
 
 
-    public Anuncio(String titulo, String tipo, String descricao, String categoria, String proprietaria, ArrayList<String> fotos) {
+    public Anuncio(String titulo, String tipo, String descricao, String categoria, DocumentReference proprietaria, ArrayList<String> fotos) {
         this.titulo = titulo;
         this.tipo = tipo;
         this.descricao = descricao;
@@ -30,7 +32,7 @@ public class Anuncio {
         this.fotos = fotos;
     }
 
-    public Anuncio(String titulo, String tipo, String descricao, String categoria, String proprietaria, String tags, ArrayList<String> fotos) {
+    public Anuncio(String titulo, String tipo, String descricao, String categoria, DocumentReference proprietaria, String tags, ArrayList<String> fotos) {
         this.titulo = titulo;
         this.tipo = tipo;
         this.descricao = descricao;
@@ -80,11 +82,11 @@ public class Anuncio {
         this.fotos = fotos;
     }
 
-    public String getProprietaria() {
+    public DocumentReference getProprietaria() {
         return proprietaria;
     }
 
-    public void setProprietaria(String proprietaria) {
+    public void setProprietaria(DocumentReference proprietaria) {
         this.proprietaria = proprietaria;
     }
 

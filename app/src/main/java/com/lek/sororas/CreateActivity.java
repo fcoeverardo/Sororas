@@ -132,7 +132,7 @@ public class CreateActivity extends BasicActivity {
 
         showProgressDialog();
 
-        anuncio.setProprietaria(mAuth.getCurrentUser().getUid());
+        anuncio.setProprietaria(db.collection("advertisement").document(mAuth.getCurrentUser().getUid()));
         DocumentReference ref = db.collection("advertisement").document();
 
         final String anuncioId = ref.getId();

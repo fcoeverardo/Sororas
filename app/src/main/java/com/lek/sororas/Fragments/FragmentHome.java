@@ -15,11 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
+import com.lek.sororas.Models.User;
 import com.lek.sororas.R;
 
 import java.util.ArrayList;
@@ -95,19 +100,32 @@ public class FragmentHome extends BasicFragment {
 
     public void loadAnuncios(){
 
-        DocumentReference docRef = db.collection("cities").document("SF");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+       CollectionReference docRef = db.collection("advertisement");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("loadAnuncio", "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d("loadAnuncio", "No such document");
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+
+                        Log.d("loadingAnuncio", document.getId() + " => " + document.getData());
+
+                        Anuncio anuncio = document.toObject(Anuncio.class);
+
+
+                        DocumentReference ref = anuncio.getProprietaria();
+                        anuncios.add(anuncio);
+
+                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                User user = documentSnapshot.toObject(User.class);
+                                Log.d("loadingAnuncio", "Error getting documents: ");
+                            }
+                        });
+
                     }
                 } else {
-                    Log.d("loadAnuncio", "get failed with ", task.getException());
+                    Log.d("loadingAnuncio", "Error getting documents: ", task.getException());
                 }
             }
         });

@@ -22,12 +22,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.lek.sororas.Adapters.AnuncioRecyclerView;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class FragmentHome extends BasicFragment {
 
@@ -124,6 +126,17 @@ public class FragmentHome extends BasicFragment {
                         });
 
                     }
+
+                    Collections.reverse(anuncios);
+                    Collections.reverse(anunciosIds);
+                    main.anunciosIds = anunciosIds;
+
+                    AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
+                    mRecyclerView.setAdapter(adapter);
+
+                    progress.setVisibility(View.GONE);
+
+
                 } else {
                     Log.d("loadingAnuncio", "Error getting documents: ", task.getException());
                 }

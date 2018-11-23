@@ -74,7 +74,7 @@ public class FirebaseHelper {
 
 
         storageRef = FirebaseStorage.getInstance().getReference();
-        storageRef.child(id + "_perfil").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 // Got the download URL for 'users/me/profile.png'
@@ -88,9 +88,6 @@ public class FirebaseHelper {
                 // Handle any errors
             }
         });
-
-
-
 
     }
 

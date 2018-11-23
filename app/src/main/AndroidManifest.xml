@@ -49,6 +49,7 @@
 
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".CreateActivity"></activity>
+        <activity android:name=".PerfilActivity"></activity>
     </application>
 
 </manifest>

@@ -38,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Fragments.FragmentHome;
+import com.lek.sororas.Fragments.FragmentPerfil;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.Utils.CurrentUser;
 import com.lek.sororas.Utils.FirebaseHelper;
@@ -82,11 +83,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        FirebaseMessaging.getInstance().subscribeToTopic("news");
-//        FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-//        database = FirebaseDatabase.getInstance();
-//        myRef = database.getReference();
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
@@ -261,14 +257,14 @@ public class MainActivity extends AppCompatActivity
             title.setText(getString(R.string.app_name));
             //title.setVisibility(View.GONE);
 
-            //cl = FragmentHome.class;
+            cl = FragmentHome.class;
         } else if (id == R.id.nav_perfil) {
 
             //logo.setVisibility(View.GONE);
             title.setText("Perfil");
-            //title.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
 
-           // cl = FragmentPerfil.class;
+            cl = FragmentPerfil.class;
 
         } else if (id == R.id.nav_mensages) {
 
@@ -407,8 +403,9 @@ public class MainActivity extends AppCompatActivity
         city.setText(CurrentUser.getUser().getCidade());
 
 
-        String id = CurrentUser.getUser().getId();
+        String id = CurrentUser.getUser().getPhotoPerfil();
         ImageView photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
+
         FirebaseHelper.setPhotoInImageView(this,id,photo);
 
     }

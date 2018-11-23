@@ -132,7 +132,7 @@ public class CreateActivity extends BasicActivity {
 
         showProgressDialog();
 
-        anuncio.setProprietaria(db.collection("advertisement").document(mAuth.getCurrentUser().getUid()));
+        anuncio.setProprietaria(db.collection("users").document(mAuth.getCurrentUser().getUid()));
         DocumentReference ref = db.collection("advertisement").document();
 
         final String anuncioId = ref.getId();
@@ -146,9 +146,10 @@ public class CreateActivity extends BasicActivity {
 
     public void savePhotos(String anuncioId) throws IOException {
 
-        for(int i= 0; i < images.size(); i++){
+        for(int i = 0; i < images.size(); i++){
 
             final String fotoId = anuncioId + "_foto" + i;
+            final int j = i;
             fragmentCreateAddPhoto.photos.get(i).setDrawingCacheEnabled(true);
             fragmentCreateAddPhoto.photos.get(i).buildDrawingCache();
             final Bitmap bitmap = ((BitmapDrawable) fragmentCreateAddPhoto.photos.get(i).getDrawable()).getBitmap();
@@ -170,7 +171,6 @@ public class CreateActivity extends BasicActivity {
                     // ...
                     anuncio.getFotos().add(fotoId);
                     DocumentReference ref = db.collection("advertisement").document();
-
                     ArrayList<String> ids = CurrentUser.getUser().getAnunciosIds();
 
                     if(ids == null)
@@ -181,38 +181,32 @@ public class CreateActivity extends BasicActivity {
                     CurrentUser.getUser().setAnunciosIds(ids);
                     db.collection("users").document(mAuth.getCurrentUser().getUid()).set( CurrentUser.getUser());
 
-                    ref.set(anuncio)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("create", "Anuncio criado com sucesso");
+                    if(j == images.size()-1){
 
-                                    Toast.makeText(getApplicationContext(),"Anuncio criado com sucesso",Toast.LENGTH_SHORT).show();
+                        ref.set(anuncio)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("create", "Anuncio criado com sucesso");
 
-                                    hideProgressDialog();
-                                    //CurrentUser.setUser(user);
-                                    // toMainActivity();
-                                    finish();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("create", "Error Criando usuario");
-                                    Toast.makeText(getApplicationContext(),"Falha na criação do anuncio",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(),"Anuncio criado com sucesso",Toast.LENGTH_SHORT).show();
 
-                                }
-                            });
+                                        hideProgressDialog();
+                                        finish();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("create", "Error Criando usuario");
+                                        Toast.makeText(getApplicationContext(),"Falha na criação do anuncio",Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+                    }
 
                 }
             });
-
-//            UploadTask uploadTask = storageRef.child(fotoId).putBytes(
-//                    ImageHelper.uriToByteArray(this, images.get(i))
-//            );
-
-
-
         }
     }
 

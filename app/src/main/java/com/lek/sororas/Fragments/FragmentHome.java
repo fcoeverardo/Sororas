@@ -132,7 +132,7 @@ public class FragmentHome extends BasicFragment {
                     AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
                     mRecyclerView.setAdapter(adapter);
 
-                    progress.setVisibility(View.GONE);
+                    //progress.setVisibility(View.GONE);
 
 
                 } else {

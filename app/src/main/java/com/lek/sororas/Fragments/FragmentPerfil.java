@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -51,6 +53,7 @@ import com.bumptech.glide.request.ResourceCallback;
 import com.bumptech.glide.request.target.Target;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.storage.UploadTask;
 import com.lek.sororas.CreateActivity;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.UserEvaluation;
@@ -60,9 +63,14 @@ import com.lek.sororas.Utils.FirebaseHelper;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
@@ -85,6 +93,7 @@ public class FragmentPerfil extends Fragment {
 //    DatabaseReference myRef;
 
     UserEvaluation userEvaluation;
+    String imageFilePath;
 
     public MaterialRatingBar materialRatingBar;
     public TextView evaluationCount;
@@ -169,7 +178,12 @@ public class FragmentPerfil extends Fragment {
         materialRatingBar = view.findViewById(R.id.materialRatingBar);
         evaluationCount = view.findViewById(R.id.evaluationCount);
 
-        FirebaseHelper.setPhotoInImageView(context,CurrentUser.getUser().getPhotoPerfil(),perfilPhoto);
+        if(CurrentUser.getUser().perfilPhoto != null)
+            Glide.with(context).load(CurrentUser.getUser().perfilPhoto).into(perfilPhoto);
+
+        if(CurrentUser.getUser().bannerPhoto != null)
+            Glide.with(context).load(CurrentUser.getUser().bannerPhoto).into(bannerPhoto);
+        //FirebaseHelper.setPhotoInImageView(context,CurrentUser.getUser().getPhotoPerfil(),perfilPhoto);
         //getPhotos();
 
         View.OnClickListener clickChanggePhoto = new View.OnClickListener(){
@@ -398,8 +412,24 @@ public class FragmentPerfil extends Fragment {
                         MY_PERMISSIONS_REQUEST_USE_CAMERA);
             }
         }else{
+
             Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(takePicture, OPEN_MEDIA_CAMERA);
+            if(takePicture.resolveActivity(context.getPackageManager()) != null){
+                //Create a file to store the image
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(context,"com.lek.sororas.provider", photoFile);
+                    takePicture.putExtra(MediaStore.EXTRA_OUTPUT,
+                            photoURI);
+                    startActivityForResult(takePicture,
+                            OPEN_MEDIA_CAMERA);
+                }
+            }
 
         }
 
@@ -503,8 +533,7 @@ public class FragmentPerfil extends Fragment {
             case OPEN_MEDIA_CAMERA:
                 if(resultCode == RESULT_OK){
 
-                    Uri uri = data.getData();
-                    setPhoto(uri);
+                    setPhoto(Uri.fromFile(new File(imageFilePath)));
 
                 }
                 break;
@@ -525,17 +554,22 @@ public class FragmentPerfil extends Fragment {
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> t, DataSource dataSource, boolean isFirstResource) {
 
-                        Bitmap b = ((BitmapDrawable)resource).getBitmap();
+                        String id = main.mAuth.getUid();
+                        if(perfil)
+                            id = id+ "_perfil";
+                        else
+                            id = id+ "_banner";
 
-//                        if(perfil)
-//                            myRef.child("photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                                    .child("fotoperfil").setValue(convertToBase64(b));
-//
-//                        else
-//                            myRef.child("photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                                    .child("fotobanner").setValue(convertToBase64(b));
+
+
+                        final Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] data = baos.toByteArray();
+
+                        main.storageRef.child(id).putBytes(data);
 
                         return false;
                     }
@@ -576,7 +610,22 @@ public class FragmentPerfil extends Fragment {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, OPEN_MEDIA_CAMERA);
+                    if(takePicture.resolveActivity(context.getPackageManager()) != null){
+                        //Create a file to store the image
+                        File photoFile = null;
+                        try {
+                            photoFile = createImageFile();
+                        } catch (IOException ex) {
+                            // Error occurred while creating the File
+                        }
+                        if (photoFile != null) {
+                            Uri photoURI = FileProvider.getUriForFile(context,"com.lek.sororas.provider", photoFile);
+                            takePicture.putExtra(MediaStore.EXTRA_OUTPUT,
+                                    photoURI);
+                            startActivityForResult(takePicture,
+                                    OPEN_MEDIA_CAMERA);
+                        }
+                    }
 
                 } else {
 
@@ -589,6 +638,30 @@ public class FragmentPerfil extends Fragment {
         }
     }
 
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir =
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        imageFilePath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(imageFilePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        context.sendBroadcast(mediaScanIntent);
+    }
 
     public class PagerAdapter extends FragmentPagerAdapter {
         int mNumOfTabs;

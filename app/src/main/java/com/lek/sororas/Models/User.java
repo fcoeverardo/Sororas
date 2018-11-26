@@ -1,6 +1,8 @@
 package com.lek.sororas.Models;
 
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class User {
@@ -17,6 +19,9 @@ public class User {
 
     String photoPerfil;
     String photoBanner;
+
+    public Uri perfilPhoto;
+    public Uri bannerPhoto;
 
     public User() {
 

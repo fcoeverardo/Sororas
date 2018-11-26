@@ -91,6 +91,43 @@ public class FirebaseHelper {
 
     }
 
+    public static void setPhotoUriCurrentUser(FirebaseAuth mAuth){
+
+        storageRef = FirebaseStorage.getInstance().getReference();
+        String id = mAuth.getCurrentUser().getUid() + "_perfil";
+        storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                CurrentUser.getUser().perfilPhoto = uri;
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d("getUser", "DocumentSnapshot data: ");
+
+            }
+        });
+
+        id = mAuth.getCurrentUser().getUid() + "_banner";
+        storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                CurrentUser.getUser().bannerPhoto = uri;
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d("getUser", "DocumentSnapshot data: ");
+
+            }
+        });
+
+    }
+
     public static void firebaseInit(FirebaseFirestore db,FirebaseStorage storage,StorageReference storageRef,FirebaseAuth auth){
 
         auth = FirebaseAuth.getInstance();

@@ -47,18 +47,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     //MaterialSearchBar searchBar;
     FrameLayout searchLayout;
     TextView tv;
     Button create;
-
-    FirebaseAuth auth;
-    FirebaseFirestore db;
-    FirebaseStorage storage;
-    StorageReference storageRef;
 
     public FrameLayout blankLayout;
 
@@ -82,16 +77,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-
-        db.setFirestoreSettings(settings);
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -121,7 +106,8 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        getCurrentUser();
+        updateNavigationView();
+        //getCurrentUser();
 
         setFragment(new FragmentHome());
 
@@ -195,8 +181,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume(){
         super.onResume();
-
-
 
     }
 
@@ -367,7 +351,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getCurrentUser(){
 
-           DocumentReference docRef = db.collection("users").document(auth.getUid());
+           DocumentReference docRef = db.collection("users").document(mAuth.getUid());
            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                @Override
                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -402,11 +386,13 @@ public class MainActivity extends AppCompatActivity
         TextView city = navigationView.getHeaderView(0).findViewById(R.id.user_city);
         city.setText(CurrentUser.getUser().getCidade());
 
-
-        String id = CurrentUser.getUser().getPhotoPerfil();
         ImageView photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
+        if(CurrentUser.getUser().perfilPhoto != null)
+            Glide.with(this).load(CurrentUser.getUser().perfilPhoto).into(photo);
 
-        FirebaseHelper.setPhotoInImageView(this,id,photo);
+        ImageView banner = navigationView.getHeaderView(0).findViewById(R.id.banner);
+        if(CurrentUser.getUser().bannerPhoto != null)
+            Glide.with(this).load(CurrentUser.getUser().bannerPhoto).into(banner);
 
     }
 

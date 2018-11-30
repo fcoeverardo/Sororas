@@ -74,6 +74,7 @@ public class SplashActivity extends BasicActivity {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
                         finish();
+
                         //updateNavigationView();
                         Log.d("getUser", "DocumentSnapshot data: " + document.getData());
 

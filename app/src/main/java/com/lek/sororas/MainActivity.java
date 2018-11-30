@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -29,6 +30,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -107,6 +110,7 @@ public class MainActivity extends BasicActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         updateNavigationView();
+        setPhotoUriCurrentUser();
         //getCurrentUser();
 
         setFragment(new FragmentHome());
@@ -422,5 +426,50 @@ public class MainActivity extends BasicActivity
 
         builder.create();
         builder.show();
+    }
+
+    public void setPhotoUriCurrentUser(){
+
+        storageRef = FirebaseStorage.getInstance().getReference();
+        String id = mAuth.getCurrentUser().getUid() + "_perfil";
+        storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                CurrentUser.getUser().perfilPhoto = uri;
+                ImageView photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
+                if(CurrentUser.getUser().perfilPhoto != null)
+                    Glide.with(getApplicationContext()).load(CurrentUser.getUser().perfilPhoto).into(photo);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d("getUser", "DocumentSnapshot data: ");
+
+            }
+        });
+
+        id = mAuth.getCurrentUser().getUid() + "_banner";
+        storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                CurrentUser.getUser().bannerPhoto = uri;
+                ImageView banner = navigationView.getHeaderView(0).findViewById(R.id.banner);
+                if(CurrentUser.getUser().bannerPhoto != null)
+                    Glide.with(getApplicationContext()).load(CurrentUser.getUser().bannerPhoto).into(banner);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d("getUser", "DocumentSnapshot data: ");
+
+            }
+        });
+
     }
 }

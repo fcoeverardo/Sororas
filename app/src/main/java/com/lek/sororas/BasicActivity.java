@@ -21,7 +21,7 @@ import com.lek.sororas.Utils.CurrentUser;
 public class BasicActivity extends AppCompatActivity {
 
     public FirebaseAuth mAuth;
-    FirebaseFirestore db;
+    public FirebaseFirestore db;
     FirebaseStorage storage;
     public StorageReference storageRef;
 

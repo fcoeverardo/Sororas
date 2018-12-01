@@ -10,8 +10,14 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.lek.sororas.Adapters.AnuncioRecyclerView;
 import com.lek.sororas.Adapters.TrabalhoRecyclerView;
 import com.lek.sororas.MainActivity;
@@ -31,6 +37,7 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
     ArrayList<Anuncio> trabalhos;
     ArrayList<String> anuncioIds;
 
+    ProgressBar progress;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -67,11 +74,13 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
         mRecyclerView =  view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
 
-        mLayoutManager = new LinearLayoutManager(context);
+        mLayoutManager = new GridLayoutManager(context,2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.setNestedScrollingEnabled(false);
+        //mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setFocusable(false);
+
+        progress = view.findViewById(R.id.progress);
 
         loadTrablhos();
 
@@ -81,6 +90,29 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
 
     public void loadTrablhos(){
 
+
+        CollectionReference advertisement = main.db.collection("advertisement");
+
+        Query query = advertisement.whereEqualTo("proprietaria",main.db.collection("users")
+                .document(main.mAuth.getCurrentUser().getUid()));
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for (DocumentSnapshot document : queryDocumentSnapshots) {
+
+                    Anuncio anuncio = document.toObject(Anuncio.class);
+                    trabalhos.add(anuncio);
+
+                    AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,trabalhos,anuncioIds,progress);
+                    mRecyclerView.setAdapter(adapter);
+
+                    System.out.println(document.getId());
+                }
+
+            }
+        });
 //        myRef.child("advertisement").orderByChild("proprietaria").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
 //                .addValueEventListener(new ValueEventListener() {
 //                    @Override

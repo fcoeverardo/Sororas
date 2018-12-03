@@ -74,6 +74,7 @@ public class MainActivity extends BasicActivity
     NavigationView navigationView;
     Fragment currentFragment;
     public User currentUser;
+    public boolean changesPhoto = false;
 
 
     @Override
@@ -99,6 +100,8 @@ public class MainActivity extends BasicActivity
             public void onClick(View v) {
 
                 drawer.openDrawer(Gravity.LEFT);
+                if(changesPhoto)
+                    updateNavigationView();
             }
         });
 
@@ -162,6 +165,8 @@ public class MainActivity extends BasicActivity
             public void onClick(View v) {
 
                 drawer.openDrawer(Gravity.LEFT);
+                if(changesPhoto)
+                    updateNavigationView();
             }
         });
 
@@ -397,6 +402,8 @@ public class MainActivity extends BasicActivity
         ImageView banner = navigationView.getHeaderView(0).findViewById(R.id.banner);
         if(CurrentUser.getUser().bannerPhoto != null)
             Glide.with(this).load(CurrentUser.getUser().bannerPhoto).into(banner);
+
+        changesPhoto = false;
 
     }
 

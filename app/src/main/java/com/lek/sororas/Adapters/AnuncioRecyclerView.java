@@ -1,6 +1,7 @@
 package com.lek.sororas.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -33,6 +34,8 @@ import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.R;
+import com.lek.sororas.ShowAnuncioActivity;
+import com.lek.sororas.Utils.CurrentAnuncio;
 import com.lek.sororas.Utils.FirebaseHelper;
 
 import java.util.ArrayList;
@@ -42,6 +45,7 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
     private Context context;
     private  ArrayList<Anuncio> anuncios;
     private ArrayList<String> anuncioIds;
+    private ArrayList<DocumentReference> anunciosReferences;
     private ProgressBar progress;
 
 
@@ -110,7 +114,7 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
                 FirebaseHelper.setPhotoInImageView(context,user.getPhotoPerfil(),materialHolder.perfilPhoto);
 
                 setPhotoAnuncio(currentAnuncio.getFotos().get(0),materialHolder.imageView,materialHolder.card);
-                Log.d("loadingAnuncio", "Error getting documents: ");
+
             }
         });
 
@@ -126,6 +130,14 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
         materialHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent i = new Intent(context, ShowAnuncioActivity.class);
+                CurrentAnuncio.setAnuncio(currentAnuncio);
+                //i.putExtra("anuncio",currentAnuncio);
+                //i.putExtra("userid",anuncios.get(position).getProprietaria());
+
+                context.startActivity(i);
+                
 
             }
         });

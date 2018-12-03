@@ -53,8 +53,7 @@ import ss.com.bannerslider.Slider;
 
 public class PerfilActivity extends BasicActivity {
 
-//    FirebaseDatabase database;
-//    public DatabaseReference myRef;
+
     TabLayout tabLayout;
     ViewPager viewPager;
 

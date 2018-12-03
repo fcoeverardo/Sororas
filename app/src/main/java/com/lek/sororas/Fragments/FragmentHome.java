@@ -39,6 +39,8 @@ public class FragmentHome extends BasicFragment {
     ProgressBar progress;
     TextView searchbar;
 
+    User currentProprietaria;
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -103,9 +105,10 @@ public class FragmentHome extends BasicFragment {
     public void loadAnuncios(){
 
        CollectionReference docRef = db.collection("advertisement");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+       docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
 
@@ -114,22 +117,25 @@ public class FragmentHome extends BasicFragment {
                         Anuncio anuncio = document.toObject(Anuncio.class);
                         anuncios.add(anuncio);
 
-                        DocumentReference ref = anuncio.getProprietaria();
-                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                User user = documentSnapshot.toObject(User.class);
-                                Log.d("loadingAnuncio", "Error getting documents: ");
-                            }
-                        });
+//                        DocumentReference ref = anuncio.getProprietaria();
+//                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                            @Override
+//                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                currentProprietaria = documentSnapshot.toObject(User.class);
+//                                Log.d("loadingAnuncio", "Error getting documents: ");
+//                            }
+//                        });
+
 
                     }
+
 
                     Collections.reverse(anuncios);
                     Collections.reverse(anunciosIds);
                     main.anunciosIds = anunciosIds;
 
                     AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
+                    //AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
                     mRecyclerView.setAdapter(adapter);
 
                     //progress.setVisibility(View.GONE);

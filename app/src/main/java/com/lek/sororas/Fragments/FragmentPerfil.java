@@ -540,7 +540,7 @@ public class FragmentPerfil extends Fragment {
         }
     }
 
-    public void setPhoto(Uri uri){
+    public void setPhoto(final Uri uri){
 
         RequestBuilder<Drawable>  requestBuilder = Glide.with(context)
                 .load(uri);
@@ -557,19 +557,25 @@ public class FragmentPerfil extends Fragment {
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> t, DataSource dataSource, boolean isFirstResource) {
 
                         String id = main.mAuth.getUid();
-                        if(perfil)
+                        if(perfil){
                             id = id+ "_perfil";
-                        else
+                            CurrentUser.getUser().perfilPhoto = uri;
+                        }
+                        else{
                             id = id+ "_banner";
+                            CurrentUser.getUser().bannerPhoto = uri;
+                        }
+
 
 
 
                         final Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                         byte[] data = baos.toByteArray();
 
                         main.storageRef.child(id).putBytes(data);
+                        main.changesPhoto = true;
 
                         return false;
                     }

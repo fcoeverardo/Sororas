@@ -14,6 +14,8 @@ public class Anuncio {
     String tags;
     ArrayList<String> fotos;
 
+    public String id;
+
     public Anuncio() {
         this.titulo = "";
         this.tipo = "";

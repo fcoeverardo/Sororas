@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,6 +56,7 @@ public class MainActivity extends BasicActivity
 
     //MaterialSearchBar searchBar;
     FrameLayout searchLayout;
+    FrameLayout blur;
     TextView tv;
     Button create;
 
@@ -65,10 +67,14 @@ public class MainActivity extends BasicActivity
 //    private RecyclerView.LayoutManager mLayoutManager;
 
     TextView logo,title;
+    TextView entrar;
     public Bitmap fotoPerfil,fotoBanner;
 
     //ArrayList<Anuncio> anuncios;
     public ArrayList<String> anunciosIds;
+
+    TextView name,city;
+    ImageView photo,banner;
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -81,6 +87,14 @@ public class MainActivity extends BasicActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        findViews();
+
+        setFragment(new FragmentHome());
+
+    }
+
+    public void findViews(){
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -109,20 +123,29 @@ public class MainActivity extends BasicActivity
         toggle.syncState();
 
         navigationView = findViewById(R.id.nav_view);
-
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        name = navigationView.getHeaderView(0).findViewById(R.id.user_name);
+        city = navigationView.getHeaderView(0).findViewById(R.id.user_city);
+        photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
+        banner = navigationView.getHeaderView(0).findViewById(R.id.banner);
+        blur = navigationView.getHeaderView(0).findViewById(R.id.blurlayout);
+        entrar = navigationView.getHeaderView(0).findViewById(R.id.entrar);
+
+        entrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                drawer.closeDrawer(GravityCompat.START);
+
+                Intent i = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(i);
+
+            }
+        });
+
         updateNavigationView();
-        setPhotoUriCurrentUser();
-        //getCurrentUser();
-
-        setFragment(new FragmentHome());
-
-    }
-
-    public void findViews() throws IllegalAccessException, InstantiationException {
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //anuncios = new ArrayList<>();
 
@@ -153,43 +176,24 @@ public class MainActivity extends BasicActivity
 //        mRecyclerView.setNestedScrollingEnabled(false);
 //        mRecyclerView.setFocusable(false);
 
-
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        toggle.setDrawerIndicatorEnabled(false);
-
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                drawer.openDrawer(Gravity.LEFT);
-                if(changesPhoto)
-                    updateNavigationView();
-            }
-        });
-
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-//        try {
-//            setFragment(FragmentHome.class.newInstance());
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-        //navigationView.Navi
     }
 
 
     @Override
     public void onResume(){
         super.onResume();
+
+        if(mAuth.getCurrentUser() == null){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_drawer_logout);
+        }else{
+
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_drawer);
+
+            updateNavigationView();
+            setPhotoUriCurrentUser();
+        }
 
     }
 
@@ -229,7 +233,6 @@ public class MainActivity extends BasicActivity
 
 
     }
-
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -389,21 +392,39 @@ public class MainActivity extends BasicActivity
 
     public void updateNavigationView(){
 
-        TextView name = navigationView.getHeaderView(0).findViewById(R.id.user_name);
-        name.setText(CurrentUser.getUser().getNome());
+        if(mAuth.getCurrentUser() != null){
 
-        TextView city = navigationView.getHeaderView(0).findViewById(R.id.user_city);
-        city.setText(CurrentUser.getUser().getCidade());
+            name.setVisibility(View.VISIBLE);
+            city.setVisibility(View.VISIBLE);
 
-        ImageView photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
-        if(CurrentUser.getUser().perfilPhoto != null)
-            Glide.with(this).load(CurrentUser.getUser().perfilPhoto).into(photo);
+            entrar.setVisibility(View.GONE);
 
-        ImageView banner = navigationView.getHeaderView(0).findViewById(R.id.banner);
-        if(CurrentUser.getUser().bannerPhoto != null)
-            Glide.with(this).load(CurrentUser.getUser().bannerPhoto).into(banner);
+            name.setText(CurrentUser.getUser().getNome());
+            city.setText(CurrentUser.getUser().getCidade());
 
-        changesPhoto = false;
+            if(CurrentUser.getUser().perfilPhoto != null)
+                Glide.with(this).load(CurrentUser.getUser().perfilPhoto).into(photo);
+
+
+            if(CurrentUser.getUser().bannerPhoto != null){
+                Glide.with(this).load(CurrentUser.getUser().bannerPhoto).into(banner);
+                blur.setVisibility(View.VISIBLE);
+            }
+            else{
+                blur.setVisibility(View.INVISIBLE);
+            }
+
+
+            changesPhoto = false;
+
+            //setPhotoUriCurrentUser();
+        }
+        else{
+
+            blur.setVisibility(View.INVISIBLE);
+        }
+
+
 
     }
 
@@ -420,9 +441,9 @@ public class MainActivity extends BasicActivity
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        FirebaseAuth.getInstance().signOut();
+                        logOut();
 
-//                        Intent i = new Intent(getApplicationContext(),TesteLoginActivity.class);
+//                        Intent i = new Intent(getApplicationContext(),LoginActivity.class);
 //                        startActivity(i);
 //                        finish();
 
@@ -433,6 +454,29 @@ public class MainActivity extends BasicActivity
 
         builder.create();
         builder.show();
+    }
+
+    public void logOut(){
+
+        FirebaseAuth.getInstance().signOut();
+
+        //onNavigationItemSelected(navigationView.getMenu().getItem(0));
+
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.activity_main_drawer_logout);
+
+        name.setVisibility(View.INVISIBLE);
+        city.setVisibility(View.INVISIBLE);
+
+        entrar.setVisibility(View.VISIBLE);
+
+        Glide.with(this).load(R.drawable.ic_account).into(photo);
+        banner.setImageResource(R.color.colorPrimary);
+
+
+        Toast.makeText(this,"Usuario desconectado",Toast.LENGTH_SHORT).show();
+        setFragment(new FragmentHome());
+
     }
 
     public void setPhotoUriCurrentUser(){

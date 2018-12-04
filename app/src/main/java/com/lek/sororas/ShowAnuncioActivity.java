@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Adapters.MainSliderAdapter;
@@ -68,6 +69,8 @@ public class ShowAnuncioActivity extends BasicActivity {
     FrameLayout foreground;
     TextView name,title,descripion,city,tags;
 
+    String anuncioId;
+    //ArrayList<String>
 
     private Slider slider;
 
@@ -83,6 +86,15 @@ public class ShowAnuncioActivity extends BasicActivity {
 
         findViews();
         loadAnuncio();
+
+        if(CurrentUser.getUser().getFavoritosIds() == null)
+            CurrentUser.getUser().setFavoritosIds(new ArrayList<String>());
+        else if(CurrentUser.getUser().getFavoritosIds().indexOf(anuncio.id) != -1){
+
+            favorite.setImageResource(R.drawable.ic_favoritorosa);
+            favorite.setTag("rosa");
+        }
+
 
 //        denuncia.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -157,26 +169,31 @@ public class ShowAnuncioActivity extends BasicActivity {
 
     public void addFavorite(View v){
 
-//        if(v.getTag().equals("branco")){
-//
-//            favorite.setImageResource(R.drawable.ic_favoritorosa);
-//            //favorite.setColorFilter( getResources().getColor(R.color.vermelho), PorterDuff.Mode.SRC_IN);
-//            CurrentUser.getUser().getFavoritos().add(id);
+        if(v.getTag().equals("branco")){
+
+            favorite.setImageResource(R.drawable.ic_favoritorosa);
+
+            //favorite.setColorFilter( getResources().getColor(R.color.vermelho), PorterDuff.Mode.SRC_IN);
+            CurrentUser.getUser().getFavoritosIds().add(anuncio.id);
+            db.collection("users").document(mAuth.getCurrentUser().getUid())
+                    .collection("favoriteIds").add(anuncio.id);
 //            myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favoritos").child(id).setValue(true);
-//
-//            v.setTag("rosa");
-//        }
-//
-//        else{
-//
-//            favorite.setImageResource(R.drawable.ic_favorito);
-//
-//            CurrentUser.getUser().getFavoritos().remove(id);
+
+            v.setTag("rosa");
+        }
+
+        else{
+
+            favorite.setImageResource(R.drawable.ic_favorito);
+
+            CurrentUser.getUser().getFavoritosIds().remove(anuncio.id);
+            db.collection("users").document(mAuth.getCurrentUser().getUid())
+                    .collection("favoriteIds").document("anuncio.id").delete();
 //            //favorite.setColorFilter( getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 //            myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favoritos").child(id).removeValue();
 //
-//            v.setTag("branco");
-//        }
+            v.setTag("branco");
+        }
 
 
         //favorite.setFor(getResources().getColor(R.color.vermelho));

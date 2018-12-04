@@ -116,6 +116,7 @@ public class FragmentHome extends BasicFragment {
 
                         Anuncio anuncio = document.toObject(Anuncio.class);
                         anuncios.add(anuncio);
+                        anuncio.id = document.getId();
 
 //                        DocumentReference ref = anuncio.getProprietaria();
 //                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

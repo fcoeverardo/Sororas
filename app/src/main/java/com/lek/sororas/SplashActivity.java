@@ -32,23 +32,26 @@ public class SplashActivity extends BasicActivity {
 
         //String user = getCurrentUser();
 
+
         if (checkLogin()) {
-            
+
             getCurrentUser();
 
 
         } else {
 
-            Intent intent = new Intent(this, LoginActivity.class);
+//            Intent intent = new Intent(this, LoginActivity.class);
+//            startActivity(intent);
+//            finish();
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
+
         }
 
     }
 
     public boolean checkLogin(){
-
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         return (mAuth.getCurrentUser() != null);
 
@@ -79,6 +82,15 @@ public class SplashActivity extends BasicActivity {
                         Log.d("getUser", "DocumentSnapshot data: " + document.getData());
 
                     } else {
+
+//
+//                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                        startActivity(intent);
+//                        finish();
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
                         Log.d("getUser", "No such document");
                     }
                 } else {

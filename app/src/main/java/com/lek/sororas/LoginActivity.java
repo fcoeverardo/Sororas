@@ -167,19 +167,6 @@ public class LoginActivity extends BasicActivity {
 
         mGoogleSignInClient.signOut();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Log.i("login","logado");
-
-            //CurrentUser.getUser(FirebaseHelper.getUserById(currentUser.getUid()));
-            toMainActivity();
-        }
-
-        else
-            Log.i("login","nao logado");
-
-
-        mGoogleSignInClient.signOut();
 
     }
 
@@ -189,18 +176,21 @@ public class LoginActivity extends BasicActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-        else if (requestCode == RC_SIGN_UP) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignUpResult(task);
-        }
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        handleSignInResult(task);
+
+//        if (requestCode == RC_SIGN_IN) {
+//            // The Task returned from this call is always completed, no need to attach
+//            // a listener.
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            handleSignInResult(task);
+//        }
+//        else if (requestCode == RC_SIGN_UP) {
+//            // The Task returned from this call is always completed, no need to attach
+//            // a listener.
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            handleSignUpResult(task);
+//        }
     }
 
     public void clickGoogleLogin(View v){
@@ -241,12 +231,14 @@ public class LoginActivity extends BasicActivity {
                                             User user = document.toObject(User.class);
                                             CurrentUser.setUser(user);
 
-                                            toMainActivity();
+                                            finish();
 
                                             Log.d("getUser", "DocumentSnapshot data: " + document.getData());
 
                                         } else {
 
+                                            viewPager.setCurrentItem(1);
+                                            hideProgressDialog();
                                             Log.d("getUser", "No such document");
                                         }
                                     } else {
@@ -296,11 +288,12 @@ public class LoginActivity extends BasicActivity {
                                             CurrentUser.setUser(user);
 
                                             Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+                                            finish();
 
                                         } else {
 
                                             viewPager.setCurrentItem(1);
-                                            fragmentSingUp.hidePasswordFields();
+                                            hideProgressDialog();
 
                                             Log.d("getUser", "No such document");
                                         }
@@ -334,7 +327,6 @@ public class LoginActivity extends BasicActivity {
 
             //account.
             fragmentSingUp.writeInformations(account);
-            viewPager.setCurrentItem(1);
             firebaseAuthWithGoogle(account);
 
 
@@ -353,6 +345,7 @@ public class LoginActivity extends BasicActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             fragmentSingUp.writeInformations(account);
+            viewPager.setCurrentItem(1);
             hideProgressDialog();
 
         } catch (ApiException e) {
@@ -448,7 +441,7 @@ public class LoginActivity extends BasicActivity {
                             Log.d("login", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            toMainActivity();
+                            finish();
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -606,12 +599,12 @@ public class LoginActivity extends BasicActivity {
                 newUser = new User(nome,email,data,local);
                 newUser.setId(mAuth.getUid());
 
-                if(fragmentSingUp.photoUrl != null)
+                if(fragmentSingUp.photoUri != null)
                     try {
 
                         String fotoId = mAuth.getUid() + "_perfil";
                         storageRef.child(fotoId).putBytes(
-                                ImageHelper.urlToByteArray(fragmentSingUp.photoUrl)
+                                ImageHelper.urlToByteArray(new URL(fragmentSingUp.photoUri.toString()))
                         );
 
                         newUser.setPhotoPerfil(fotoId);
@@ -651,7 +644,7 @@ public class LoginActivity extends BasicActivity {
                         Log.d("create", "Usuario criado com sucesso");
 
                         CurrentUser.setUser(user);
-                        toMainActivity();
+                        finish();
 
                     }
                 })

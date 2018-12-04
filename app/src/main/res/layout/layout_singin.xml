@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/loginButton"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:layout_marginStart="80dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="80dp"
@@ -51,7 +51,7 @@
     <FrameLayout
         android:id="@+id/sign_in_button"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/button_gmail"
         android:clickable="true"
@@ -97,6 +97,7 @@
         android:fontFamily="@font/roboto_regular"
         android:text="Ou entre com seu E-mail"
         android:textColor="@color/cinza_ic"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
@@ -114,7 +115,7 @@
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:textColor="@color/cinza_ic"
-        android:textSize="17sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -130,7 +131,7 @@
         android:hint="Senha"
         android:inputType="textPassword"
         android:textColor="@color/cinza_ic"
-        android:textSize="17sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/loginEmail"
         app:layout_constraintStart_toStartOf="@+id/loginEmail"
         app:layout_constraintTop_toBottomOf="@+id/loginEmail">
@@ -144,7 +145,7 @@
         android:layout_marginStart="4dp"
         android:text="Mínimo de 6 caracteres"
         android:textColor="@color/cinza_text_light"
-        android:textSize="10sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/loginPassword"
         app:layout_constraintTop_toBottomOf="@+id/loginPassword" />
 
@@ -153,11 +154,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:fontFamily="@font/roboto_regular"
+        android:fontFamily="@font/roboto_medium"
         android:text="ESQUECI MINHA SENHA"
         android:textColor="@color/azul_text_light"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -166,9 +168,9 @@
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="92dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="116dp"
         android:background="@drawable/ripplebutton"
         android:elevation="4dp"
         android:onClick="clickSingIn"
@@ -176,8 +178,8 @@
         android:textAllCaps="false"
         android:textColor="@color/branco"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/loginPassword"
-        app:layout_constraintStart_toStartOf="@+id/loginPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
 </android.support.constraint.ConstraintLayout>

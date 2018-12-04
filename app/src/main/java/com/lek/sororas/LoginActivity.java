@@ -123,6 +123,25 @@ public class LoginActivity extends BasicActivity {
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                if(position == 0)
+                    fragmentSingUp.showPassordFields();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         tabLayout.setupWithViewPager(viewPager);
 
         setCustomFont("roboto_medium.ttf");
@@ -228,7 +247,6 @@ public class LoginActivity extends BasicActivity {
 
                                         } else {
 
-                                            viewPager.setCurrentItem(1);
                                             Log.d("getUser", "No such document");
                                         }
                                     } else {
@@ -282,6 +300,7 @@ public class LoginActivity extends BasicActivity {
                                         } else {
 
                                             viewPager.setCurrentItem(1);
+                                            fragmentSingUp.hidePasswordFields();
 
                                             Log.d("getUser", "No such document");
                                         }
@@ -310,10 +329,12 @@ public class LoginActivity extends BasicActivity {
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
+
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             //account.
             fragmentSingUp.writeInformations(account);
+            viewPager.setCurrentItem(1);
             firebaseAuthWithGoogle(account);
 
 

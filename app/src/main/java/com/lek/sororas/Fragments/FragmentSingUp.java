@@ -54,7 +54,7 @@ public class FragmentSingUp extends Fragment {
     Context context;
     LoginActivity main;
 
-    public EditText nome, email, senha, local, dataNascimento;
+    public EditText nome, email, senha,confirmarSenha,local, dataNascimento;
     public Uri photoUri;
     public URL photoUrl;
 
@@ -97,6 +97,7 @@ public class FragmentSingUp extends Fragment {
         nome = view.findViewById(R.id.createname);
         email = view.findViewById(R.id.createEmail);
         senha = view.findViewById(R.id.createsenha);
+        confirmarSenha = view.findViewById(R.id.confirmCreatesenha);
 
         dataNascimento = view.findViewById(R.id.createdate);
         new DateInputMask(dataNascimento);
@@ -133,6 +134,8 @@ public class FragmentSingUp extends Fragment {
 
         photoUri = account.getPhotoUrl();
 
+        hidePasswordFields();
+
     }
 
     public void writeInformations(JSONObject object) throws JSONException, MalformedURLException {
@@ -143,7 +146,7 @@ public class FragmentSingUp extends Fragment {
         String id = object.get("id").toString();
         photoUrl = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
 
-        Log.i("TEste","Wololo");
+        hidePasswordFields();
 
     }
 
@@ -154,7 +157,19 @@ public class FragmentSingUp extends Fragment {
         //this.onCreate(null);
     }
 
+    public void hidePasswordFields(){
 
+        senha.setVisibility(View.GONE);
+        confirmarSenha.setVisibility(View.GONE);
+
+
+    }
+
+    public void showPassordFields(){
+
+        senha.setVisibility(View.VISIBLE);
+        confirmarSenha.setVisibility(View.VISIBLE);
+    }
 
     public void verifyPermission(){
 

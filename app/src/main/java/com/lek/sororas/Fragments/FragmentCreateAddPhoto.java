@@ -364,9 +364,8 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
         for(int i =0; i < photos.size(); i++){
 
-            photos.get(i).setScaleX(0.6f);
-            photos.get(i).setScaleY(0.6f);
-            photos.get(i).setScaleType(ImageView.ScaleType.FIT_CENTER);
+            photos.get(i).setScaleX(0.4f);
+            photos.get(i).setScaleY(0.4f);
             Glide.with(this).load(R.drawable.ic_addphoto).into(photos.get(i));
 
             deleteBtns.get(i).setVisibility(View.GONE);
@@ -375,8 +374,8 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
         for(int i =0; i < images.size(); i++){
 
-            photos.get(i).setScaleX(0.95f);
-            photos.get(i).setScaleY(0.95f);
+            photos.get(i).setScaleX(1f);
+            photos.get(i).setScaleY(1f);
             photos.get(i).setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             Glide.with(this).load(images.get(i)).apply(new RequestOptions().encodeQuality(100)).into(photos.get(i));

@@ -16,7 +16,7 @@
         <FrameLayout
             android:id="@+id/createFacebbokButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:layout_marginStart="80dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="80dp"
@@ -58,7 +58,7 @@
         <FrameLayout
             android:id="@+id/sign_up_google_button"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/button_gmail"
             android:clickable="true"
@@ -103,6 +103,7 @@
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/roboto_light"
             android:text="Ou entre com seu E-mail"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_google_button" />
@@ -118,6 +119,7 @@
             android:drawablePadding="10dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -131,6 +133,7 @@
             android:drawablePadding="10dp"
             android:hint="Nome completo"
             android:inputType="textPersonName"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/createEmail"
             app:layout_constraintStart_toStartOf="@+id/createEmail"
             app:layout_constraintTop_toBottomOf="@+id/createEmail">
@@ -147,6 +150,7 @@
             android:drawablePadding="10dp"
             android:hint="Data de nascimento"
             android:inputType="date"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/createname"
             app:layout_constraintTop_toBottomOf="@+id/createname">
 
@@ -157,11 +161,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:drawableLeft="@drawable/ic_local"
             android:drawablePadding="10dp"
-            android:hint="Localidade"
             android:focusableInTouchMode="true"
+            android:hint="Localidade"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/confirmCreatesenha"
             app:layout_constraintStart_toStartOf="@+id/createdate"
             app:layout_constraintTop_toBottomOf="@+id/createdate">
@@ -177,6 +181,7 @@
             android:drawablePadding="10dp"
             android:hint="Senha"
             android:inputType="textPassword"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/createname"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/createname"
@@ -193,8 +198,9 @@
             android:drawablePadding="10dp"
             android:hint="Confirmar senha"
             android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="@+id/createsenha"
-            app:layout_constraintStart_toStartOf="@+id/createsenha"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/createname"
+            app:layout_constraintStart_toStartOf="@+id/createname"
             app:layout_constraintTop_toBottomOf="@+id/createsenha">
 
         </EditText>
@@ -203,17 +209,30 @@
             android:id="@+id/button"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginStart="92dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="92dp"
+            android:layout_marginStart="116dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="116dp"
             android:background="@drawable/ripplebutton"
-            android:text="ENTRAR"
             android:onClick="clickSingUp"
+            android:text="ENTRAR"
             android:textAllCaps="false"
             android:textColor="@color/branco"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/confirmCreatesenha"
-            app:layout_constraintStart_toStartOf="@+id/confirmCreatesenha"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView23" />
+
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/aoentrar"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/confirmCreatesenha" />
 
     </android.support.constraint.ConstraintLayout>

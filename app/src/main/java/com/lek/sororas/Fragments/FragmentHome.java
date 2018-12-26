@@ -27,6 +27,7 @@ import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.R;
+import com.lek.sororas.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -189,8 +190,8 @@ public class FragmentHome extends BasicFragment {
 
     public void clickSearch(){
 
-//        Intent i = new Intent(context, SearchActivity.class);
-//        context.startActivity(i);
+        Intent i = new Intent(context, SearchActivity.class);
+        context.startActivity(i);
     }
 
 }

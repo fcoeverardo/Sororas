@@ -53,6 +53,7 @@
         <activity android:name=".CreateActivity"></activity>
         <activity android:name=".PerfilActivity"></activity>
         <activity android:name=".ShowAnuncioActivity"></activity>
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>

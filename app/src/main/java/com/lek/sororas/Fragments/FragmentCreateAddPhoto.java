@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -366,8 +367,11 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
 
             photos.get(i).setScaleX(0.4f);
             photos.get(i).setScaleY(0.4f);
-            Glide.with(this).load(R.drawable.ic_addphoto).into(photos.get(i));
 
+            //((FrameLayout)photos.get(i).getParent()).setBackground(context.getDrawable(R.drawable.circularcamerabackground));
+
+            Glide.with(this).load(R.drawable.ic_camera2).into(photos.get(i));
+            photos.get(i).setBackgroundResource(R.drawable.ic_camera2);
             deleteBtns.get(i).setVisibility(View.GONE);
 
         }
@@ -377,6 +381,9 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             photos.get(i).setScaleX(1f);
             photos.get(i).setScaleY(1f);
             photos.get(i).setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            ((FrameLayout)photos.get(i).getParent()).setBackgroundColor(context.getResources().getColor(R.color.white));
+            photos.get(i).setBackgroundResource(R.drawable.ic_camera2);
 
             Glide.with(this).load(images.get(i)).apply(new RequestOptions().encodeQuality(100)).into(photos.get(i));
 

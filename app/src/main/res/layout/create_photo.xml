@@ -56,7 +56,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/photo1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -64,7 +64,8 @@
                 android:adjustViewBounds="false"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
-                app:srcCompat="@drawable/ic_camera2"
+                app:civ_border_width="10dp"
+                android:background="@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
 
@@ -93,7 +94,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2">
 
-            <ImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/photo5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -103,20 +104,21 @@
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
-                app:srcCompat="@drawable/ic_camera2"
+                android:background="@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
 
             <ImageView
                 android:id="@+id/delete5"
                 android:layout_width="24dp"
-                android:layout_height="16dp"
+                android:layout_height="24dp"
                 android:layout_gravity="top|right"
                 android:layout_margin="5dp"
                 android:background="@drawable/circularcamerabackground"
                 android:onClick="removePhoto"
                 android:padding="5dp"
                 android:tag="4"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_close" />
 
         </FrameLayout>
@@ -132,7 +134,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline">
 
-            <ImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/photo4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -141,20 +143,21 @@
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
-                app:srcCompat="@drawable/ic_camera2"
+                android:background= "@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
 
             <ImageView
                 android:id="@+id/delete4"
                 android:layout_width="24dp"
-                android:layout_height="16dp"
+                android:layout_height="24dp"
                 android:layout_gravity="top|right"
                 android:layout_margin="5dp"
                 android:background="@drawable/circularcamerabackground"
                 android:onClick="removePhoto"
                 android:padding="5dp"
                 android:tag="3"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_close" />
 
         </FrameLayout>
@@ -170,7 +173,7 @@
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/photo3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -179,20 +182,21 @@
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
-                app:srcCompat="@drawable/ic_camera2"
+                android:background= "@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
 
             <ImageView
                 android:id="@+id/delete3"
                 android:layout_width="24dp"
-                android:layout_height="16dp"
+                android:layout_height="24dp"
                 android:layout_gravity="top|right"
                 android:layout_margin="5dp"
                 android:background="@drawable/circularcamerabackground"
                 android:onClick="removePhoto"
                 android:padding="5dp"
                 android:tag="2"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_close" />
 
         </FrameLayout>
@@ -209,7 +213,7 @@
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/photo2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -218,21 +222,22 @@
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
-                app:srcCompat="@drawable/ic_camera2"
+                android:background="@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
 
             <ImageView
                 android:id="@+id/delete2"
                 android:layout_width="24dp"
-                android:layout_height="16dp"
+                android:layout_height="24dp"
                 android:layout_gravity="top|right"
                 android:layout_margin="5dp"
                 android:background="@drawable/circularcamerabackground"
                 android:onClick="removePhoto"
                 android:padding="5dp"
                 android:tag="1"
-                app:srcCompat="@drawable/ic_close" />
+                app:srcCompat="@drawable/ic_close"
+                android:visibility="gone" />
         </FrameLayout>
 
         <android.support.constraint.Guideline

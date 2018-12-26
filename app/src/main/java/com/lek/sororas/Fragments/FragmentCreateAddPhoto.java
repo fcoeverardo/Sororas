@@ -368,10 +368,12 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             photos.get(i).setScaleX(0.4f);
             photos.get(i).setScaleY(0.4f);
 
-            //((FrameLayout)photos.get(i).getParent()).setBackground(context.getDrawable(R.drawable.circularcamerabackground));
+            ((FrameLayout)photos.get(i).getParent()).setBackground(context.getDrawable(R.drawable.circularcamerabackground));
 
-            Glide.with(this).load(R.drawable.ic_camera2).into(photos.get(i));
+            photos.get(i).setImageResource(0);
             photos.get(i).setBackgroundResource(R.drawable.ic_camera2);
+            //Glide.with(this).load(R.drawable.ic_camera2).into(photos.get(i));
+            //photos.get(i).setBackgroundResource(android.R.color.transparent);
             deleteBtns.get(i).setVisibility(View.GONE);
 
         }
@@ -382,8 +384,8 @@ public class FragmentCreateAddPhoto extends android.support.v4.app.Fragment {
             photos.get(i).setScaleY(1f);
             photos.get(i).setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            ((FrameLayout)photos.get(i).getParent()).setBackgroundColor(context.getResources().getColor(R.color.white));
-            photos.get(i).setBackgroundResource(R.drawable.ic_camera2);
+            ((FrameLayout)photos.get(i).getParent()).setBackgroundColor(context.getResources().getColor(R.color.fundo_branco));
+            //photos.get(i).setBackgroundResource(R.drawable.ic_camera2);
 
             Glide.with(this).load(images.get(i)).apply(new RequestOptions().encodeQuality(100)).into(photos.get(i));
 

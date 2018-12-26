@@ -64,7 +64,7 @@
                 android:adjustViewBounds="false"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
-                app:civ_border_width="10dp"
+                app:civ_border_width="0dp"
                 android:background="@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
@@ -104,6 +104,7 @@
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
+                app:civ_border_width="0dp"
                 android:background="@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
@@ -143,6 +144,7 @@
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
+                app:civ_border_width="0dp"
                 android:background= "@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
@@ -182,6 +184,7 @@
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
+                app:civ_border_width="0dp"
                 android:background= "@drawable/ic_camera2"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
@@ -219,10 +222,11 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:adjustViewBounds="false"
+                android:background="@drawable/ic_camera2"
                 android:onClick="clickAddPhoto"
                 android:scaleX="0.4"
                 android:scaleY="0.4"
-                android:background="@drawable/ic_camera2"
+                app:civ_border_width="0dp"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="294dp" />
 

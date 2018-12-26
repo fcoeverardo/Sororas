@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -48,7 +49,9 @@ public class SearchActivity extends BasicActivity {
     FrameLayout favoriteLayout;
     MaterialSearchView searchView;
 
-    TextView count;
+    ConstraintLayout toolbarSearch;
+
+    TextView count,keyTv;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -105,6 +108,9 @@ public class SearchActivity extends BasicActivity {
         progress = findViewById(R.id.progress);
 
         count = findViewById(R.id.resultcont);
+        keyTv = findViewById(R.id.key);
+
+        toolbarSearch = findViewById(R.id.toolbarSearch);
 
     }
 
@@ -211,12 +217,14 @@ public class SearchActivity extends BasicActivity {
                         }
 
 
-                    }   
+                    }
 
                     AnuncioRecyclerView adapter = new AnuncioRecyclerView(getApplicationContext(),anuncios,anunciosIds,progress);
                     mRecyclerView.setAdapter(adapter);
 
                     count.setText(anuncios.size() + " resultados encontrados");
+                    keyTv.setText(key);
+                    toolbarSearch.setVisibility(View.VISIBLE);
                 }
             }
         });

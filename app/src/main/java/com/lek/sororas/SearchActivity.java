@@ -1,5 +1,6 @@
 package com.lek.sororas;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +11,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,15 +23,21 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
+import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -48,10 +59,11 @@ public class SearchActivity extends BasicActivity {
     ImageView back;
     FrameLayout favoriteLayout;
     MaterialSearchView searchView;
+    Spinner spinner;
 
     ConstraintLayout toolbarSearch;
 
-    TextView count,keyTv;
+    TextView count,keyTv,filtrar;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -69,8 +81,14 @@ public class SearchActivity extends BasicActivity {
     String nome;
     String currentUserId;
 
+    private String[] mPlanetTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+
 
     private Slider slider;
+
+    DrawerLayout drawer;
 
 
     @Override
@@ -89,7 +107,7 @@ public class SearchActivity extends BasicActivity {
 
     public void findViews(){
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.fundo));
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -111,8 +129,46 @@ public class SearchActivity extends BasicActivity {
         keyTv = findViewById(R.id.key);
 
         toolbarSearch = findViewById(R.id.toolbarSearch);
+        spinner = findViewById(R.id.spinner);
 
+        filtrar = findViewById(R.id.textView24);
+        filtrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                drawer.openDrawer(GravityCompat.END);
+            }
+        });
+
+
+        drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.setDrawerIndicatorEnabled(false);
+
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                drawer.openDrawer(Gravity.LEFT);
+//                if(changesPhoto)
+//                    updateNavigationView();
+            }
+        });
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        
     }
+
+
+    @Override
+    public void setTitle(CharSequence title) {
+//        mTitle = title;
+//        getActionBar().setTitle(mTitle);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,6 +249,9 @@ public class SearchActivity extends BasicActivity {
 
     public void loadAnuncios(){
 
+        keyTv.setText(key);
+        toolbarSearch.setVisibility(View.VISIBLE);
+
         CollectionReference docRef = db.collection("advertisement");
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -223,8 +282,7 @@ public class SearchActivity extends BasicActivity {
                     mRecyclerView.setAdapter(adapter);
 
                     count.setText(anuncios.size() + " resultados encontrados");
-                    keyTv.setText(key);
-                    toolbarSearch.setVisibility(View.VISIBLE);
+
                 }
             }
         });
@@ -234,5 +292,4 @@ public class SearchActivity extends BasicActivity {
 
         finish();
     }
-
 }

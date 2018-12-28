@@ -159,7 +159,7 @@ public class SearchActivity extends BasicActivity {
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        
+
     }
 
 

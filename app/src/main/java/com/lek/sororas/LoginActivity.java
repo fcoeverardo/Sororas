@@ -441,6 +441,7 @@ public class LoginActivity extends BasicActivity {
                             Log.d("login", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
+
                             finish();
 
                         } else {
@@ -452,11 +453,14 @@ public class LoginActivity extends BasicActivity {
                             } catch(FirebaseAuthWeakPasswordException e) {
                                 Log.e("create", e.getMessage());
                             } catch(FirebaseAuthInvalidCredentialsException e) {
+                                Toast.makeText(getApplicationContext(),"Senha incorreta",Toast.LENGTH_SHORT).show();
+                                hideProgressDialog();
                                 Log.e("create", e.getMessage());
                             } catch(FirebaseAuthUserCollisionException e) {
+
                                 Log.e("create", e.getMessage());
                             } catch(Exception e) {
-                                Log.e("creaate", e.getMessage());
+                                Log.e("create", e.getMessage());
                             }
 
 //                            String errorCode = ((FirebaseAuthInvalidUserException)task.getException()).getErrorCode();
@@ -626,6 +630,7 @@ public class LoginActivity extends BasicActivity {
             Toast.makeText(this,"Sem conexão com a internet",Toast.LENGTH_SHORT).show();
 
         else{
+
             String email = fragmentSingIn.loginEmail.getText().toString();
             String password = fragmentSingIn.loginPassword.getText().toString();
 

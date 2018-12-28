@@ -59,7 +59,6 @@ public class SplashActivity extends BasicActivity {
 
     public void getCurrentUser(){
 
-
         DocumentReference docRef = db.collection("users").document(mAuth.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

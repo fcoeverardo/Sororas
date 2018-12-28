@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -89,8 +90,7 @@ public class FragmentPerfil extends Fragment {
     FragmentPerfilFavoritos tabFavoritos;
     Dialog dialog;
 
-//    FirebaseDatabase database;
-//    DatabaseReference myRef;
+    FloatingActionButton create;
 
     UserEvaluation userEvaluation;
     String imageFilePath;
@@ -148,6 +148,68 @@ public class FragmentPerfil extends Fragment {
 
         setCustomFont();
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                if(position != 0){
+
+                    Animation anim = AnimationUtils.loadAnimation(context,R.anim.scale_fadeout);
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                                create.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    if(create.getVisibility() == View.VISIBLE)
+                        create.startAnimation(anim);
+                }
+                else{
+
+                    Animation anim = AnimationUtils.loadAnimation(context,R.anim.scale_fadein);
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            create.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    if(create.getVisibility() == View.GONE)
+                         create.startAnimation(anim);
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         return view;
     }
 
@@ -159,6 +221,8 @@ public class FragmentPerfil extends Fragment {
     }
 
     public void findViews(){
+
+        create = view.findViewById(R.id.createBtn);
 
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.pager);

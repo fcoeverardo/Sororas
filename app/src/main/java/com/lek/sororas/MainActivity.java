@@ -394,29 +394,36 @@ public class MainActivity extends BasicActivity
 
         if(mAuth.getCurrentUser() != null){
 
-            name.setVisibility(View.VISIBLE);
-            city.setVisibility(View.VISIBLE);
+            if(CurrentUser.getUser().getNome().equals("null") ){
 
-            entrar.setVisibility(View.GONE);
+                DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("getUser", "DocumentSnapshot data: " + document.getData());
 
-            name.setText(CurrentUser.getUser().getNome());
-            city.setText(CurrentUser.getUser().getCidade());
+                                //User user = document.toObject(User.class);
+                                CurrentUser.setUser(document.toObject(User.class));
+                                CurrentUser.getUser().setId(mAuth.getUid());
 
-            if(CurrentUser.getUser().perfilPhoto != null)
-                Glide.with(this).load(CurrentUser.getUser().perfilPhoto).into(photo);
+                                setTextPerfil();
+                                Log.d("getUser", "DocumentSnapshot data: " + document.getData());
 
+                            }
 
-            if(CurrentUser.getUser().bannerPhoto != null){
-                Glide.with(this).load(CurrentUser.getUser().bannerPhoto).into(banner);
-                blur.setVisibility(View.VISIBLE);
+                        } else {
+                            Log.d("getUser", "get failed with ", task.getException());
+                        }
+                    }
+                });
             }
+
             else{
-                blur.setVisibility(View.INVISIBLE);
+                setTextPerfil();
             }
-
-
-            changesPhoto = false;
-
             //setPhotoUriCurrentUser();
         }
         else{
@@ -424,7 +431,26 @@ public class MainActivity extends BasicActivity
             blur.setVisibility(View.INVISIBLE);
         }
 
+    }
 
+    public void setTextPerfil(){
+        name.setVisibility(View.VISIBLE);
+        city.setVisibility(View.VISIBLE);
+
+        entrar.setVisibility(View.GONE);
+
+        User user = CurrentUser.getUser();
+        name.setText(CurrentUser.getUser().getNome());
+        city.setText(CurrentUser.getUser().getCidade());
+
+        if(CurrentUser.getUser().bannerPhoto != null){
+            blur.setVisibility(View.VISIBLE);
+        }
+        else{
+            blur.setVisibility(View.INVISIBLE);
+        }
+
+        changesPhoto = false;
 
     }
 
@@ -509,8 +535,10 @@ public class MainActivity extends BasicActivity
                 // Got the download URL for 'users/me/profile.png'
                 CurrentUser.getUser().bannerPhoto = uri;
                 ImageView banner = navigationView.getHeaderView(0).findViewById(R.id.banner);
-                if(CurrentUser.getUser().bannerPhoto != null)
+                if(CurrentUser.getUser().bannerPhoto != null){
                     Glide.with(getApplicationContext()).load(CurrentUser.getUser().bannerPhoto).into(banner);
+                }
+
 
             }
         }).addOnFailureListener(new OnFailureListener() {

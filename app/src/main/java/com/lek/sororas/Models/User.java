@@ -3,6 +3,8 @@ package com.lek.sororas.Models;
 
 import android.net.Uri;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.util.ArrayList;
 
 public class User {
@@ -14,7 +16,7 @@ public class User {
     String id;
 
     ArrayList<String> anunciosIds;
-    ArrayList<String> favoritosIds;
+    ArrayList<DocumentReference> favoritosIds;
 
 
     String photoPerfil;
@@ -82,11 +84,11 @@ public class User {
         this.anunciosIds = anunciosIds;
     }
 
-    public ArrayList<String> getFavoritosIds() {
+    public ArrayList<DocumentReference> getFavoritosIds() {
         return favoritosIds;
     }
 
-    public void setFavoritosIds(ArrayList<String> favoritosIds) {
+    public void setFavoritosIds(ArrayList<DocumentReference> favoritosIds) {
         this.favoritosIds = favoritosIds;
     }
 

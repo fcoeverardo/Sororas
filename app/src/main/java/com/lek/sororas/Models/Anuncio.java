@@ -3,6 +3,7 @@ package com.lek.sororas.Models;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Anuncio {
 
@@ -13,6 +14,7 @@ public class Anuncio {
     DocumentReference proprietaria;
     String tags;
     ArrayList<String> fotos;
+    Date data;
 
     public String id;
 
@@ -42,6 +44,18 @@ public class Anuncio {
         this.proprietaria = proprietaria;
         this.tags = tags;
         this.fotos = fotos;
+    }
+
+    public Anuncio(String titulo, String tipo, String descricao, String categoria, DocumentReference proprietaria,
+                   String tags, ArrayList<String> fotos, Date data) {
+        this.titulo = titulo;
+        this.tipo = tipo;
+        this.descricao = descricao;
+        this.categoria = categoria;
+        this.proprietaria = proprietaria;
+        this.tags = tags;
+        this.fotos = fotos;
+        this.data = data;
     }
 
     public String getTitulo() {
@@ -98,6 +112,14 @@ public class Anuncio {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
     }
 
     public String getAllText(){

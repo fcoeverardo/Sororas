@@ -47,6 +47,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class CreateActivity extends BasicActivity {
 
@@ -133,6 +134,8 @@ public class CreateActivity extends BasicActivity {
         showProgressDialog();
 
         anuncio.setProprietaria(db.collection("users").document(mAuth.getCurrentUser().getUid()));
+        anuncio.setData(Calendar.getInstance().getTime());
+
         DocumentReference ref = db.collection("advertisement").document();
 
         final String anuncioId = ref.getId();

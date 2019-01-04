@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -46,10 +47,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.lek.sororas.Adapters.AnuncioRecyclerView;
 import com.lek.sororas.Adapters.TrabalhoRecyclerView;
 import com.lek.sororas.Models.Anuncio;
+import com.lek.sororas.Utils.ResizeAnimation;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import ss.com.bannerslider.Slider;
 
@@ -60,6 +63,8 @@ public class SearchActivity extends BasicActivity {
     FrameLayout favoriteLayout;
     MaterialSearchView searchView;
     Spinner spinner;
+
+    NavigationView navigationView;
 
     ConstraintLayout toolbarSearch;
 
@@ -85,11 +90,13 @@ public class SearchActivity extends BasicActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
-
     private Slider slider;
 
     DrawerLayout drawer;
 
+    ImageView clasificaoarrow;
+
+    HashMap<String,Integer> categoryCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,6 +166,20 @@ public class SearchActivity extends BasicActivity {
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        navigationView = findViewById(R.id.nav_view);
+        clasificaoarrow = navigationView.getHeaderView(0).findViewById(R.id.classificacaoarrow);
+
+        clasificaoarrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ResizeAnimation animation = new ResizeAnimation(navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout),
+                        v,2,300);
+
+                navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout).startAnimation(animation);
+
+            }
+        });
 
     }
 
@@ -249,6 +270,8 @@ public class SearchActivity extends BasicActivity {
 
     public void loadAnuncios(){
 
+        categoryCount = new HashMap<>();
+
         keyTv.setText(key);
         toolbarSearch.setVisibility(View.VISIBLE);
 
@@ -272,6 +295,16 @@ public class SearchActivity extends BasicActivity {
                         if (anuncio.getAllText().contains(key.toLowerCase())) {
                             anuncios.add(anuncio);
                             anuncio.id = document.getId();
+
+                            if(categoryCount.containsKey(anuncio.getCategoria())){
+
+                                int count = categoryCount.get(anuncio.getCategoria()) + 1;
+
+                                categoryCount.put(anuncio.getCategoria(),count);
+                            }
+                            else
+                                categoryCount.put(anuncio.getCategoria(),1);
+
                             //anunciosIds.add(anuncioSnapshot.getKey());
                         }
 

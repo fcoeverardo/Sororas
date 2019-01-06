@@ -394,7 +394,7 @@ public class MainActivity extends BasicActivity
 
         if(mAuth.getCurrentUser() != null){
 
-            if(CurrentUser.getUser().getNome().equals("null") ){
+            if(CurrentUser.getUser().getNome() == null ){
 
                 DocumentReference docRef = db.collection("users").document(mAuth.getUid());
                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

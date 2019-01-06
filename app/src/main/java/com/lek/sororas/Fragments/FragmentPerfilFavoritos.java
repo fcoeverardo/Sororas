@@ -113,32 +113,31 @@ public class FragmentPerfilFavoritos extends android.support.v4.app.Fragment {
 
         final User user = CurrentUser.getUser();
 
-        for(String favoriteId : user.getFavoritosIds()){
+        if(user.getFavoritosIds()!=null){
+            for(String favoriteId : user.getFavoritosIds()){
 
-           DocumentReference docRef = main.db.collection("advertisement").document(favoriteId);
+                DocumentReference docRef = main.db.collection("advertisement").document(favoriteId);
 
-           docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-               @Override
-               public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                   Anuncio anuncio = task.getResult().toObject(Anuncio.class);
-                   countFavorites++;
+                        Anuncio anuncio = task.getResult().toObject(Anuncio.class);
+                        countFavorites++;
 
-                   favoritos.add(anuncio);
-                   if(countFavorites == user.getFavoritosIds().size()){
+                        favoritos.add(anuncio);
+                        if(countFavorites == user.getFavoritosIds().size()){
 
-                       AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,favoritos,anunciosIds,progress);
-                       //AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
-                       mRecyclerView.setAdapter(adapter);
+                            AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,favoritos,anunciosIds,progress);
+                            //AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
+                            mRecyclerView.setAdapter(adapter);
 
-                       count.setText(countFavorites + " Favoritos");
-                   }
-               }
-           });
-
-
+                            count.setText(countFavorites + " Favoritos");
+                        }
+                    }
+                });
+            }
         }
-
     }
 
 }

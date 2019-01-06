@@ -8,6 +8,11 @@ public class UserEvaluation {
     String media;
     ArrayList<Evaluation> avalicaoes;
 
+    public UserEvaluation(){
+        media = "";
+        avalicaoes = new ArrayList<>();
+    }
+
     public UserEvaluation(String media) {
         this.media = media;
     }

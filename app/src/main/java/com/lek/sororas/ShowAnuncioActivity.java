@@ -242,7 +242,7 @@ public class ShowAnuncioActivity extends BasicActivity {
 
         city = findViewById(R.id.city);
 
-        if(CurrentUser.getUser().getFavoritosIds().contains(anuncio.id)){
+        if(CurrentUser.getUser().getFavoritosIds() != null && CurrentUser.getUser().getFavoritosIds().contains(anuncio.id)){
             favorite.setImageResource(R.drawable.ic_favorito);
             favoriteLayout.setTag("rosa");
         }

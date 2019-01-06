@@ -50,6 +50,8 @@ import com.lek.sororas.Utils.CurrentUser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
@@ -146,6 +148,11 @@ public class PerfilActivity extends BasicActivity {
 
     public void inicializeTabs() {
 
+
+        String[] tabNames = getResources().getStringArray(R.array.tabsNames);
+        for (int i = 0; i < tabNames.length; i++)
+            tabLayout.addTab(tabLayout.newTab());
+
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), 3);
@@ -155,11 +162,6 @@ public class PerfilActivity extends BasicActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         //tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        String[] tabNames = getResources().getStringArray(R.array.tabsNames);
-
-        for (int i = 0; i < tabNames.length; i++)
-            tabLayout.addTab(tabLayout.newTab());
-
         setCustomFont();
 
     }
@@ -253,38 +255,61 @@ public class PerfilActivity extends BasicActivity {
     public void saveEvaluation(View v){
 
 
-//        comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
-//
-//        Evaluation evaluation = new Evaluation(nota,comment,CurrentUser.getUser().getName(), CurrentUser.getUser().getFotoperfil());
-//
-//        myRef.child("userevaluation").child(id).child("evaluations")
-//                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(evaluation);
-//
-//        dialog.dismiss();
+        comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
+
+        final Evaluation evaluation = new Evaluation(nota,comment, db.collection("users").document(id), Calendar.getInstance().getTime());
+
+        DocumentReference docRef = db.collection("evaluations").document(currentUserId);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    UserEvaluation userEvaluation = new UserEvaluation();
+
+                    if (document.exists()) {
+
+                        userEvaluation = document.toObject(UserEvaluation.class);
+
+                    }
+                    else{
+                        userEvaluation.setMedia("" + nota);
+                    }
+
+                    userEvaluation.getAvalicaoes().add(evaluation);
+
+                    db.collection("evaluations").document(currentUserId).set(userEvaluation);
+
+                } else {
+
+                    Log.d("getUser", "get failed with ", task.getException());
+                }
+            }
+        });
+
+        dialog.dismiss();
     }
 
     public void openDialogAvaliar(View view){
 
-//        dialog = new Dialog(this);
-//        dialog.setContentView(R.layout.dialog_avaliar2);
-////        dialog.setTitle("Title...");
-//
-//        Glide.with(getApplicationContext()).load(fotoPerfil).into((ImageView) dialog.findViewById(R.id.perfil_photo3));
-//
-//        ((TextView) dialog.findViewById(R.id.name2)).setText(nome.getText().toString());
-//
-//        MaterialRatingBar materialRatingBar = dialog.findViewById(R.id.materialRatingBar3);
-//        materialRatingBar.setOnRatingChangeListener(new MaterialRatingBar.OnRatingChangeListener() {
-//            @Override
-//            public void onRatingChanged(MaterialRatingBar ratingBar, float rating) {
-//
-//                nota = rating + "";
-//            }
-//        });
-//
-//        dialog.show();
-//        Window window = dialog.getWindow();
-//        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_avaliar2);
+//        dialog.setTitle("Title...");
+
+        ((TextView) dialog.findViewById(R.id.name2)).setText(("Avalie " + nome.getText().toString()).toUpperCase());
+
+        MaterialRatingBar materialRatingBar = dialog.findViewById(R.id.materialRatingBar3);
+        materialRatingBar.setOnRatingChangeListener(new MaterialRatingBar.OnRatingChangeListener() {
+            @Override
+            public void onRatingChanged(MaterialRatingBar ratingBar, float rating) {
+
+                nota = rating + "";
+            }
+        });
+
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
 
     }
 
@@ -454,11 +479,8 @@ public class PerfilActivity extends BasicActivity {
             super(fm);
             this.mNumOfTabs = NumOfTabs;
 
-
             tabTrabalho = new FragmentActivityPerfilTrabalhos();
-
             tabAvaliacoes = new FragmentActivityPerfilAvaliacoes();
-
             tabFavoritos = new FragmentActivityPerfilFavoritos();
 
 

@@ -4,28 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fundo"
-    android:visibility="invisible">
+    android:background="@color/fundo">
 
     <ImageView
         android:id="@+id/banner"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
+        android:scaleType="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@color/colorPrimary" />
+        app:srcCompat="@drawable/background_perfil" />
 
     <ImageView
         android:id="@+id/changebannerBtn"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_camera2" />
@@ -52,14 +51,24 @@
         app:layout_constraintTop_toTopOf="@+id/name"
         app:srcCompat="@drawable/ic_chat" />
 
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_user"
+        app:layout_constraintBottom_toBottomOf="@+id/perfil_photo"
+        app:layout_constraintEnd_toEndOf="@+id/perfil_photo"
+        app:layout_constraintStart_toStartOf="@+id/perfil_photo"
+        app:layout_constraintTop_toTopOf="@+id/perfil_photo" />
+
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/perfil_photo"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:layout_marginBottom="32dp"
         android:layout_marginStart="16dp"
+        android:layout_marginBottom="32dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_account"
+        android:visibility="invisible"
         app:civ_border_width="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent" />

@@ -10,15 +10,23 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 //import com.google.firebase.database.DataSnapshot;
 //import com.google.firebase.database.DatabaseError;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 //import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.lek.sororas.Adapters.AnuncioRecyclerView;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
+import com.lek.sororas.Models.User;
 import com.lek.sororas.Models.UserEvaluation;
 import com.lek.sororas.R;
 import com.lek.sororas.Utils.CurrentUser;
@@ -36,6 +44,7 @@ public class FragmentPerfilFavoritos extends android.support.v4.app.Fragment {
 
     ArrayList<Anuncio> favoritos;
     ArrayList<String> anunciosIds;
+    int countFavorites = 0;
 
     UserEvaluation userEvaluation;
 //    FirebaseDatabase database;
@@ -47,6 +56,9 @@ public class FragmentPerfilFavoritos extends android.support.v4.app.Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    ProgressBar progress;
+
+    TextView count;
 
 
     @Override
@@ -80,6 +92,10 @@ public class FragmentPerfilFavoritos extends android.support.v4.app.Fragment {
         mLayoutManager = new GridLayoutManager(context,2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        progress = view.findViewById(R.id.progress);
+
+        count = view.findViewById(R.id.count);
+
         return view;
     }
 
@@ -87,6 +103,7 @@ public class FragmentPerfilFavoritos extends android.support.v4.app.Fragment {
     public void onResume(){
         super.onResume();
 
+        count.setText("0 Favoritos");
         loadFavoritos();
 
     }
@@ -94,37 +111,34 @@ public class FragmentPerfilFavoritos extends android.support.v4.app.Fragment {
 
     public void loadFavoritos(){
 
-//        myRef.child("advertisement").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                favoritos.clear();
-//                anunciosIds = CurrentUser.getUser().getFavoritos();
-//
-//                if(dataSnapshot.hasChildren()){
-//
-//                    for(DataSnapshot anuncioSnapshot : dataSnapshot.getChildren()){
-//
-//                        if(anunciosIds.contains(anuncioSnapshot.getKey())){
-//                            Anuncio anuncio = anuncioSnapshot.getValue(Anuncio.class);
-//                            favoritos.add(anuncio);
-//                        }
-//
-//                    }
-//                }
-//
-//                AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,favoritos,anunciosIds);
-//                mRecyclerView.setAdapter(adapter);
-//
-//                main.anunciosIds = anunciosIds;
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        final User user = CurrentUser.getUser();
+
+        for(String favoriteId : user.getFavoritosIds()){
+
+           DocumentReference docRef = main.db.collection("advertisement").document(favoriteId);
+
+           docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                   Anuncio anuncio = task.getResult().toObject(Anuncio.class);
+                   countFavorites++;
+
+                   favoritos.add(anuncio);
+                   if(countFavorites == user.getFavoritosIds().size()){
+
+                       AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,favoritos,anunciosIds,progress);
+                       //AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
+                       mRecyclerView.setAdapter(adapter);
+
+                       count.setText(countFavorites + " Favoritos");
+                   }
+               }
+           });
+
+
+        }
+
     }
 
 }

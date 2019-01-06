@@ -149,42 +149,6 @@ public class FragmentHome extends BasicFragment {
             }
         });
 
-
-//        myRef.child("advertisement").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                anuncios.clear();
-//                anunciosIds.clear();
-//
-//                if(dataSnapshot.hasChildren()){
-//
-//                    for(DataSnapshot anuncioSnapshot : dataSnapshot.getChildren()){
-//
-//                        Anuncio anuncio = anuncioSnapshot.getValue(Anuncio.class);
-//                        anuncios.add(anuncio);
-//
-//                        anunciosIds.add(anuncioSnapshot.getKey());
-//
-//                    }
-//                }
-//
-//                Collections.reverse(anuncios);
-//                Collections.reverse(anunciosIds);
-//                main.anunciosIds = anunciosIds;
-//
-//                AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
-//                mRecyclerView.setAdapter(adapter);
-//
-//                progress.setVisibility(View.GONE);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
 

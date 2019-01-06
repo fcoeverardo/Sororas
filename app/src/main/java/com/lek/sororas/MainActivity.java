@@ -434,6 +434,7 @@ public class MainActivity extends BasicActivity
     }
 
     public void setTextPerfil(){
+
         name.setVisibility(View.VISIBLE);
         city.setVisibility(View.VISIBLE);
 
@@ -495,9 +496,10 @@ public class MainActivity extends BasicActivity
         city.setVisibility(View.INVISIBLE);
 
         entrar.setVisibility(View.VISIBLE);
+        navigationView.getHeaderView(0).findViewById(R.id.perfil_photo).setVisibility(View.GONE);
 
         Glide.with(this).load(R.drawable.ic_account).into(photo);
-        banner.setImageResource(R.color.colorPrimary);
+        banner.setImageResource(R.drawable.background_perfil);
 
 
         Toast.makeText(this,"Usuario desconectado",Toast.LENGTH_SHORT).show();
@@ -515,8 +517,13 @@ public class MainActivity extends BasicActivity
                 // Got the download URL for 'users/me/profile.png'
                 CurrentUser.getUser().perfilPhoto = uri;
                 ImageView photo = navigationView.getHeaderView(0).findViewById(R.id.perfil_photo);
-                if(CurrentUser.getUser().perfilPhoto != null)
+                if(CurrentUser.getUser().perfilPhoto != null){
                     Glide.with(getApplicationContext()).load(CurrentUser.getUser().perfilPhoto).into(photo);
+                    photo.setVisibility(View.VISIBLE);
+                }
+
+                else
+                    photo.setVisibility(View.GONE);
 
             }
         }).addOnFailureListener(new OnFailureListener() {

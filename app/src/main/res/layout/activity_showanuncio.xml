@@ -25,25 +25,34 @@
                 android:id="@+id/description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:paddingBottom="75dp"
                 android:text="Cidade"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/city"
-                app:layout_constraintTop_toBottomOf="@+id/tags" />
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/city" />
+
+            <ImageView
+                android:id="@+id/imageView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                app:srcCompat="@drawable/ic_local" />
 
             <TextView
                 android:id="@+id/city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
+                android:layout_marginStart="4dp"
                 android:text="Cidade"
-                android:textColor="@color/azul"
+                android:textColor="@color/cinza_texto_escuro"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/title"
-                app:layout_constraintTop_toBottomOf="@+id/title" />
+                app:layout_constraintBottom_toBottomOf="@+id/imageView14"
+                app:layout_constraintStart_toEndOf="@+id/imageView14" />
 
             <TextView
                 android:id="@+id/tags"
@@ -51,39 +60,74 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/azul"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/city"
-                app:layout_constraintTop_toBottomOf="@+id/city" />
+                app:layout_constraintTop_toBottomOf="@+id/title" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Titulo do serviço"
-                android:textColor="@color/textoCinzaEscuro"
+                android:textColor="@color/cinza_texto_claro"
                 android:textSize="28sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/perfil_photo"
                 app:layout_constraintTop_toBottomOf="@+id/perfil_photo" />
 
+            <ImageView
+                android:id="@+id/imageView15"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/materialRatingBar4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/name"
+                app:srcCompat="@drawable/ic_chat2" />
+
             <TextView
                 android:id="@+id/name"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/roboto_regular"
                 android:gravity="left|center"
                 android:onClick="openPefil"
                 android:text="Everardo Lima"
                 android:textColor="@color/textoCinzaEscuro"
-                android:textSize="22sp"
-                app:layout_constraintBottom_toBottomOf="@+id/perfil_photo"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/imageView15"
                 app:layout_constraintStart_toEndOf="@+id/perfil_photo"
                 app:layout_constraintTop_toTopOf="@+id/perfil_photo" />
+
+            <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                android:id="@+id/materialRatingBar4"
+                style="@style/Widget.MaterialRatingBar.RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_marginTop="8dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="0"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name" />
+
+            <TextView
+                android:id="@+id/evaluationCount2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="(0)"
+                app:layout_constraintBottom_toBottomOf="@+id/materialRatingBar4"
+                app:layout_constraintStart_toEndOf="@+id/materialRatingBar4"
+                app:layout_constraintTop_toTopOf="@+id/materialRatingBar4" />
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/perfil_photo"
@@ -157,7 +201,7 @@
             android:layout_gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrowwhite" />
+            app:srcCompat="@drawable/ic_arrow_left" />
     </FrameLayout>
 
     <FrameLayout
@@ -177,7 +221,7 @@
             android:tag="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_favorito" />
+            app:srcCompat="@drawable/ic_heart" />
     </FrameLayout>
 
     <FrameLayout
@@ -200,7 +244,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/favoriteLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/favoriteLayout"
-        app:srcCompat="@drawable/ic_alert_circle" />
+        app:srcCompat="@drawable/ic_show" />
 
 
 </android.support.constraint.ConstraintLayout>

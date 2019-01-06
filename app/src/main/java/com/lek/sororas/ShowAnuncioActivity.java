@@ -72,6 +72,7 @@ public class ShowAnuncioActivity extends BasicActivity {
     String anuncioId;
     //ArrayList<String>
 
+    String proprietariaId;
     private Slider slider;
 
 
@@ -87,13 +88,13 @@ public class ShowAnuncioActivity extends BasicActivity {
         findViews();
         loadAnuncio();
 
-        if(CurrentUser.getUser().getFavoritosIds() == null)
-            CurrentUser.getUser().setFavoritosIds(new ArrayList<String>());
-        else if(CurrentUser.getUser().getFavoritosIds().indexOf(anuncio.id) != -1){
-
-            favorite.setImageResource(R.drawable.ic_favoritorosa);
-            favorite.setTag("rosa");
-        }
+//        if(CurrentUser.getUser().getFavoritosIds() == null)
+//            CurrentUser.getUser().setFavoritosIds(new ArrayList<String>());
+//        else if(CurrentUser.getUser().getFavoritosIds().indexOf(anuncio.id) != -1){
+//
+//            favorite.setImageResource(R.drawable.ic_favoritorosa);
+//            favorite.setTag("rosa");
+//        }
 
 
 //        denuncia.setOnClickListener(new View.OnClickListener() {
@@ -169,14 +170,20 @@ public class ShowAnuncioActivity extends BasicActivity {
 
     public void addFavorite(View v){
 
+        User user = CurrentUser.getUser();
+
         if(v.getTag().equals("branco")){
 
-            favorite.setImageResource(R.drawable.ic_favoritorosa);
+            favorite.setImageResource(R.drawable.ic_favorito);
 
             //favorite.setColorFilter( getResources().getColor(R.color.vermelho), PorterDuff.Mode.SRC_IN);
-            CurrentUser.getUser().getFavoritosIds().add(anuncio.id);
-            db.collection("users").document(mAuth.getCurrentUser().getUid())
-                    .collection("favoriteIds").add(anuncio.id);
+            if(user.getFavoritosIds() == null)
+                user.setFavoritosIds(new ArrayList<String>());
+
+            user.getFavoritosIds().add(anuncio.id);
+            user.setBannerPhoto(null);
+            user.setPerfilPhoto(null);
+            db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
 //            myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favoritos").child(id).setValue(true);
 
             v.setTag("rosa");
@@ -184,18 +191,20 @@ public class ShowAnuncioActivity extends BasicActivity {
 
         else{
 
-            favorite.setImageResource(R.drawable.ic_favorito);
+            favorite.setImageResource(R.drawable.ic_heart);
 
-            CurrentUser.getUser().getFavoritosIds().remove(anuncio.id);
-            db.collection("users").document(mAuth.getCurrentUser().getUid())
-                    .collection("favoriteIds").document("anuncio.id").delete();
+            user.getFavoritosIds().remove(anuncio.id);
+            user.setBannerPhoto(null);
+            user.setPerfilPhoto(null);
+
+            db.collection("users").document(mAuth.getCurrentUser().getUid()).set( user);
 //            //favorite.setColorFilter( getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 //            myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favoritos").child(id).removeValue();
 //
             v.setTag("branco");
         }
 
-
+        CurrentUser.setUser(user);
         //favorite.setFor(getResources().getColor(R.color.vermelho));
     }
 
@@ -223,36 +232,27 @@ public class ShowAnuncioActivity extends BasicActivity {
 
                 User proprietaria = documentSnapshot.toObject(User.class);
                 setProprietariaFoto(proprietaria.getId());
+
+                proprietariaId = proprietaria.getId();
+
+                name.setText(proprietaria.getNome());
+                city.setText(proprietaria.getCidade());
             }
         });
 
         city = findViewById(R.id.city);
-        //city.setText(anuncio.get);
 
-//        myRef.child("advertisement").child(anuncioId).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                Anuncio anuncio = dataSnapshot.getValue(Anuncio.class);
-//
-//                slider.setAdapter(new MainSliderAdapter(anuncio.getFotos()));
-//                loadInfos(anuncio);
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        if(CurrentUser.getUser().getFavoritosIds().contains(anuncio.id)){
+            favorite.setImageResource(R.drawable.ic_favorito);
+            favoriteLayout.setTag("rosa");
+        }
 
     }
 
     public void openPefil(View v){
 
         Intent i = new Intent(getApplicationContext(), PerfilActivity.class);
-        //i.putExtra("id",userId);
+        i.putExtra("id",proprietariaId);
         startActivity(i);
 
 

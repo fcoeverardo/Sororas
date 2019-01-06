@@ -11,16 +11,16 @@
 
         <item
             android:id="@+id/nav_category"
-            android:icon="@drawable/ic_categorias"
+            android:icon="@drawable/ic_category2"
             android:title="Categorias" />
 
         <item
             android:id="@+id/nav_support"
-            android:icon="@drawable/ic_suporte"
+            android:icon="@drawable/ic_information"
             android:title="Ajuda" />
         <item
             android:id="@+id/nav_configs"
-            android:icon="@drawable/ic_configuracoes"
+            android:icon="@drawable/ic_settings"
             android:title="Ajustes" />
 
 

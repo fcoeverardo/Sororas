@@ -130,4 +130,6 @@ public class Anuncio {
 
         return text;
     }
+
+
 }

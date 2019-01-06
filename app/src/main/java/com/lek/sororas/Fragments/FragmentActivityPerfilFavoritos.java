@@ -10,9 +10,17 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.lek.sororas.Adapters.AnuncioRecyclerView;
 import com.lek.sororas.Models.Anuncio;
 import com.lek.sororas.Models.Evaluation;
+import com.lek.sororas.Models.User;
 import com.lek.sororas.PerfilActivity;
 import com.lek.sororas.R;
 import com.lek.sororas.Utils.CurrentUser;
@@ -29,13 +37,18 @@ public class FragmentActivityPerfilFavoritos extends android.support.v4.app.Frag
     ArrayList<Anuncio> favoritos;
     ArrayList<String> anunciosIds;
 
+    int countFavorites = 0;
+
     ArrayList<Evaluation> evaluations;
-//    FirebaseDatabase database;
-//    DatabaseReference myRef;
+
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    ProgressBar progress;
+
+    TextView count;
 
 
 
@@ -73,6 +86,10 @@ public class FragmentActivityPerfilFavoritos extends android.support.v4.app.Frag
         mLayoutManager = new GridLayoutManager(context,2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        progress = view.findViewById(R.id.progress);
+
+        count = view.findViewById(R.id.count);
+
 
         return view;
     }
@@ -81,6 +98,7 @@ public class FragmentActivityPerfilFavoritos extends android.support.v4.app.Frag
     public void onResume(){
         super.onResume();
 
+        count.setText("0 Favoritos");
         loadFavoritos();
 
     }
@@ -88,39 +106,33 @@ public class FragmentActivityPerfilFavoritos extends android.support.v4.app.Frag
 
     public void loadFavoritos(){
 
-//        myRef.child("advertisement").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                favoritos.clear();
-//                anunciosIds = CurrentUser.getUser().getFavoritos();
-//
-//                if(dataSnapshot.hasChildren()){
-//
-//                    for(DataSnapshot anuncioSnapshot : dataSnapshot.getChildren()){
-//
-//                        if(anunciosIds.contains(anuncioSnapshot.getKey())){
-//                            Anuncio anuncio = anuncioSnapshot.getValue(Anuncio.class);
-//                            favoritos.add(anuncio);
-//                        }
-//
-//                    }
-//                }
-//
-//
-//
-//
-//                FavoritosRecyclerView adapter = new FavoritosRecyclerView(context,favoritos);
-//                mRecyclerView.setAdapter(adapter);
-//
-//                main.anunciosIds = anunciosIds;
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        final User user = main.perfilUser;
+
+        if(user.getFavoritosIds() != null){
+
+            for(String favoriteId : user.getFavoritosIds()){
+
+                DocumentReference docRef = main.db.collection("advertisement").document(favoriteId);
+
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                        Anuncio anuncio = task.getResult().toObject(Anuncio.class);
+                        countFavorites++;
+
+                        favoritos.add(anuncio);
+                        if(countFavorites == user.getFavoritosIds().size()){
+
+                            AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,favoritos,anunciosIds,progress);
+                            //AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
+                            mRecyclerView.setAdapter(adapter);
+
+                            count.setText(countFavorites + " Favoritos");
+                        }
+                    }
+                });
+            }
+        }
     }
 }

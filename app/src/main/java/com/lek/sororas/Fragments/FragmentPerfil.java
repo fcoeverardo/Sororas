@@ -131,13 +131,9 @@ public class FragmentPerfil extends Fragment {
 
         main = (MainActivity) context;
 
-//        database = FirebaseDatabase.getInstance();
-//        myRef = database.getReference();
-
         findViews();
         inicializeTabs();
         loadAvaliacoes();
-
 
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
         final PagerAdapter adapter = new PagerAdapter
@@ -242,8 +238,10 @@ public class FragmentPerfil extends Fragment {
         materialRatingBar = view.findViewById(R.id.materialRatingBar);
         evaluationCount = view.findViewById(R.id.evaluationCount);
 
-        if(CurrentUser.getUser().perfilPhoto != null)
+        if(CurrentUser.getUser().perfilPhoto != null){
             Glide.with(context).load(CurrentUser.getUser().perfilPhoto).into(perfilPhoto);
+            perfilPhoto.setVisibility(View.VISIBLE);
+        }
 
         if(CurrentUser.getUser().bannerPhoto != null)
             Glide.with(context).load(CurrentUser.getUser().bannerPhoto).into(bannerPhoto);

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +44,8 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    TextView count;
+
 
 
     @Override
@@ -68,9 +71,6 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
         trabalhos = new ArrayList<>();
         anuncioIds = new ArrayList<>();
 
-//        database = FirebaseDatabase.getInstance();
-//        myRef = database.getReference();
-
         mRecyclerView =  view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
 
@@ -81,6 +81,9 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
         mRecyclerView.setFocusable(false);
 
         progress = view.findViewById(R.id.progress);
+
+        count = view.findViewById(R.id.count);
+        count.setText("0 Trabalhos");
 
         loadTrablhos();
 
@@ -93,7 +96,7 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
 
         CollectionReference advertisement = main.db.collection("advertisement");
 
-        Query query = advertisement.whereEqualTo("proprietaria",main.db.collection("users")
+        Query query = advertisement.whereEqualTo("proprietaria", main.db.collection("users")
                 .document(main.mAuth.getCurrentUser().getUid()));
 
         query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -105,43 +108,15 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
                     Anuncio anuncio = document.toObject(Anuncio.class);
                     trabalhos.add(anuncio);
 
-                    AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,trabalhos,anuncioIds,progress);
-                    mRecyclerView.setAdapter(adapter);
-
                     System.out.println(document.getId());
                 }
 
+                AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,trabalhos,anuncioIds,progress);
+                mRecyclerView.setAdapter(adapter);
+
+                count.setText(queryDocumentSnapshots.size() + " Trabalhos");
+
             }
         });
-//        myRef.child("advertisement").orderByChild("proprietaria").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                .addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                       trabalhos.clear();
-//                       anuncioIds.clear();
-//                        if(dataSnapshot.hasChildren()){
-//
-//                            for(DataSnapshot anuncioSnapshot : dataSnapshot.getChildren()){
-//
-//                                Anuncio trabalho = anuncioSnapshot.getValue(Anuncio.class);
-//                                trabalhos.add(trabalho);
-//                                anuncioIds.add(anuncioSnapshot.getKey());
-//
-//                            }
-//
-//                            TrabalhoRecyclerView adapter = new TrabalhoRecyclerView(context,trabalhos,anuncioIds);
-//                            mRecyclerView.setAdapter(adapter);
-//
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-
     }
 }

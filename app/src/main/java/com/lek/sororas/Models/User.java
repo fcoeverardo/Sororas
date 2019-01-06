@@ -16,7 +16,7 @@ public class User {
     String id;
 
     ArrayList<String> anunciosIds;
-    ArrayList<DocumentReference> favoritosIds;
+    ArrayList<String> favoritosIds;
 
 
     String photoPerfil;
@@ -84,11 +84,11 @@ public class User {
         this.anunciosIds = anunciosIds;
     }
 
-    public ArrayList<DocumentReference> getFavoritosIds() {
+    public ArrayList<String> getFavoritosIds() {
         return favoritosIds;
     }
 
-    public void setFavoritosIds(ArrayList<DocumentReference> favoritosIds) {
+    public void setFavoritosIds(ArrayList<String> favoritosIds) {
         this.favoritosIds = favoritosIds;
     }
 
@@ -106,6 +106,22 @@ public class User {
 
     public void setPhotoBanner(String photoBanner) {
         this.photoBanner = photoBanner;
+    }
+
+    public Uri getPerfilPhoto() {
+        return perfilPhoto;
+    }
+
+    public void setPerfilPhoto(Uri perfilPhoto) {
+        this.perfilPhoto = perfilPhoto;
+    }
+
+    public Uri getBannerPhoto() {
+        return bannerPhoto;
+    }
+
+    public void setBannerPhoto(Uri bannerPhoto) {
+        this.bannerPhoto = bannerPhoto;
     }
 
     //perfil;

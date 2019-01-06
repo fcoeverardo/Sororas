@@ -33,8 +33,12 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.lek.sororas.Fragments.FragmentActivityPerfilAvaliacoes;
 import com.lek.sororas.Fragments.FragmentActivityPerfilFavoritos;
 import com.lek.sororas.Fragments.FragmentActivityPerfilTrabalhos;
@@ -88,6 +92,8 @@ public class PerfilActivity extends BasicActivity {
     String comment;
     String nota = "0";
 
+    public User perfilUser;
+
 
     private Slider slider;
 
@@ -97,21 +103,7 @@ public class PerfilActivity extends BasicActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-//        database = FirebaseDatabase.getInstance();
-//        myRef = database.getReference();
-
         findViews();
-        inicializeTabs();
-
-        viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), 2);
-
-        viewPager.setAdapter(adapter);
-
-        tabLayout.setupWithViewPager(viewPager);
-
-        setCustomFont();
 
         id = getIntent().getStringExtra("id");
         currentUserId = mAuth.getCurrentUser().getUid();
@@ -120,7 +112,7 @@ public class PerfilActivity extends BasicActivity {
             chat.setVisibility(View.GONE);
 
 
-        loadInfos(id);
+        loadUser();
         loadAvaliacoes();
 
 
@@ -154,12 +146,21 @@ public class PerfilActivity extends BasicActivity {
 
     public void inicializeTabs() {
 
+        viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), 3);
+
+        viewPager.setAdapter(adapter);
+
+        tabLayout.setupWithViewPager(viewPager);
+
         //tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         String[] tabNames = getResources().getStringArray(R.array.tabsNames);
 
         for (int i = 0; i < tabNames.length; i++)
             tabLayout.addTab(tabLayout.newTab());
 
+        setCustomFont();
 
     }
 
@@ -287,27 +288,39 @@ public class PerfilActivity extends BasicActivity {
 
     }
 
-    public void loadInfos(String id){
+    public void loadUser(){
 
-//        myRef.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                User user = new User((HashMap<String,Object>) dataSnapshot.getValue());
-//
-//                nome.setText(user.getName());
-//                cidade.setText(user.getCity());
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//        getPhotos();
+        DocumentReference docRef = db.collection("users").document(id);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                        perfilUser = document.toObject(User.class);
+
+                        inicializeTabs();
+                        loadInfos();
+
+                        container.setVisibility(View.VISIBLE);
+                        Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+
+                    }
+
+                } else {
+                    Log.d("getUser", "get failed with ", task.getException());
+                }
+            }
+        });
+
+    }
+
+    public void loadInfos(){
+
+        nome.setText(perfilUser.getNome());
+        cidade.setText(perfilUser.getCidade());
 
     }
 
@@ -459,7 +472,6 @@ public class PerfilActivity extends BasicActivity {
                     return tabTrabalho;
                 case 1:
                     return tabAvaliacoes;
-
                 case 2:
                     return tabFavoritos;
 

@@ -9,8 +9,7 @@ public class UserEvaluation {
     ArrayList<Evaluation> avalicaoes;
 
     public UserEvaluation(){
-        media = "";
-        avalicaoes = new ArrayList<>();
+
     }
 
     public UserEvaluation(String media) {

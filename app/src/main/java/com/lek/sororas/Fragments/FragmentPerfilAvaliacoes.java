@@ -22,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.lek.sororas.Adapters.AvalicaoesRecyclerView;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Evaluation;
+import com.lek.sororas.Models.User;
 import com.lek.sororas.Models.UserEvaluation;
 import com.lek.sororas.R;
 import com.lek.sororas.Utils.CurrentUser;
@@ -39,16 +40,12 @@ public class FragmentPerfilAvaliacoes extends android.support.v4.app.Fragment {
     MainActivity main;
 
     UserEvaluation userEvaluation;
-//    FirebaseDatabase database;
-//    DatabaseReference myRef;
 
     MaterialRatingBar materialRatingBar;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +72,8 @@ public class FragmentPerfilAvaliacoes extends android.support.v4.app.Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
 
+        loadEvaluations();
+
         return view;
     }
 
@@ -99,6 +98,8 @@ public class FragmentPerfilAvaliacoes extends android.support.v4.app.Fragment {
 
                         userEvaluation = document.toObject(UserEvaluation.class);
                         setEvaluations(userEvaluation.getAvalicaoes());
+
+
                     }
 
                 } else {

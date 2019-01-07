@@ -4,10 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +25,18 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Models.Evaluation;
+import com.lek.sororas.Models.User;
+import com.lek.sororas.Models.UserEvaluation;
 import com.lek.sororas.R;
+import com.lek.sororas.Utils.CurrentUser;
 
 import java.util.ArrayList;
 
@@ -70,8 +83,46 @@ public class AvalicaoesRecyclerView extends RecyclerView.Adapter{
 
         //materialHolder.name.setText(evaluations.get(position).getNome());
         materialHolder.comment.setText(evaluations.get(position).getComentario());
-
         materialHolder.ratingBar.setRating(Float.parseFloat(evaluations.get(position).getNota()));
+
+
+        evaluations.get(position).getUser().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists()) {
+
+                        User user = document.toObject(User.class);
+                        materialHolder.name.setText(user.getNome());
+
+                        String fotoPerfil = user.getPhotoPerfil();
+
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                        storageRef.child(fotoPerfil).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                // Got the download URL for 'users/me/profile.png'
+                                if(CurrentUser.getUser().perfilPhoto != null){
+                                    Glide.with(context).load(CurrentUser.getUser().perfilPhoto).into(materialHolder.imageView);
+                                    materialHolder.imageView.setVisibility(View.VISIBLE);
+                                    //photo.setVisibility(View.VISIBLE);
+                                }
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle any errors
+                                Log.d("getUser", "DocumentSnapshot data: ");
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
 
 
 //        if(evaluations.get(position).getFoto() != null){
@@ -148,11 +199,6 @@ public class AvalicaoesRecyclerView extends RecyclerView.Adapter{
 //            materialHolder.card.startAnimation(expandCard);
 //        }
 
-
-
-
-
-
     }
 
     @Override
@@ -182,7 +228,7 @@ public class AvalicaoesRecyclerView extends RecyclerView.Adapter{
 
             card = view.findViewById(R.id.card);
 
-            card.setVisibility(View.INVISIBLE);
+            //card.setVisibility(View.INVISIBLE);
 
         }
 

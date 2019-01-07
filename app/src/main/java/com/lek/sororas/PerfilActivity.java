@@ -257,9 +257,9 @@ public class PerfilActivity extends BasicActivity {
 
         comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
 
-        final Evaluation evaluation = new Evaluation(nota,comment, db.collection("users").document(id), Calendar.getInstance().getTime());
+        final Evaluation evaluation = new Evaluation(nota,comment, db.collection("users").document(currentUserId), Calendar.getInstance().getTime());
 
-        DocumentReference docRef = db.collection("evaluations").document(currentUserId);
+        DocumentReference docRef = db.collection("evaluations").document(id);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -278,7 +278,7 @@ public class PerfilActivity extends BasicActivity {
 
                     userEvaluation.getAvalicaoes().add(evaluation);
 
-                    db.collection("evaluations").document(currentUserId).set(userEvaluation);
+                    db.collection("evaluations").document(id).set(userEvaluation);
 
                 } else {
 

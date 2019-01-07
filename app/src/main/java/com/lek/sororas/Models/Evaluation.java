@@ -12,6 +12,11 @@ public class Evaluation {
     DocumentReference user;
     Date date;
 
+
+    public Evaluation(){
+
+    }
+
     public Evaluation(String nota, String comentario, DocumentReference user, Date date) {
         this.nota = nota;
         this.comentario = comentario;

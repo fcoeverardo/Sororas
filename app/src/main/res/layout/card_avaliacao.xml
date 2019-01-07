@@ -47,14 +47,25 @@
             app:layout_constraintStart_toStartOf="@+id/city"
             app:layout_constraintTop_toBottomOf="@+id/description" />
 
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/perfil_photo3"
+            app:layout_constraintEnd_toEndOf="@+id/perfil_photo3"
+            app:layout_constraintStart_toStartOf="@+id/perfil_photo3"
+            app:layout_constraintTop_toTopOf="@+id/perfil_photo3"
+            app:srcCompat="@drawable/ic_user" />
+
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/perfil_photo3"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="32dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
             android:src="@drawable/ic_account"
+            android:visibility="invisible"
             app:civ_border_width="0dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline4"
             app:layout_constraintStart_toStartOf="parent"

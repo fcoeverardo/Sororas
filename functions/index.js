@@ -11,8 +11,8 @@ exports.myFunctionName = functions.firestore
       // ... Your code here
 	
 	//const n = change.after.data.numChildren();
-	var userevaluation = change.after;
-	console.log("Wololo");
+	var userevaluation = change.after.data();
+	console.log("Wololo " + userevaluation);
 	//console.log("Mudou ou criou " + n);
 
     });

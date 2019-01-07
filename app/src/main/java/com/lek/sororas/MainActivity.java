@@ -147,35 +147,6 @@ public class MainActivity extends BasicActivity
 
         updateNavigationView();
 
-        //anuncios = new ArrayList<>();
-
-//        searchBar = findViewById(R.id.searchBar);
-//        searchBar.setHint("O que você precisa?");
-//        searchLayout = findViewById(R.id.searchLayout);
-//
-//        tv = findViewById(R.id.textView);
-//        tv.setVisibility(View.GONE);
-//        tv.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                searchLayout.setVisibility(View.VISIBLE);
-//                searchBar.onClick(searchBar);
-//                Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//
-//            }
-//        });
-
-//        mRecyclerView =  findViewById(R.id.recyclerView);
-//        mRecyclerView.setHasFixedSize(true);
-//
-//        mLayoutManager = new GridLayoutManager(this,2);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//
-//        mRecyclerView.setNestedScrollingEnabled(false);
-//        mRecyclerView.setFocusable(false);
-
     }
 
 
@@ -226,10 +197,10 @@ public class MainActivity extends BasicActivity
 
         String tag = (String) v.getTag();
 
-//        Intent i = new Intent(this,SearchActivity.class);
-//        i.putExtra("tag",tag);
-//
-//        startActivity(i);
+        Intent i = new Intent(this,SearchActivity.class);
+        i.putExtra("tag",tag);
+
+        startActivity(i);
 
 
     }

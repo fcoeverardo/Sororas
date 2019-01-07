@@ -13,6 +13,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +42,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Adapters.MainSliderAdapter;
+import com.lek.sororas.Fragments.FragmentHome;
 import com.lek.sororas.Models.Anuncio;
+import com.lek.sororas.Models.Contato;
+import com.lek.sororas.Models.Denuncia;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.Utils.CurrentAnuncio;
 import com.lek.sororas.Utils.CurrentUser;
@@ -48,6 +53,7 @@ import com.lek.sororas.Utils.GlideImageLoadingService;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import ss.com.bannerslider.Slider;
@@ -213,7 +219,62 @@ public class ShowAnuncioActivity extends BasicActivity {
         finish();
     }
 
+    public void openOptionsMenu(View v){
 
+        PopupMenu popup = new PopupMenu(this, v);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater()
+                .inflate(R.menu.anuncio_options, popup.getMenu());
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+
+                int id = item.getItemId();
+
+                if (id == R.id.denunciar) {
+
+                    openDialogDenuncia();
+                }
+                return true;
+            }
+        });
+
+        popup.show();
+    }
+
+    public void openDialogDenuncia(){
+
+        dialog = new Dialog(ShowAnuncioActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_denuncia);
+
+        final EditText comment = dialog.findViewById(R.id.comment);
+
+       TextView confirm = dialog.findViewById(R.id.confirm);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String text = comment.getText().toString();
+                // .child("denuncias").push().setValue(new Denuncia(id,text));
+                dialog.dismiss();
+
+                Denuncia denuncia = new Denuncia(anuncio.id,text);
+
+                db.collection("complaints").document(proprietariaId).collection(anuncio.id)
+                        .add(denuncia);
+
+                Toast.makeText(ShowAnuncioActivity.this,"Sua denuncia será analisada",Toast.LENGTH_SHORT).show();
+
+                        //getPhotoFromGallery();
+            }
+        });
+
+        dialog.show();
+    }
     public void loadAnuncio(){
 
         slider.setAdapter(new MainSliderAdapter(anuncio.getFotos()));
@@ -258,7 +319,6 @@ public class ShowAnuncioActivity extends BasicActivity {
 
     }
 
-
     public void openChat(View v){
 
         saveContat();
@@ -279,14 +339,19 @@ public class ShowAnuncioActivity extends BasicActivity {
 
     public void saveContat(){
 
-//        Contato contato = new Contato(userId,nome.toString(),foto64);
+        DocumentReference proprietaria = anuncio.getProprietaria();
+        Contato contato = new Contato(proprietaria,"", Calendar.getInstance().getTime());
+
+        if(db.collection("contacts").document(mAuth.getCurrentUser().getUid()).collection(proprietariaId) == null)
+             db.collection("contacts").document(mAuth.getCurrentUser().getUid()).collection(proprietariaId)
+                    .add(contato);
+
 //        myRef.child("contats").child(currentUserId).child(userId).setValue(contato);
 //
 //        contato = new Contato(currentUserId, CurrentUser.getUser().getName(),CurrentUser.getUser().getFotoperfil());
 //        myRef.child("contats").child(userId).child(currentUserId).setValue(contato);
 
     }
-
 
     public void loadInfos(Anuncio anuncio){
 
@@ -384,7 +449,6 @@ public class ShowAnuncioActivity extends BasicActivity {
 //        });
 
     }
-
 
     public void animateForeground(){
 

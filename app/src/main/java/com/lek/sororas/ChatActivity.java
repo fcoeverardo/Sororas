@@ -51,23 +51,23 @@ public class ChatActivity extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
-        auth = FirebaseAuth.getInstance();
-        userId = auth.getCurrentUser().getUid();
-
-        findViews();
-
-        Bundle b = this.getIntent().getExtras();
-        contactId = b.getString("id");
-        contactNameTv.setText(b.getString("nome"));
-
-        photo = b.getString("foto");
-        Glide.with(this).load(StringToBitMap(photo)).into(foto);
-
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
+//
+//        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+//
+//        auth = FirebaseAuth.getInstance();
+//        userId = auth.getCurrentUser().getUid();
+//
+//        findViews();
+//
+//        Bundle b = this.getIntent().getExtras();
+//        contactId = b.getString("id");
+//        contactNameTv.setText(b.getString("nome"));
+//
+//        photo = b.getString("foto");
+//        Glide.with(this).load(StringToBitMap(photo)).into(foto);
+//
+//        database = FirebaseDatabase.getInstance();
+//        myRef = database.getReference();
 
         //checkLogin();
         //auth.setDisplayName
@@ -151,48 +151,48 @@ public class ChatActivity extends BasicActivity {
 
     public void loadMessage(){
 
-        myRef.child("messages").child(userId).child(contactId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                //Toast.makeText(getApplicationContext(),"Atualizando",Toast.LENGTH_SHORT).show();
-                messages.clear();
-
-                if(dataSnapshot.hasChildren()){
-
-                    for (DataSnapshot child: dataSnapshot.getChildren()) {
-
-                        Message message = new Message((HashMap<String, String>) child.getValue());
-                        messages.add(message);
-                    }
-
-                    mAdapter = new AdapterChatRecycleView(messages,getApplicationContext(),userId);
-                    recyclerView.setAdapter(mAdapter);
-                    recyclerView.scrollToPosition(messages.size() - 1);
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        myRef.child("messages").child(userId).child(contactId).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                //Toast.makeText(getApplicationContext(),"Atualizando",Toast.LENGTH_SHORT).show();
+//                messages.clear();
+//
+//                if(dataSnapshot.hasChildren()){
+//
+//                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+//
+//                        Message message = new Message((HashMap<String, String>) child.getValue());
+//                        messages.add(message);
+//                    }
+//
+//                    mAdapter = new AdapterChatRecycleView(messages,getApplicationContext(),userId);
+//                    recyclerView.setAdapter(mAdapter);
+//                    recyclerView.scrollToPosition(messages.size() - 1);
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
     }
 
     public void sendMessage(View v){
-
-        Message message = new Message(messageET.getText().toString(), Calendar.getInstance().getTime().toString(),userId,contactId);
-
-        myRef.child("messages").child(userId).child(contactId).push().setValue(message);
-        myRef.child("contats").child(userId).child(contactId).child("last").setValue(message.getText());
-
-        myRef.child("messages").child(contactId).child(userId).push().setValue(message);
-        myRef.child("contats").child(contactId).child(userId).child("last").setValue(message.getText());
-
-        messageET.setText("");
+//
+//        Message message = new Message(messageET.getText().toString(), Calendar.getInstance().getTime().toString(),userId,contactId);
+//
+//        myRef.child("messages").child(userId).child(contactId).push().setValue(message);
+//        myRef.child("contats").child(userId).child(contactId).child("last").setValue(message.getText());
+//
+//        myRef.child("messages").child(contactId).child(userId).push().setValue(message);
+//        myRef.child("contats").child(contactId).child(userId).child("last").setValue(message.getText());
+//
+//        messageET.setText("");
 
         //fecha teclado
     }

@@ -70,94 +70,94 @@ public class ContatosRecyclerView extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
-        final materialViewHolder materialHolder = (materialViewHolder) holder;
-
-        if(contatos.get(position).getLast() != null)
-            materialHolder.lastMsn.setText(contatos.get(position).getLast());
-        else
-            materialHolder.lastMsn.setVisibility(View.GONE);
-
-
-        materialHolder.name.setText(contatos.get(position).getNome());
-
-
-        if(contatos.get(position).getFoto64() != null){
-
-            if(position < contatos.size()-1)
-                Glide.with(context).load(StringToBitMap(contatos.get(position).getFoto64())).into(materialHolder.imageView);
-
-            else{
-
-                RequestBuilder<Drawable> requestBuilder = Glide.with(context)
-                        .load(StringToBitMap(contatos.get(position).getFoto64()));
-
-                requestBuilder
-                        .load(StringToBitMap(contatos.get(position).getFoto64()))
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-
-
-                                Animation expandCard = AnimationUtils.loadAnimation(context,R.anim.fade_in);
-                                expandCard.setAnimationListener(new Animation.AnimationListener() {
-                                    @Override
-                                    public void onAnimationStart(Animation animation) {
-                                        MainActivity main = (MainActivity) context;
-                                        main.blankLayout.setVisibility(View.GONE);
-                                        //materialHolder.card.setVisibility(View.VISIBLE);
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animation animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat(Animation animation) {
-
-                                    }
-                                });
-
-                                materialHolder.item.startAnimation(expandCard);
-
-
-
-                                return false;
-                            }
-                        })
-                        .into(materialHolder.imageView);
-
-            }
-
-        }
-
-
-
-
-
-        materialHolder.item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent i = new Intent(context,ChatActivity.class);
-
-                Bundle b = new Bundle();
-                b.putString("id",contatos.get(position).getId());
-                b.putString("foto",contatos.get(position).getFoto64());
-                b.putString("nome",contatos.get(position).getNome());
-
-                i.putExtras(b);
-
-                context.startActivity(i);
-            }
-        });
-
-
+//        final materialViewHolder materialHolder = (materialViewHolder) holder;
+//
+//        if(contatos.get(position).getLast() != null)
+//            materialHolder.lastMsn.setText(contatos.get(position).getLast());
+//        else
+//            materialHolder.lastMsn.setVisibility(View.GONE);
+//
+//
+//        materialHolder.name.setText(contatos.get(position).getNome());
+//
+//
+//        if(contatos.get(position).getFoto64() != null){
+//
+//            if(position < contatos.size()-1)
+//                Glide.with(context).load(StringToBitMap(contatos.get(position).getFoto64())).into(materialHolder.imageView);
+//
+//            else{
+//
+//                RequestBuilder<Drawable> requestBuilder = Glide.with(context)
+//                        .load(StringToBitMap(contatos.get(position).getFoto64()));
+//
+//                requestBuilder
+//                        .load(StringToBitMap(contatos.get(position).getFoto64()))
+//                        .listener(new RequestListener<Drawable>() {
+//                            @Override
+//                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+//
+//
+//                                Animation expandCard = AnimationUtils.loadAnimation(context,R.anim.fade_in);
+//                                expandCard.setAnimationListener(new Animation.AnimationListener() {
+//                                    @Override
+//                                    public void onAnimationStart(Animation animation) {
+//                                        MainActivity main = (MainActivity) context;
+//                                        main.blankLayout.setVisibility(View.GONE);
+//                                        //materialHolder.card.setVisibility(View.VISIBLE);
+//                                    }
+//
+//                                    @Override
+//                                    public void onAnimationEnd(Animation animation) {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onAnimationRepeat(Animation animation) {
+//
+//                                    }
+//                                });
+//
+//                                materialHolder.item.startAnimation(expandCard);
+//
+//
+//
+//                                return false;
+//                            }
+//                        })
+//                        .into(materialHolder.imageView);
+//
+//            }
+//
+//        }
+//
+//
+//
+//
+//
+//        materialHolder.item.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Intent i = new Intent(context,ChatActivity.class);
+//
+//                Bundle b = new Bundle();
+//                b.putString("id",contatos.get(position).getId());
+//                b.putString("foto",contatos.get(position).getFoto64());
+//                b.putString("nome",contatos.get(position).getNome());
+//
+//                i.putExtras(b);
+//
+//                context.startActivity(i);
+//            }
+//        });
+//
+//
 
 
 

@@ -210,7 +210,7 @@
         android:layout_height="48dp"
         android:onClick="addFavorite"
         android:tag="branco"
-        app:layout_constraintEnd_toStartOf="@+id/denuncia"
+        app:layout_constraintEnd_toStartOf="@+id/optinsLayout"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -222,6 +222,27 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_heart" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/optinsLayout"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:onClick="openOptionsMenu"
+        android:tag="branco"
+        app:layout_constraintEnd_toStartOf="@+id/denuncia"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:tag="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_menu_options" />
+
     </FrameLayout>
 
     <FrameLayout

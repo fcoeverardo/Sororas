@@ -72,6 +72,7 @@
     </array>
 
     <array name="spinnerTempo">
+        <item>Esse ano</item>
         <item>Hoje</item>
         <item>Essa semana</item>
         <item>Esse mês</item>
@@ -182,5 +183,17 @@
         <item>Tratamento capilar</item>
         <item>Tratamento pés/mãos</item>
 
+    </array>
+
+    <array name="anunciomenu">
+        <item>Denunciar</item>
+        <item>Ajuda</item>
+    </array>
+
+    <array name="perfilmenu">
+        <item>Alterar dados</item>
+        <item>Alterar foto perfil</item>
+        <item>Alterar foto de capa</item>
+        <item>Compartilhar</item>
     </array>
 </resources>

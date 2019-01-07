@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Categorias"
-            app:searchBackIcon="@drawable/ic_arrow">
+            app:searchBackIcon="@drawable/ic_arrow_left_grey">
 
         </com.miguelcatalan.materialsearchview.MaterialSearchView>
 
@@ -34,7 +34,7 @@
             android:layout_height="18dp"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="20dp"
-            app:srcCompat="@drawable/ic_arrow" />
+            app:srcCompat="@drawable/ic_arrow_left" />
 
     </FrameLayout>
 
@@ -57,7 +57,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/searchbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -86,10 +86,11 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:onClick="clickBack"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow" />
+            app:srcCompat="@drawable/ic_arrow_left" />
 
         <TextView
             android:id="@+id/key"

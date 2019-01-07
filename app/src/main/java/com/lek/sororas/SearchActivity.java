@@ -59,7 +59,7 @@ import ss.com.bannerslider.Slider;
 public class SearchActivity extends BasicActivity {
 
     ImageView favorite;
-    ImageView back;
+    ImageView back,back2;
     FrameLayout favoriteLayout;
     MaterialSearchView searchView;
     Spinner spinner;
@@ -95,6 +95,7 @@ public class SearchActivity extends BasicActivity {
     DrawerLayout drawer;
 
     ImageView clasificaoarrow;
+    ImageView searchbtn;
 
     HashMap<String,Integer> categoryCount;
 
@@ -120,6 +121,7 @@ public class SearchActivity extends BasicActivity {
         setSupportActionBar(toolbar);
 
         back = findViewById(R.id.back);
+        back2 = findViewById(R.id.back2);
 
         mRecyclerView =  findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -139,47 +141,57 @@ public class SearchActivity extends BasicActivity {
         spinner = findViewById(R.id.spinner);
 
         filtrar = findViewById(R.id.textView24);
-        filtrar.setOnClickListener(new View.OnClickListener() {
+//        filtrar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                drawer.openDrawer(GravityCompat.END);
+//            }
+//        });
+
+        searchbtn = findViewById(R.id.searchbtn);
+
+        searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                drawer.openDrawer(GravityCompat.END);
+                searchView.showSearch();
+                toolbarSearch.setVisibility(View.GONE);
             }
         });
 
-
-        drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        toggle.setDrawerIndicatorEnabled(false);
-
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                drawer.openDrawer(Gravity.LEFT);
-//                if(changesPhoto)
-//                    updateNavigationView();
-            }
-        });
-
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView = findViewById(R.id.nav_view);
-        clasificaoarrow = navigationView.getHeaderView(0).findViewById(R.id.classificacaoarrow);
-
-        clasificaoarrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ResizeAnimation animation = new ResizeAnimation(navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout),
-                        v,2,300);
-
-                navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout).startAnimation(animation);
-
-            }
-        });
+//        drawer = findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        toggle.setDrawerIndicatorEnabled(false);
+//
+//        toolbar.setNavigationIcon(R.drawable.ic_menu);
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                drawer.openDrawer(Gravity.LEFT);
+////                if(changesPhoto)
+////                    updateNavigationView();
+//            }
+//        });
+//
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        navigationView = findViewById(R.id.nav_view);
+//        clasificaoarrow = navigationView.getHeaderView(0).findViewById(R.id.classificacaoarrow);
+//
+//        clasificaoarrow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ResizeAnimation animation = new ResizeAnimation(navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout),
+//                        v,2,300);
+//
+//                navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout).startAnimation(animation);
+//
+//            }
+//        });
 
     }
 
@@ -240,14 +252,25 @@ public class SearchActivity extends BasicActivity {
                 public void onSearchViewClosed() {
 
                     back.setVisibility(View.VISIBLE);
+                    toolbarSearch.setVisibility(View.VISIBLE);
                 }
             });
         }
 
-
         return true;
     }
 
+
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//
+//
+//
+//        return true;
+//    }
 
     public String[] getCategoryTag(){
 

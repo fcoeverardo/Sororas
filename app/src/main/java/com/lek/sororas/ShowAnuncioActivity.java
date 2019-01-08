@@ -81,6 +81,8 @@ public class ShowAnuncioActivity extends BasicActivity {
     String proprietariaId;
     private Slider slider;
 
+    ImageView defaultPerfil;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +173,8 @@ public class ShowAnuncioActivity extends BasicActivity {
         favoriteLayout = findViewById(R.id.favoriteLayout);
 
         tags = findViewById(R.id.tags);
+
+        defaultPerfil = findViewById(R.id.imageView17);
     }
 
     public void addFavorite(View v){
@@ -252,7 +256,7 @@ public class ShowAnuncioActivity extends BasicActivity {
 
         final EditText comment = dialog.findViewById(R.id.comment);
 
-       TextView confirm = dialog.findViewById(R.id.confirm);
+        TextView confirm = dialog.findViewById(R.id.confirm);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -273,7 +277,10 @@ public class ShowAnuncioActivity extends BasicActivity {
         });
 
         dialog.show();
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
     }
+
     public void loadAnuncio(){
 
         slider.setAdapter(new MainSliderAdapter(anuncio.getFotos()));
@@ -482,7 +489,6 @@ public class ShowAnuncioActivity extends BasicActivity {
             @Override
             public void onSuccess(Uri uri) {
 
-
                 RequestBuilder<Drawable> requestBuilder = Glide.with(getApplicationContext())
                         .load(uri);
 
@@ -498,6 +504,7 @@ public class ShowAnuncioActivity extends BasicActivity {
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
 
                                 animateForeground();
+                                defaultPerfil.setVisibility(View.GONE);
 
                                 return false;
                             }
@@ -510,6 +517,7 @@ public class ShowAnuncioActivity extends BasicActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
+                animateForeground();
             }
         });
     }

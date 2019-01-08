@@ -1,10 +1,16 @@
 package com.lek.sororas;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -91,6 +97,27 @@ public class BasicActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+    }
+
+    public void openDialogTermos(View v){
+
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_termos);
+//        dialog.setTitle("Title...");
+
+        final TextView confirm = dialog.findViewById(R.id.confirm);
+
+        confirm.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+
     }
 
 }

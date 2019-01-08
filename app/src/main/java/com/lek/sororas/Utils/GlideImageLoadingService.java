@@ -31,6 +31,8 @@ public class GlideImageLoadingService implements ImageLoadingService {
     @Override
     public void loadImage(String url, final ImageView imageView) {
 
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         storageRef.child(url).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -39,6 +41,7 @@ public class GlideImageLoadingService implements ImageLoadingService {
                 Glide.with(context)
                         .load(uri)
                         .into(imageView);
+
 
             }
         }).addOnFailureListener(new OnFailureListener() {

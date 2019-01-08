@@ -171,6 +171,19 @@ public class LoginActivity extends BasicActivity {
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        if(hasFocus && fragmentSingUp.checkGPSStatus())
+        {
+            if(fragmentSingUp.local.isFocused()){
+                fragmentSingUp.verifyPermission();
+
+            }
+
+        }
+
+    }
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
@@ -641,13 +654,14 @@ public class LoginActivity extends BasicActivity {
 
     public void firebaseCreateUser(final User user){
 
-        db.collection("users").document(user.getId())
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        final DocumentReference doc = db.collection("users").document();
+
+        doc.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("create", "Usuario criado com sucesso");
 
+                        user.setId(doc.getId());
                         CurrentUser.setUser(user);
                         finish();
 

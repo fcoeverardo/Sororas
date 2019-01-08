@@ -111,7 +111,10 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
                 materialHolder.userName.setText(user.getNome());
                 materialHolder.cidadeTv.setText(user.getCidade());
 
-                FirebaseHelper.setPhotoInImageView(context,user.getPhotoPerfil(),materialHolder.perfilPhoto);
+                if(user.getPhotoPerfil() != null){
+                    FirebaseHelper.setPhotoInImageView(context,user.getPhotoPerfil(),materialHolder.perfilPhoto);
+                    materialHolder.defaultPhoto.setVisibility(View.INVISIBLE);
+                }
 
                 setPhotoAnuncio(currentAnuncio.getFotos().get(0),materialHolder.imageView,materialHolder.card);
 
@@ -227,6 +230,8 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
         final ImageView favorito;
         final TextView userName;
 
+        final ImageView defaultPhoto;
+
         public materialViewHolder(View view) {
             super(view);
 
@@ -242,6 +247,8 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
             card.setVisibility(View.INVISIBLE);
 
             userName = view.findViewById(R.id.username);
+
+            defaultPhoto = view.findViewById(R.id.imageView);
 
         }
 

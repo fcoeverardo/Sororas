@@ -26,7 +26,8 @@
     <string name="menu_hidraulicos">Consertos Hidráulicos</string>
     <string name="menu_cabelo">Corte de\n cabelo</string>
 
-    <string name="aoentrar">Ao entrar você confirma que aceita nossas\n<u>Regras</u> e <u>Politicas de Privacidade</u></string>
+    <string name="aoentrar">Ao entrar você confirma que aceita nossas</string>
+    <string name="termodeuso"><u>Regras</u> e <u>Politicas de Privacidade</u></string>
 
     <array name="tabsNames">
         <item>Trabalhos</item>

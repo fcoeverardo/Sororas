@@ -38,6 +38,7 @@ import com.lek.sororas.Fragments.FragmentCreateTags;
 import com.lek.sororas.Fragments.FragmentCreateTitle;
 import com.lek.sororas.Fragments.FragmentCreateType;
 import com.lek.sororas.Models.Anuncio;
+import com.lek.sororas.Models.User;
 import com.lek.sororas.Utils.CurrentUser;
 import com.lek.sororas.Utils.FirebaseHelper;
 import com.lek.sororas.Utils.ImageHelper;
@@ -139,7 +140,7 @@ public class CreateActivity extends BasicActivity {
         DocumentReference ref = db.collection("advertisement").document();
 
         final String anuncioId = ref.getId();
-
+        anuncio.setId(anuncioId);
         try {
             savePhotos(anuncioId);
         } catch (IOException e) {
@@ -152,10 +153,14 @@ public class CreateActivity extends BasicActivity {
         for(int i = 0; i < images.size(); i++){
 
             final String fotoId = anuncioId + "_foto" + i;
+
             final int j = i;
+
             fragmentCreateAddPhoto.photos.get(i).setDrawingCacheEnabled(true);
             fragmentCreateAddPhoto.photos.get(i).buildDrawingCache();
+
             final Bitmap bitmap = ((BitmapDrawable) fragmentCreateAddPhoto.photos.get(i).getDrawable()).getBitmap();
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
@@ -181,7 +186,10 @@ public class CreateActivity extends BasicActivity {
 
                     ids.add(ref.getId());
 
-                    CurrentUser.getUser().setAnunciosIds(ids);
+                    User user = CurrentUser.getUser();
+                    user.setAnunciosIds(ids);
+
+                    CurrentUser.setUser(user);
                     db.collection("users").document(mAuth.getCurrentUser().getUid()).set( CurrentUser.getUser());
 
                     if(j == images.size()-1){
@@ -193,7 +201,6 @@ public class CreateActivity extends BasicActivity {
                                         Log.d("create", "Anuncio criado com sucesso");
 
                                         Toast.makeText(getApplicationContext(),"Anuncio criado com sucesso",Toast.LENGTH_SHORT).show();
-
                                         hideProgressDialog();
                                         finish();
                                     }
@@ -203,7 +210,7 @@ public class CreateActivity extends BasicActivity {
                                     public void onFailure(@NonNull Exception e) {
                                         Log.w("create", "Error Criando usuario");
                                         Toast.makeText(getApplicationContext(),"Falha na criação do anuncio",Toast.LENGTH_SHORT).show();
-
+                                        hideProgressDialog();
                                     }
                                 });
                     }

@@ -2,18 +2,24 @@ package com.lek.sororas.Fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.DhcpInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.InflateException;
@@ -62,6 +68,8 @@ public class FragmentSingUp extends Fragment {
 
     String city = "";
 
+    public boolean gpsStatus = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -92,6 +100,7 @@ public class FragmentSingUp extends Fragment {
         return view;
     }
 
+
     public void findViews(){
 
         nome = view.findViewById(R.id.createname);
@@ -104,13 +113,31 @@ public class FragmentSingUp extends Fragment {
 
         local = view.findViewById(R.id.createlocal);
 
-
         local.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
                 if(hasFocus)
-                    verifyPermission();
+                    if(!checkGPSStatus()){
+
+                        AlertDialog.Builder builder;
+                        builder = new AlertDialog.Builder(context);
+
+                        builder.setTitle("Ative o GPS")
+                                .setMessage("Ative seu GPS para facilitar essa etapa ")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // continue with delete
+                                    }
+                                })
+                                .show();
+
+                    }
+                    else{
+                        verifyPermission();
+                    }
+
+
             }
         });
 
@@ -154,6 +181,7 @@ public class FragmentSingUp extends Fragment {
     public void onResume() {
 
         super.onResume();
+        Log.i("Eita","Wololo");
         //this.onCreate(null);
     }
 
@@ -195,7 +223,7 @@ public class FragmentSingUp extends Fragment {
         }else{
 
            getCity();
-
+            Log.i("Eita","Cidade seted");
         }
     }
 
@@ -230,6 +258,24 @@ public class FragmentSingUp extends Fragment {
 
     }
 
+    public boolean checkGPSStatus(){
+        final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private void turnGPSOn(){
+
+        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+        intent.putExtra("enabled", true);
+        context.sendBroadcast(intent);
+
+    }
+
+    public void openDialogGPS(){
+
+        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -240,7 +286,7 @@ public class FragmentSingUp extends Fragment {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                    getCity();
-
+                    Log.i("Eita","Cidade seted");
                 } else {
 
                     // permission denied, boo! Disable the

@@ -26,6 +26,19 @@ public class Anuncio {
         this.fotos = new ArrayList<>();
     }
 
+    public Anuncio(String titulo, String tipo, String descricao, String categoria,
+                   DocumentReference proprietaria, String tags, ArrayList<String> fotos, Date data, String id) {
+
+        this.titulo = titulo;
+        this.tipo = tipo;
+        this.descricao = descricao;
+        this.categoria = categoria;
+        this.proprietaria = proprietaria;
+        this.tags = tags;
+        this.fotos = fotos;
+        this.data = data;
+        this.id = id;
+    }
 
     public Anuncio(String titulo, String tipo, String descricao, String categoria, DocumentReference proprietaria, ArrayList<String> fotos) {
         this.titulo = titulo;
@@ -120,6 +133,14 @@ public class Anuncio {
 
     public void setData(Date data) {
         this.data = data;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getAllText(){

@@ -78,8 +78,8 @@
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/perfil_photo"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
                 android:scaleType="centerCrop"
@@ -87,6 +87,17 @@
                 app:civ_border_width="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/ic_user"
+                app:layout_constraintBottom_toBottomOf="@+id/perfil_photo"
+                app:layout_constraintEnd_toEndOf="@+id/perfil_photo"
+                app:layout_constraintStart_toStartOf="@+id/perfil_photo"
+                app:layout_constraintTop_toTopOf="@+id/perfil_photo" />
 
             <me.zhanghai.android.materialratingbar.MaterialRatingBar
                 android:id="@+id/materialRatingBar"

@@ -170,7 +170,6 @@ public class ShowAnuncioActivity extends BasicActivity {
         favorite = findViewById(R.id.imageView8);
         favoriteLayout = findViewById(R.id.favoriteLayout);
 
-        denuncia = findViewById(R.id.denuncia);
         tags = findViewById(R.id.tags);
     }
 

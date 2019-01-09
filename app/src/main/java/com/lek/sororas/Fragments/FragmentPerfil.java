@@ -30,6 +30,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -38,6 +39,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +58,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.storage.UploadTask;
 import com.lek.sororas.CreateActivity;
+import com.lek.sororas.EditActivity;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.UserEvaluation;
 import com.lek.sororas.R;
@@ -102,6 +105,8 @@ public class FragmentPerfil extends Fragment {
     ImageView bannerPhoto;
     ImageView target;
     ImageView changeBanner,changePerfil;
+
+    ImageView perfilMenu;
 
     TextView nome,cidade;
 
@@ -232,7 +237,7 @@ public class FragmentPerfil extends Fragment {
         perfilPhoto = view.findViewById(R.id.perfil_photo);
         bannerPhoto = view.findViewById(R.id.banner);
 
-        changeBanner = view.findViewById(R.id.changebannerBtn);
+        //changeBanner = view.findViewById(R.id.changebannerBtn);
         changePerfil = view.findViewById(R.id.changeperfilBtn);
 
         materialRatingBar = view.findViewById(R.id.materialRatingBar);
@@ -271,7 +276,16 @@ public class FragmentPerfil extends Fragment {
         };
 
         changePerfil.setOnClickListener(clickChanggePhoto);
-        changeBanner.setOnClickListener(clickChanggeBanner);
+        //changeBanner.setOnClickListener(clickChanggeBanner);
+
+        perfilMenu = view.findViewById(R.id.perfilmenu);
+        perfilMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                openOptionsMenu(v);
+            }
+        });
 
         main.blankLayout.setVisibility(View.GONE);
         view.setVisibility(View.VISIBLE);
@@ -574,6 +588,45 @@ public class FragmentPerfil extends Fragment {
 
 
 
+    }
+
+    public void openOptionsMenu(View v){
+
+        PopupMenu popup = new PopupMenu(context, v);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater()
+                .inflate(R.menu.perfil_options, popup.getMenu());
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+
+                int id = item.getItemId();
+
+                if (id == R.id.alterardados) {
+
+                    Intent intent = new Intent(context,EditActivity.class);
+                    startActivity(intent);
+                }
+                else if (id == R.id.alterarfotoperfil) {
+
+                    perfil = true;
+                    target = perfilPhoto;
+                    openDialogAddPhoto();
+
+                }
+                else if (id == R.id.alterarfotobanner) {
+
+                    perfil = false;
+                    target = bannerPhoto;
+                    openDialogAddPhoto();
+
+                }
+                return true;
+            }
+        });
+
+        popup.show();
     }
 
     @Override

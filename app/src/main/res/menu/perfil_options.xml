@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/alterardados"
+        android:title="Alterar dados"/>
+
+    <item
+        android:id="@+id/alterarfotoperfil"
+        android:title="Alterar foto de perfil"/>
+    <item
+        android:id="@+id/alterarfotobanner"
+        android:title="Alterar foto de capa"/>
+
+</menu>

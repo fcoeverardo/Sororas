@@ -54,6 +54,7 @@
         <activity android:name=".PerfilActivity"></activity>
         <activity android:name=".ShowAnuncioActivity"></activity>
         <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".EditActivity"></activity>
     </application>
 
 </manifest>

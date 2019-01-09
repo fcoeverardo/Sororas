@@ -20,14 +20,13 @@
         app:srcCompat="@drawable/background_perfil" />
 
     <ImageView
-        android:id="@+id/changebannerBtn"
+        android:id="@+id/perfilmenu"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_camera2" />
+        app:srcCompat="@drawable/ic_menu_options" />
 
     <TextView
         android:id="@+id/name"
@@ -81,6 +80,7 @@
         android:background="@drawable/background_circleprimary"
         android:elevation="4dp"
         android:padding="5dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/perfil_photo"
         app:layout_constraintTop_toTopOf="@+id/perfil_photo"
         app:srcCompat="@drawable/ic_camera2" />

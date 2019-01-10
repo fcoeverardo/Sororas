@@ -125,7 +125,6 @@ public class FragmentActivityPerfilFavoritos extends android.support.v4.app.Frag
                         if(countFavorites == user.getFavoritosIds().size()){
 
                             AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,favoritos,anunciosIds,progress);
-                            //AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
                             mRecyclerView.setAdapter(adapter);
 
                             count.setText(countFavorites + " Favoritos");

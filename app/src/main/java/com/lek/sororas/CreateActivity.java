@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -159,10 +160,15 @@ public class CreateActivity extends BasicActivity {
             fragmentCreateAddPhoto.photos.get(i).setDrawingCacheEnabled(true);
             fragmentCreateAddPhoto.photos.get(i).buildDrawingCache();
 
-            final Bitmap bitmap = ((BitmapDrawable) fragmentCreateAddPhoto.photos.get(i).getDrawable()).getBitmap();
+//            final Bitmap bitmap = ((BitmapDrawable) fragmentCreateAddPhoto.photos.get(i).getDrawable()).getBitmap();
+//
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            byte[] data = baos.toByteArray();
 
+            Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(),images.get(i));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 5, baos);
             byte[] data = baos.toByteArray();
 
             UploadTask uploadTask = storageRef.child(fotoId).putBytes(data);

@@ -53,6 +53,7 @@ public class EditActivity extends BasicActivity {
         viewFlipper = findViewById(R.id.viewFlipper);
 
         setInfos();
+
     }
 
 

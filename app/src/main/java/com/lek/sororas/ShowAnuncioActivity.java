@@ -36,6 +36,9 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -56,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 import ss.com.bannerslider.Slider;
 
 import static com.bumptech.glide.request.RequestOptions.fitCenterTransform;
@@ -82,6 +86,8 @@ public class ShowAnuncioActivity extends BasicActivity {
     private Slider slider;
 
     ImageView defaultPerfil;
+    public MaterialRatingBar materialRatingBar;
+    public TextView evaluationCount;
 
 
     @Override
@@ -175,6 +181,11 @@ public class ShowAnuncioActivity extends BasicActivity {
         tags = findViewById(R.id.tags);
 
         defaultPerfil = findViewById(R.id.imageView17);
+
+        materialRatingBar = findViewById(R.id.materialRatingBar4);
+        evaluationCount = findViewById(R.id.evaluationCount2);
+
+
     }
 
     public void addFavorite(View v){
@@ -302,6 +313,9 @@ public class ShowAnuncioActivity extends BasicActivity {
 
                 proprietariaId = proprietaria.getId();
 
+                setAvaliacoesTexts(proprietariaId,materialRatingBar, evaluationCount);
+
+
                 name.setText(proprietaria.getNome());
                 city.setText(proprietaria.getCidade());
             }
@@ -330,33 +344,41 @@ public class ShowAnuncioActivity extends BasicActivity {
         saveContat();
 
 
-//        Intent i = new Intent(this,ChatActivity.class);
-//
-//        Bundle b = new Bundle();
-//        b.putString("id",userId);
+        Intent i = new Intent(this,ChatActivity.class);
+
+        Bundle b = new Bundle();
+        b.putString("id",proprietariaId);
 //        b.putString("foto",foto64);
 //        b.putString("nome",nome);
 //
-//        i.putExtras(b);
-//
-//        startActivity(i);
+        i.putExtras(b);
+
+        startActivity(i);
 
     }
 
     public void saveContat(){
 
-        DocumentReference proprietaria = anuncio.getProprietaria();
-        Contato contato = new Contato(proprietaria,"", Calendar.getInstance().getTime());
+        myRef.child("contats").child(CurrentUser.getUser().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.hasChild(proprietariaId)) {
 
-        if(db.collection("contacts").document(mAuth.getCurrentUser().getUid()).collection(proprietariaId) == null)
-             db.collection("contacts").document(mAuth.getCurrentUser().getUid()).collection(proprietariaId)
-                    .add(contato);
+                    DocumentReference proprietaria = anuncio.getProprietaria();
+                    Contato contato = new Contato(proprietariaId,"", Calendar.getInstance().getTime().toString());
 
-//        myRef.child("contats").child(currentUserId).child(userId).setValue(contato);
-//
-//        contato = new Contato(currentUserId, CurrentUser.getUser().getName(),CurrentUser.getUser().getFotoperfil());
-//        myRef.child("contats").child(userId).child(currentUserId).setValue(contato);
+                    myRef.child("contats").child(CurrentUser.getUser().getId()).child(proprietariaId).setValue(contato);
+                    contato = new Contato(mAuth.getCurrentUser().getUid(), "", Calendar.getInstance().getTime().toString());
+                    myRef.child("contats").child(proprietariaId).child(CurrentUser.getUser().getId()).setValue(contato);
+                    // run some code
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void loadInfos(Anuncio anuncio){

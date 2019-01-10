@@ -243,6 +243,8 @@ public class FragmentPerfil extends Fragment {
         materialRatingBar = view.findViewById(R.id.materialRatingBar);
         evaluationCount = view.findViewById(R.id.evaluationCount);
 
+        ((MainActivity)context).setAvaliacoesTexts(CurrentUser.getUser().getId(),materialRatingBar,evaluationCount);
+
         if(CurrentUser.getUser().perfilPhoto != null){
             Glide.with(context).load(CurrentUser.getUser().perfilPhoto).into(perfilPhoto);
             perfilPhoto.setVisibility(View.VISIBLE);

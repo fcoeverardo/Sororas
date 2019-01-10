@@ -6,25 +6,25 @@ import java.util.Date;
 
 public class Contato {
 
-    DocumentReference user;
+    String user;
     String last;
-    Date data;
+    String dataLast;
 
     public Contato() {
 
     }
 
-    public Contato(DocumentReference user, String last, Date data) {
+    public Contato(String user, String last, String data) {
         this.user = user;
         this.last = last;
-        this.data = data;
+        this.dataLast = data;
     }
 
-    public DocumentReference getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(DocumentReference user) {
+    public void setUser(String user) {
         this.user = user;
     }
 
@@ -36,11 +36,11 @@ public class Contato {
         this.last = last;
     }
 
-    public Date getData() {
-        return data;
+    public String getData() {
+        return dataLast;
     }
 
-    public void setData(Date data) {
-        this.data = data;
+    public void setData(String dataLast) {
+        this.dataLast = dataLast;
     }
 }

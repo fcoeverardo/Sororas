@@ -46,8 +46,6 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
 
     TextView count;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -90,9 +88,7 @@ public class FragmentPerfilTrabalhos extends android.support.v4.app.Fragment {
         return view;
     }
 
-
     public void loadTrablhos(){
-
 
         CollectionReference advertisement = main.db.collection("advertisement");
 

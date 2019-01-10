@@ -30,6 +30,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.lek.sororas.BasicActivity;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
 import com.lek.sororas.Models.User;
@@ -39,6 +40,8 @@ import com.lek.sororas.Utils.CurrentAnuncio;
 import com.lek.sororas.Utils.FirebaseHelper;
 
 import java.util.ArrayList;
+
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 public class AnuncioRecyclerView extends RecyclerView.Adapter{
 
@@ -110,6 +113,8 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
                 User user = documentSnapshot.toObject(User.class);
                 materialHolder.userName.setText(user.getNome());
                 materialHolder.cidadeTv.setText(user.getCidade());
+
+                ((BasicActivity) context).setAvaliacoesTexts(user.getId(),materialHolder.materialRatingBar,materialHolder.evaluationCount);
 
                 if(user.getPhotoPerfil() != null){
                     FirebaseHelper.setPhotoInImageView(context,user.getPhotoPerfil(),materialHolder.perfilPhoto);
@@ -231,6 +236,8 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
         final TextView userName;
 
         final ImageView defaultPhoto;
+        final MaterialRatingBar materialRatingBar;
+        final TextView evaluationCount;
 
         public materialViewHolder(View view) {
             super(view);
@@ -249,6 +256,11 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
             userName = view.findViewById(R.id.username);
 
             defaultPhoto = view.findViewById(R.id.imageView);
+
+            materialRatingBar = view.findViewById(R.id.materialRatingBar);
+            evaluationCount = view.findViewById(R.id.evaluationCount);
+
+
 
         }
 

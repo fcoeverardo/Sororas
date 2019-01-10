@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.lek.sororas.Adapters.AvalicaoesRecyclerView;
@@ -87,27 +90,25 @@ public class FragmentPerfilAvaliacoes extends android.support.v4.app.Fragment {
 
     public void loadEvaluations(){
 
-        DocumentReference docRef = main.db.collection("evaluations").document(main.mAuth.getUid());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
+        main.myRef.child("userevaluation").child(CurrentUser.getUser().getId())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    if (document.exists()) {
+                        if(dataSnapshot.hasChildren()){
 
-                        userEvaluation = document.toObject(UserEvaluation.class);
-                        setEvaluations(userEvaluation.getAvalicaoes());
+                            userEvaluation = new UserEvaluation((HashMap<String, Object>) dataSnapshot.getValue());
+                            setEvaluations(userEvaluation.getAvalicaoes());
 
+                        }
 
                     }
 
-                } else {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                    Log.d("getUser", "get failed with ", task.getException());
-                }
-            }
-        });
+                    }
+                });
     }
 
 }

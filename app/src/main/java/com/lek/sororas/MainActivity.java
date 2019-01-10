@@ -42,6 +42,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Fragments.FragmentHome;
+import com.lek.sororas.Fragments.FragmentMessages;
 import com.lek.sororas.Fragments.FragmentPerfil;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.Utils.CurrentUser;
@@ -239,7 +240,7 @@ public class MainActivity extends BasicActivity
             title.setText("Mensagens");
             //title.setVisibility(View.VISIBLE);
 
-            //cl = FragmentMensagens.class;
+            cl = FragmentMessages.class;
 
 
         } else if (id == R.id.nav_category) {

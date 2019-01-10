@@ -26,6 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -101,7 +102,6 @@ public class PerfilActivity extends BasicActivity {
 
     public User perfilUser;
 
-
     private Slider slider;
 
     FirebaseDatabase database;
@@ -118,15 +118,16 @@ public class PerfilActivity extends BasicActivity {
         findViews();
 
         id = getIntent().getStringExtra("id");
-        currentUserId = mAuth.getCurrentUser().getUid();
+        if(mAuth.getCurrentUser()!= null)
+            currentUserId = mAuth.getCurrentUser().getUid();
 
         if(id.equals(currentUserId))
             chat.setVisibility(View.GONE);
 
 
         loadUser();
-        loadAvaliacoes();
 
+        //this.loadAvaliacoes(id, materialRatingBar, evaluationCount,tabAvaliacoes.);
 
     }
 
@@ -151,9 +152,7 @@ public class PerfilActivity extends BasicActivity {
 
         chat = findViewById(R.id.chat);
 
-
         //Glide.with(getApplicationContext()).load(fotoPerfil).into((ImageView) findViewById(R.id.perfil_photo3));
-
     }
 
     public void inicializeTabs() {
@@ -185,7 +184,6 @@ public class PerfilActivity extends BasicActivity {
 
                         if(dataSnapshot.hasChildren()){
 
-
                             userEvaluation = new UserEvaluation((HashMap<String, Object>) dataSnapshot.getValue());
                             tabAvaliacoes.setEvaluations(userEvaluation.getAvalicaoes());
 
@@ -197,13 +195,17 @@ public class PerfilActivity extends BasicActivity {
 
                         }
 
+                        else{
+                            materialRatingBar.setRating(0);
+                            evaluationCount.setText("(0)");
+                        }
+
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-
                 });
     }
 
@@ -260,75 +262,43 @@ public class PerfilActivity extends BasicActivity {
 
     public void saveEvaluation(View v){
 
+            comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
 
-        comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
+            Evaluation evaluation = new Evaluation(nota,comment, CurrentUser.getUser().getId(), Calendar.getInstance().getTime().toString());
 
-        Evaluation evaluation = new Evaluation(nota,comment, CurrentUser.getUser().getId(), Calendar.getInstance().getTime().toString());
+            myRef.child("userevaluation").child(id).child("evaluations")
+                    .child(CurrentUser.getUser().getId()).setValue(evaluation);
 
-        myRef.child("userevaluation").child(id).child("evaluations")
-                .child(CurrentUser.getUser().getId()).setValue(evaluation);
+            dialog.dismiss();
 
-        dialog.dismiss();
     }
-
-//    public void saveEvaluation(View v){
-//
-//
-//        comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
-//
-//        final Evaluation evaluation = new Evaluation(nota,comment, db.collection("users").document(currentUserId), Calendar.getInstance().getTime());
-//
-//        DocumentReference docRef = db.collection("evaluations").document(id);
-//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    UserEvaluation userEvaluation = new UserEvaluation();
-//
-//                    if (document.exists()) {
-//
-//                        userEvaluation = document.toObject(UserEvaluation.class);
-//
-//                    }
-//                    else{
-//                        userEvaluation.setMedia("" + nota);
-//                    }
-//
-//                    userEvaluation.getAvalicaoes().add(evaluation);
-//
-//                    db.collection("evaluations").document(id).set(userEvaluation);
-//
-//                } else {
-//
-//                    Log.d("getUser", "get failed with ", task.getException());
-//                }
-//            }
-//        });
-//
-//        dialog.dismiss();
-//    }
 
     public void openDialogAvaliar(View view){
 
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_avaliar2);
+        if(mAuth.getCurrentUser() !=null){
+
+            dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog_avaliar2);
 //        dialog.setTitle("Title...");
 
-        ((TextView) dialog.findViewById(R.id.name2)).setText(("Avalie " + nome.getText().toString()).toUpperCase());
+            ((TextView) dialog.findViewById(R.id.name2)).setText(("Avalie " + nome.getText().toString()).toUpperCase());
 
-        MaterialRatingBar materialRatingBar = dialog.findViewById(R.id.materialRatingBar3);
-        materialRatingBar.setOnRatingChangeListener(new MaterialRatingBar.OnRatingChangeListener() {
-            @Override
-            public void onRatingChanged(MaterialRatingBar ratingBar, float rating) {
+            MaterialRatingBar materialRatingBar = dialog.findViewById(R.id.materialRatingBar3);
+            materialRatingBar.setOnRatingChangeListener(new MaterialRatingBar.OnRatingChangeListener() {
+                @Override
+                public void onRatingChanged(MaterialRatingBar ratingBar, float rating) {
 
-                nota = rating + "";
-            }
-        });
+                    nota = rating + "";
+                }
+            });
 
-        dialog.show();
-        Window window = dialog.getWindow();
-        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+            Window window = dialog.getWindow();
+            window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        }
+        else{
+            Toast.makeText(this,"Você precisa estar logado para avaliar",Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -346,6 +316,7 @@ public class PerfilActivity extends BasicActivity {
                         perfilUser = document.toObject(User.class);
 
                         inicializeTabs();
+                        loadAvaliacoes();
                         loadInfos();
 
                         container.setVisibility(View.VISIBLE);

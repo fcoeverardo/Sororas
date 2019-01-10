@@ -2,10 +2,12 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fundo"
     android:focusableInTouchMode="true"
-    android:background="@color/fundo">
+    android:visibility="invisible">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar3"
@@ -20,8 +22,8 @@
         android:id="@+id/frameLayout5"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:onClick="clickBack"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,44 +31,71 @@
 
         <ImageView
             android:id="@+id/imageView6"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrowwhite" />
+            app:srcCompat="@drawable/ic_arrow_left" />
     </FrameLayout>
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/perfil_photo2"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:src="@drawable/ic_account"
         app:civ_border_width="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
         app:layout_constraintStart_toEndOf="@+id/frameLayout5"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView21"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/perfil_photo2"
+        app:layout_constraintEnd_toEndOf="@+id/perfil_photo2"
+        app:layout_constraintStart_toStartOf="@+id/perfil_photo2"
+        app:layout_constraintTop_toTopOf="@+id/perfil_photo2"
+        app:srcCompat="@drawable/ic_user" />
+
     <TextView
         android:id="@+id/contactName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/roboto_light"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto_medium"
         android:text="Nome"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar3"
         app:layout_constraintStart_toEndOf="@+id/perfil_photo2"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/fundo_branco"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </FrameLayout>
 
     <EditText
         android:id="@+id/messageET"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:elevation="2dp"
         android:ems="10"
         android:focusableInTouchMode="true"
@@ -81,9 +110,9 @@
         android:id="@+id/floatingActionButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:clickable="true"
         android:focusable="true"
@@ -99,8 +128,8 @@
         android:id="@+id/recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/messageET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

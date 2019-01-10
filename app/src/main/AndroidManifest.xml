@@ -55,6 +55,7 @@
         <activity android:name=".ShowAnuncioActivity"></activity>
         <activity android:name=".SearchActivity"></activity>
         <activity android:name=".EditActivity"></activity>
+        <activity android:name=".ChatActivity"></activity>
     </application>
 
 </manifest>

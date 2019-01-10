@@ -452,8 +452,6 @@ public class LoginActivity extends BasicActivity {
                             // Sign in success, update UI with the signed-in user's information
                             hideProgressDialog();
                             Log.d("login", "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
 
                             finish();
 

@@ -29,7 +29,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Models.Evaluation;
@@ -86,7 +88,9 @@ public class AvalicaoesRecyclerView extends RecyclerView.Adapter{
         materialHolder.ratingBar.setRating(Float.parseFloat(evaluations.get(position).getNota()));
 
 
-        evaluations.get(position).getUser().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        DocumentReference ref = FirebaseFirestore.getInstance().collection("users").document(evaluations.get(position).getUser());
+
+        ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -94,30 +98,32 @@ public class AvalicaoesRecyclerView extends RecyclerView.Adapter{
 
                     if (document.exists()) {
 
-                        User user = document.toObject(User.class);
+                        final User user = document.toObject(User.class);
                         materialHolder.name.setText(user.getNome());
 
                         String fotoPerfil = user.getPhotoPerfil();
 
-                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                        storageRef.child(fotoPerfil).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                // Got the download URL for 'users/me/profile.png'
-                                if(CurrentUser.getUser().perfilPhoto != null){
-                                    Glide.with(context).load(CurrentUser.getUser().perfilPhoto).into(materialHolder.imageView);
-                                    materialHolder.imageView.setVisibility(View.VISIBLE);
-                                    //photo.setVisibility(View.VISIBLE);
-                                }
+                        if(fotoPerfil != null){
 
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle any errors
-                                Log.d("getUser", "DocumentSnapshot data: ");
-                            }
-                        });
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                            storageRef.child(fotoPerfil).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    // Got the download URL for 'users/me/profile.png'
+
+                                    Glide.with(context).load(uri).into(materialHolder.imageView);
+                                    materialHolder.imageView.setVisibility(View.VISIBLE);
+                                        //photo.setVisibility(View.VISIBLE);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    Log.d("getUser", "DocumentSnapshot data: ");
+                                }
+                            });
+                        }
+
                     }
                 }
             }

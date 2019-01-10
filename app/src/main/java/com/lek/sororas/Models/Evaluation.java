@@ -9,15 +9,24 @@ public class Evaluation {
 
     String nota;
     String comentario;
-    DocumentReference user;
-    Date date;
+    String user;
+    String date;
 
 
     public Evaluation(){
 
     }
 
-    public Evaluation(String nota, String comentario, DocumentReference user, Date date) {
+    public Evaluation(HashMap<String,String> map){
+
+        this.nota = map.get("nota");
+        this.comentario = map.get("comentario");
+        this.user = map.get("user");
+        this.date = map.get("date");
+
+    }
+
+    public Evaluation(String nota, String comentario, String user, String date) {
         this.nota = nota;
         this.comentario = comentario;
         this.user = user;
@@ -40,19 +49,19 @@ public class Evaluation {
         this.comentario = comentario;
     }
 
-    public DocumentReference getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(DocumentReference user) {
+    public void setUser(String user) {
         this.user = user;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }

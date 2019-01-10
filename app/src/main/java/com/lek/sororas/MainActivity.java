@@ -457,8 +457,9 @@ public class MainActivity extends BasicActivity
     public void logOut(){
 
         FirebaseAuth.getInstance().signOut();
-
         //onNavigationItemSelected(navigationView.getMenu().getItem(0));
+
+        CurrentUser.setUser(new User());
 
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.activity_main_drawer_logout);
@@ -471,7 +472,6 @@ public class MainActivity extends BasicActivity
 
         Glide.with(this).load(R.drawable.ic_account).into(photo);
         banner.setImageResource(R.drawable.background_perfil);
-
 
         Toast.makeText(this,"Usuario desconectado",Toast.LENGTH_SHORT).show();
         setFragment(new FragmentHome());

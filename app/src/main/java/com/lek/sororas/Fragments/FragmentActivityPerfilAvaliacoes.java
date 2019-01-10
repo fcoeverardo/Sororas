@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lek.sororas.Adapters.AvalicaoesRecyclerView;
 import com.lek.sororas.Adapters.TrabalhoRecyclerView;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
@@ -74,8 +75,8 @@ public class FragmentActivityPerfilAvaliacoes extends android.support.v4.app.Fra
 
     public void setEvaluations(ArrayList<Evaluation> avaliacoes){
 
-//        AvalicaoesRecyclerView adapter = new AvalicaoesRecyclerView(context,avaliacoes);
-//        mRecyclerView.setAdapter(adapter);
+        AvalicaoesRecyclerView adapter = new AvalicaoesRecyclerView(context,avaliacoes);
+        mRecyclerView.setAdapter(adapter);
 
     }
 }

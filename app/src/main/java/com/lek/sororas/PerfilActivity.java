@@ -37,6 +37,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.lek.sororas.Fragments.FragmentActivityPerfilAvaliacoes;
@@ -99,11 +104,16 @@ public class PerfilActivity extends BasicActivity {
 
     private Slider slider;
 
+    FirebaseDatabase database;
+    public DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
 
         findViews();
 
@@ -168,37 +178,33 @@ public class PerfilActivity extends BasicActivity {
 
     public void loadAvaliacoes(){
 
-//        myRef.child("userevaluation").child(id)
-//                .addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                        if(dataSnapshot.hasChildren()){
-//
-//                            userEvaluation = new UserEvaluation((HashMap<String, Object>) dataSnapshot.getValue());
-//
-//                            tabAvaliacoes.setEvaluations(userEvaluation.getAvalicaoes());
-//
-//                            if(userEvaluation.getMedia()!=null)
-//                                materialRatingBar.setRating(Float.parseFloat(userEvaluation.getMedia()));
-//
-//
-//                            evaluationCount.setText("(" + userEvaluation.getAvalicaoes().size() + ")");
-//
-//                        }
-//
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//
+        myRef.child("userevaluation").child(id)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.hasChildren()){
 
 
+                            userEvaluation = new UserEvaluation((HashMap<String, Object>) dataSnapshot.getValue());
+                            tabAvaliacoes.setEvaluations(userEvaluation.getAvalicaoes());
+
+                            if(userEvaluation.getMedia()!= null)
+                                materialRatingBar.setRating(Float.parseFloat(userEvaluation.getMedia()));
+
+
+                            evaluationCount.setText("(" + userEvaluation.getAvalicaoes().size() + ")");
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
     }
 
     public void setCustomFont() {
@@ -257,38 +263,51 @@ public class PerfilActivity extends BasicActivity {
 
         comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
 
-        final Evaluation evaluation = new Evaluation(nota,comment, db.collection("users").document(currentUserId), Calendar.getInstance().getTime());
+        Evaluation evaluation = new Evaluation(nota,comment, CurrentUser.getUser().getId(), Calendar.getInstance().getTime().toString());
 
-        DocumentReference docRef = db.collection("evaluations").document(id);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    UserEvaluation userEvaluation = new UserEvaluation();
-
-                    if (document.exists()) {
-
-                        userEvaluation = document.toObject(UserEvaluation.class);
-
-                    }
-                    else{
-                        userEvaluation.setMedia("" + nota);
-                    }
-
-                    userEvaluation.getAvalicaoes().add(evaluation);
-
-                    db.collection("evaluations").document(id).set(userEvaluation);
-
-                } else {
-
-                    Log.d("getUser", "get failed with ", task.getException());
-                }
-            }
-        });
+        myRef.child("userevaluation").child(id).child("evaluations")
+                .child(CurrentUser.getUser().getId()).setValue(evaluation);
 
         dialog.dismiss();
     }
+
+//    public void saveEvaluation(View v){
+//
+//
+//        comment = ((EditText)dialog.findViewById(R.id.comment)).getText().toString();
+//
+//        final Evaluation evaluation = new Evaluation(nota,comment, db.collection("users").document(currentUserId), Calendar.getInstance().getTime());
+//
+//        DocumentReference docRef = db.collection("evaluations").document(id);
+//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    UserEvaluation userEvaluation = new UserEvaluation();
+//
+//                    if (document.exists()) {
+//
+//                        userEvaluation = document.toObject(UserEvaluation.class);
+//
+//                    }
+//                    else{
+//                        userEvaluation.setMedia("" + nota);
+//                    }
+//
+//                    userEvaluation.getAvalicaoes().add(evaluation);
+//
+//                    db.collection("evaluations").document(id).set(userEvaluation);
+//
+//                } else {
+//
+//                    Log.d("getUser", "get failed with ", task.getException());
+//                }
+//            }
+//        });
+//
+//        dialog.dismiss();
+//    }
 
     public void openDialogAvaliar(View view){
 

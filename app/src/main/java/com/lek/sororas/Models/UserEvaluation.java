@@ -12,10 +12,6 @@ public class UserEvaluation {
 
     }
 
-    public UserEvaluation(String media) {
-        this.media = media;
-    }
-
     public UserEvaluation(HashMap<String,Object> map) {
         this.media = (String) map.get("media");
 
@@ -25,14 +21,19 @@ public class UserEvaluation {
 
         for(String key : aux.keySet()){
 
-//            Evaluation evaluation = new Evaluation((HashMap<String,String>) aux.get(key));
-//            avalicaoes.add(evaluation);
+            Evaluation evaluation = new Evaluation((HashMap<String,String>) aux.get(key));
+            avalicaoes.add(evaluation);
 
         }
 
         //Evaluation evaluation = new Evaluation((HashMap<String,String>) map.get("avaliacoes"));
 
     }
+
+    public UserEvaluation(String media) {
+        this.media = media;
+    }
+
 
     public String getMedia() {
         return media;

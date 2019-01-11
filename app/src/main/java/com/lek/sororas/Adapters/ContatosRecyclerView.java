@@ -109,37 +109,86 @@ public class ContatosRecyclerView extends RecyclerView.Adapter{
 
                             materialHolder.name.setText(contactUser.getNome());
 
-                            main.storageRef = FirebaseStorage.getInstance().getReference();
-                            String id = contatos.get(position).getUser() + "_perfil";
-                            main.storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    // Got the download URL for 'users/me/profile.png'
+                            if(contactUser.getPhotoPerfil() != null){
 
-                                    //ImageView photo = .findViewById(R.id.perfil_photo);
-                                    if(uri != null){
+                                main.storageRef = FirebaseStorage.getInstance().getReference();
+                                String id = contatos.get(position).getUser() + "_perfil";
+                                main.storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        // Got the download URL for 'users/me/profile.png'
 
-                                        Glide.with(context).load(uri).into(materialHolder.imageView);
-                                        materialHolder.defaultPhoto.setVisibility(View.INVISIBLE);
+                                        //ImageView photo = .findViewById(R.id.perfil_photo);
+                                        if(uri != null){
+
+                                            Glide.with(context).load(uri).into(materialHolder.imageView);
+                                            materialHolder.imageView.setVisibility(View.VISIBLE);
+                                        }
+
+                                        //container.setVisibility(View.VISIBLE);
+                                        main.blankLayout.setVisibility(View.GONE);
+                                        progressBar.setVisibility(View.GONE);
+
+                                        Animation anim = AnimationUtils.loadAnimation(context,R.anim.fade_in_fast);
+                                        anim.setAnimationListener(new Animation.AnimationListener() {
+                                            @Override
+                                            public void onAnimationStart(Animation animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animation animation) {
+                                                materialHolder.item.setVisibility(View.VISIBLE);
+                                            }
+
+                                            @Override
+                                            public void onAnimationRepeat(Animation animation) {
+
+                                            }
+                                        });
+
+                                        materialHolder.item.startAnimation(anim);
+
                                     }
-                                    else
-                                        materialHolder.defaultPhoto.setVisibility(View.VISIBLE);
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Handle any errors
+                                        Log.d("getUser", "DocumentSnapshot data: ");
 
-                                    //container.setVisibility(View.VISIBLE);
-                                    main.blankLayout.setVisibility(View.GONE);
-                                    main.hideProgressDialog();
+                                    }
+                                });
 
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Handle any errors
-                                    Log.d("getUser", "DocumentSnapshot data: ");
+                                Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+                            }
+                            else{
 
-                                }
-                            });
+                                materialHolder.imageView.setVisibility(View.INVISIBLE);
+                                main.blankLayout.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
 
-                            Log.d("getUser", "DocumentSnapshot data: " + document.getData());
+                                Animation anim = AnimationUtils.loadAnimation(context,R.anim.fade_in_fast);
+                                anim.setAnimationListener(new Animation.AnimationListener() {
+                                    @Override
+                                    public void onAnimationStart(Animation animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animation animation) {
+                                        materialHolder.item.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animation animation) {
+
+                                    }
+                                });
+
+                                materialHolder.item.startAnimation(anim);
+                            }
+
+
 
                         } else {
                             Log.d("getUser", "No such document");
@@ -253,8 +302,6 @@ public class ContatosRecyclerView extends RecyclerView.Adapter{
         final TextView lastMsn;
         final FrameLayout item;
 
-        final ImageView defaultPhoto;
-
         public materialViewHolder(View view) {
             super(view);
 
@@ -264,8 +311,8 @@ public class ContatosRecyclerView extends RecyclerView.Adapter{
             lastMsn = view.findViewById(R.id.lastmensage);
 
             item = view.findViewById(R.id.item);
+            item.setVisibility(View.GONE);
 
-            defaultPhoto = view.findViewById(R.id.imageView22);
 
 
         }

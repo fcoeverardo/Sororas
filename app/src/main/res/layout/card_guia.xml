@@ -146,13 +146,13 @@
             android:layout_height="18dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView18"
+            app:layout_constraintBottom_toTopOf="@+id/quero"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image"
             app:srcCompat="@drawable/ic_local" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/quero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -164,7 +164,7 @@
             app:layout_constraintEnd_toStartOf="@+id/favorite" />
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/vejamais"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -173,7 +173,7 @@
             android:textColor="@color/cinza_texto_escuro2"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView18" />
+            app:layout_constraintEnd_toStartOf="@+id/quero" />
 
     </android.support.constraint.ConstraintLayout>
 

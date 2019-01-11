@@ -30,6 +30,7 @@ public class EditActivity extends BasicActivity {
     TextView nometv,senhatv,cidadetv,datatv,emailtv;
     ViewFlipper viewFlipper;
     User user;
+    ConstraintLayout containerEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class EditActivity extends BasicActivity {
 
         viewFlipper = findViewById(R.id.viewFlipper);
 
+        containerEdit = findViewById(R.id.containerEdit);
+
         setInfos();
 
     }
@@ -69,6 +72,13 @@ public class EditActivity extends BasicActivity {
 
 
     public void clickInfo(View v){
+
+        String i = (String) v.getTag();
+
+        int count = Integer.parseInt(i);
+
+        ConstraintLayout item = ((ConstraintLayout) containerEdit.getChildAt(count));
+        item.setVisibility(View.VISIBLE);
 
         flipperNext();
     }

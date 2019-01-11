@@ -99,6 +99,8 @@ public class SearchActivity extends BasicActivity {
 
     HashMap<String,Integer> categoryCount;
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +108,8 @@ public class SearchActivity extends BasicActivity {
 
         anuncios = new ArrayList<>();
         anunciosIds = new ArrayList<>();
+
+        context = this;
 
         initFirebase();
         findViews();
@@ -120,7 +124,7 @@ public class SearchActivity extends BasicActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        back = findViewById(R.id.back);
+        //back = findViewById(R.id.back);
         back2 = findViewById(R.id.back2);
 
         mRecyclerView =  findViewById(R.id.recyclerView);
@@ -214,6 +218,42 @@ public class SearchActivity extends BasicActivity {
 
             key = getIntent().getStringExtra("tag");
             loadAnuncios();
+
+
+
+            searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+
+                    key = query;
+                    loadAnuncios();
+
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+
+                    return true;
+                }
+            });
+
+            searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+                @Override
+                public void onSearchViewShown() {
+
+                    back2.setVisibility(View.GONE);
+
+
+                }
+
+                @Override
+                public void onSearchViewClosed() {
+
+                    back2.setVisibility(View.VISIBLE);
+                    toolbarSearch.setVisibility(View.VISIBLE);
+                }
+            });
         }
         else{
 
@@ -243,7 +283,7 @@ public class SearchActivity extends BasicActivity {
                 @Override
                 public void onSearchViewShown() {
 
-                    back.setVisibility(View.GONE);
+                    back2.setVisibility(View.GONE);
 
 
                 }
@@ -251,7 +291,7 @@ public class SearchActivity extends BasicActivity {
                 @Override
                 public void onSearchViewClosed() {
 
-                    back.setVisibility(View.VISIBLE);
+                    back2.setVisibility(View.VISIBLE);
                     toolbarSearch.setVisibility(View.VISIBLE);
                 }
             });
@@ -334,7 +374,7 @@ public class SearchActivity extends BasicActivity {
 
                     }
 
-                    AnuncioRecyclerView adapter = new AnuncioRecyclerView(getApplicationContext(),anuncios,anunciosIds,progress);
+                    AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,anuncios,anunciosIds,progress);
                     mRecyclerView.setAdapter(adapter);
 
                     count.setText(anuncios.size() + " resultados encontrados");

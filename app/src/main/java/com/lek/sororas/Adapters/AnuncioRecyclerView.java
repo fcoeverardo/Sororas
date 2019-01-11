@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -17,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -26,20 +28,27 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.BasicActivity;
+import com.lek.sororas.ChatActivity;
 import com.lek.sororas.MainActivity;
 import com.lek.sororas.Models.Anuncio;
+import com.lek.sororas.Models.Contato;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.R;
 import com.lek.sororas.ShowAnuncioActivity;
 import com.lek.sororas.Utils.CurrentAnuncio;
+import com.lek.sororas.Utils.CurrentUser;
 import com.lek.sororas.Utils.FirebaseHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
@@ -73,6 +82,11 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
         this.context = context;
         this.anuncioIds = anuncioIds;
         this.progress = progress;
+
+        if(anuncios.size()==0){
+
+            progress.setVisibility(View.GONE);
+        }
     }
 
     public AnuncioRecyclerView(Context context,ArrayList<Anuncio> anuncios,ProgressBar progress) {
@@ -106,11 +120,13 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
 
         final Anuncio currentAnuncio = anuncios.get(position);
 
+        final BasicActivity main = (BasicActivity) context;
+
         DocumentReference ref = currentAnuncio.getProprietaria();
         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User user = documentSnapshot.toObject(User.class);
+                final User user = documentSnapshot.toObject(User.class);
                 materialHolder.userName.setText(user.getNome());
                 materialHolder.cidadeTv.setText(user.getCidade());
 
@@ -123,6 +139,48 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
 
                 setPhotoAnuncio(currentAnuncio.getFotos().get(0),materialHolder.imageView,materialHolder.card);
 
+                materialHolder.quero.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if(main.mAuth.getCurrentUser() != null){
+
+                            main.myRef.child("contats").child(CurrentUser.getUser().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+                                    if (!snapshot.hasChild(user.getId())) {
+
+                                        DocumentReference proprietaria = currentAnuncio.getProprietaria();
+                                        Contato contato = new Contato(user.getId(),"", Calendar.getInstance().getTime().toString());
+
+                                        main.myRef.child("contats").child(CurrentUser.getUser().getId()).child(user.getId()).setValue(contato);
+                                        contato = new Contato(main.mAuth.getCurrentUser().getUid(), "", Calendar.getInstance().getTime().toString());
+                                        main.myRef.child("contats").child(user.getId()).child(CurrentUser.getUser().getId()).setValue(contato);
+                                        // run some code
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            Intent i = new Intent(context,ChatActivity.class);
+                            Bundle b = new Bundle();
+                            b.putString("id",user.getId());
+
+                            i.putExtras(b);
+
+                            main.startActivity(i);
+                        }
+                        else{
+
+                            Toast.makeText(context,"Você precisa estar logado para iniciar um chat",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
         });
 
@@ -133,7 +191,7 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
         else
             materialHolder.userName.setText(anuncios.get(position).getTags());
 
-        final MainActivity main = (MainActivity) context;
+
 
         materialHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +204,21 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
 
                 context.startActivity(i);
                 
+
+            }
+        });
+
+        materialHolder.vejamais.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(context, ShowAnuncioActivity.class);
+                CurrentAnuncio.setAnuncio(currentAnuncio);
+                //i.putExtra("anuncio",currentAnuncio);
+                //i.putExtra("userid",anuncios.get(position).getProprietaria());
+
+                context.startActivity(i);
+
 
             }
         });
@@ -215,6 +288,7 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
+                progress.setVisibility(View.GONE);
             }
         });
 
@@ -234,6 +308,9 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
         final CardView card;
         final ImageView favorito;
         final TextView userName;
+
+        final TextView vejamais;
+        final TextView quero;
 
         final ImageView defaultPhoto;
         final MaterialRatingBar materialRatingBar;
@@ -259,6 +336,9 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
 
             materialRatingBar = view.findViewById(R.id.materialRatingBar);
             evaluationCount = view.findViewById(R.id.evaluationCount);
+
+            vejamais = view.findViewById(R.id.vejamais);
+            quero = view.findViewById(R.id.quero);
 
 
 

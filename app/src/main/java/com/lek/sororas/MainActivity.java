@@ -39,6 +39,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Fragments.FragmentHome;
@@ -155,6 +156,12 @@ public class MainActivity extends BasicActivity
     public void onResume(){
         super.onResume();
 
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            FirebaseMessaging.getInstance().subscribeToTopic("news");
+            FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
+
+
         if(mAuth.getCurrentUser() == null){
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_drawer_logout);
@@ -171,8 +178,14 @@ public class MainActivity extends BasicActivity
 
     public void clickCreate(View v){
 
-        Intent i = new Intent(this,CreateActivity.class);
-        startActivity(i);
+        if(mAuth.getCurrentUser() !=null){
+
+            Intent i = new Intent(this,CreateActivity.class);
+            startActivity(i);
+        }
+        else{
+            Toast.makeText(this,"Você precisa estar logado para criar um anuncio",Toast.LENGTH_SHORT).show();
+        }
 
     }
 

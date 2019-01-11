@@ -190,41 +190,47 @@ public class ShowAnuncioActivity extends BasicActivity {
 
     public void addFavorite(View v){
 
-        User user = CurrentUser.getUser();
+        if(mAuth.getCurrentUser() !=null){
 
-        if(v.getTag().equals("branco")){
+            User user = CurrentUser.getUser();
 
-            favorite.setImageResource(R.drawable.ic_favorito);
+            if(v.getTag().equals("branco")){
 
-            //favorite.setColorFilter( getResources().getColor(R.color.vermelho), PorterDuff.Mode.SRC_IN);
-            if(user.getFavoritosIds() == null)
-                user.setFavoritosIds(new ArrayList<String>());
+                favorite.setImageResource(R.drawable.ic_favorito);
 
-            user.getFavoritosIds().add(anuncio.id);
-            user.setBannerPhoto(null);
-            user.setPerfilPhoto(null);
-            db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
+                //favorite.setColorFilter( getResources().getColor(R.color.vermelho), PorterDuff.Mode.SRC_IN);
+                if(user.getFavoritosIds() == null)
+                    user.setFavoritosIds(new ArrayList<String>());
+
+                user.getFavoritosIds().add(anuncio.id);
+                user.setBannerPhoto(null);
+                user.setPerfilPhoto(null);
+                db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
 //            myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favoritos").child(id).setValue(true);
 
-            v.setTag("rosa");
-        }
+                v.setTag("rosa");
+            }
 
-        else{
+            else{
 
-            favorite.setImageResource(R.drawable.ic_heart);
+                favorite.setImageResource(R.drawable.ic_heart);
 
-            user.getFavoritosIds().remove(anuncio.id);
-            user.setBannerPhoto(null);
-            user.setPerfilPhoto(null);
+                user.getFavoritosIds().remove(anuncio.id);
+                user.setBannerPhoto(null);
+                user.setPerfilPhoto(null);
 
-            db.collection("users").document(mAuth.getCurrentUser().getUid()).set( user);
+                db.collection("users").document(mAuth.getCurrentUser().getUid()).set( user);
 //            //favorite.setColorFilter( getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 //            myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favoritos").child(id).removeValue();
 //
-            v.setTag("branco");
-        }
+                v.setTag("branco");
+            }
 
-        CurrentUser.setUser(user);
+            CurrentUser.setUser(user);
+        }
+        else{
+            Toast.makeText(this,"Você precisa estar logado para favoritar",Toast.LENGTH_SHORT).show();
+        }
         //favorite.setFor(getResources().getColor(R.color.vermelho));
     }
 
@@ -281,7 +287,7 @@ public class ShowAnuncioActivity extends BasicActivity {
                 db.collection("complaints").document(proprietariaId).collection(anuncio.id)
                         .add(denuncia);
 
-                Toast.makeText(ShowAnuncioActivity.this,"Sua denuncia será analisada",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ShowAnuncioActivity.this,"Sua denúncia será analisada",Toast.LENGTH_SHORT).show();
 
                         //getPhotoFromGallery();
             }
@@ -341,20 +347,21 @@ public class ShowAnuncioActivity extends BasicActivity {
 
     public void openChat(View v){
 
-        saveContat();
+        if(mAuth.getCurrentUser() !=null){
 
+            saveContat();
 
-        Intent i = new Intent(this,ChatActivity.class);
+            Intent i = new Intent(this,ChatActivity.class);
+            Bundle b = new Bundle();
+            b.putString("id",proprietariaId);
 
-        Bundle b = new Bundle();
-        b.putString("id",proprietariaId);
-//        b.putString("foto",foto64);
-//        b.putString("nome",nome);
-//
-        i.putExtras(b);
+            i.putExtras(b);
 
-        startActivity(i);
-
+            startActivity(i);
+        }
+        else{
+            Toast.makeText(this,"Você precisa estar logado para iniciar um chat",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void saveContat(){

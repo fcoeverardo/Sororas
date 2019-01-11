@@ -1,11 +1,15 @@
 package com.lek.sororas;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,12 +21,23 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +47,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.lek.sororas.Fragments.FragmentActivityPerfilAvaliacoes;
 import com.lek.sororas.Fragments.FragmentActivityPerfilFavoritos;
 import com.lek.sororas.Fragments.FragmentActivityPerfilTrabalhos;
+import com.lek.sororas.Models.Contato;
 import com.lek.sororas.Models.Evaluation;
 import com.lek.sororas.Models.User;
 import com.lek.sororas.Models.UserEvaluation;
@@ -61,6 +79,10 @@ public class PerfilActivity extends BasicActivity {
     public ArrayList<String> anunciosIds;
 
     UserEvaluation userEvaluation;
+
+    FrameLayout foreground;
+
+    ImageView defaultPerfil;
 
     FragmentActivityPerfilTrabalhos tabTrabalho;
     FragmentActivityPerfilAvaliacoes tabAvaliacoes;
@@ -125,6 +147,7 @@ public class PerfilActivity extends BasicActivity {
         nome = findViewById(R.id.name);
         //nome.setText(main.currentUser.getName());
 
+        foreground = findViewById(R.id.foreground);
         cidade = findViewById(R.id.city);
         //cidade.setText(main.currentUser.getCity());
 
@@ -219,6 +242,70 @@ public class PerfilActivity extends BasicActivity {
         }
     }
 
+    public void setProprietariaFoto(String id){
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        storageRef.child(id + "_perfil").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                RequestBuilder<Drawable> requestBuilder = Glide.with(getApplicationContext())
+                        .load(uri);
+
+                requestBuilder
+                        .load(uri)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+
+                                animateForeground();
+                                perfilPhoto.setVisibility(View.VISIBLE);
+
+                                return false;
+                            }
+                        })
+                        .into(perfilPhoto);
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                animateForeground();
+            }
+        });
+    }
+
+    public void animateForeground() {
+
+        Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                foreground.setVisibility(View.GONE);
+                //materialHolder.card.setScaleX(1);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        foreground.startAnimation(fadeOut);
+    }
     public void addFavorite(View v){
 
 //        if(v.getTag() == "false"){
@@ -304,6 +391,7 @@ public class PerfilActivity extends BasicActivity {
                         inicializeTabs();
                         loadAvaliacoes();
                         loadInfos();
+                        setProprietariaFoto(perfilUser.getId());
 
                         container.setVisibility(View.VISIBLE);
                         Log.d("getUser", "DocumentSnapshot data: " + document.getData());
@@ -325,112 +413,46 @@ public class PerfilActivity extends BasicActivity {
 
     }
 
-    public void getPhotos(){
-
-//        myRef.child("photos").child(id).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                if(dataSnapshot.hasChildren()){
-//
-//                    HashMap<String,String> data = (HashMap<String, String>) dataSnapshot.getValue();
-//
-//                    if(data.get("fotoperfil") != null){
-//
-//                        foto64 = data.get("fotoperfil");
-//                        fotoPerfil = StringToBitMap(foto64);
-//
-//                        Glide.with(getApplicationContext()).load(fotoPerfil).into(perfilPhoto);
-//
-//                    }
-//
-//                    if(data.get("fotobanner") != null){
-//
-//                        String banner64 = data.get("fotobanner");
-//                        Bitmap fotoBanner = StringToBitMap(banner64);
-//
-//                        Glide.with(getApplicationContext()).load(fotoBanner).into(bannerPhoto);
-//
-//                        RequestBuilder<Drawable> requestBuilder = Glide.with(getApplicationContext())
-//                                .load(fotoBanner);
-//
-//                        requestBuilder
-//                                .load(fotoBanner)
-//                                .listener(new RequestListener<Drawable>() {
-//                                    @Override
-//                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                                        return false;
-//                                    }
-//
-//                                    @Override
-//                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//
-//                                        //main.blankLayout.setVisibility(View.GONE);
-//
-//
-//                                        Animation fadein = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
-//                                        fadein.setAnimationListener(new Animation.AnimationListener() {
-//                                            @Override
-//                                            public void onAnimationStart(Animation animation) {
-//                                                container.setVisibility(View.VISIBLE);
-//                                            }
-//
-//                                            @Override
-//                                            public void onAnimationEnd(Animation animation) {
-//
-//                                            }
-//
-//                                            @Override
-//                                            public void onAnimationRepeat(Animation animation) {
-//
-//                                            }
-//                                        });
-//                                        container.startAnimation(fadein);
-//
-//                                        return false;
-//                                    }
-//                                })
-//                                .into(bannerPhoto);
-//                    }
-//
-//
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-    }
-
     public void openChat(View v){
 
-//        saveContat();
-//
-//        Intent i = new Intent(this,ChatActivity.class);
-//
-//        Bundle b = new Bundle();
-//        b.putString("id",id);
-//        b.putString("foto",foto64);
-//        b.putString("nome",nome.getText().toString());
-//
-//        i.putExtras(b);
-//
-//        startActivity(i);
+        if(mAuth.getCurrentUser() !=null){
 
+            saveContat();
+
+            Intent i = new Intent(this,ChatActivity.class);
+            Bundle b = new Bundle();
+            b.putString("id",id);
+
+            i.putExtras(b);
+
+            startActivity(i);
+        }
+        else{
+            Toast.makeText(this,"Você precisa estar logado para iniciar um chat",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void saveContat(){
 
-//        Contato contato = new Contato(id,nome.getText().toString(),foto64);
-//        myRef.child("contats").child(currentUserId).child(id).setValue(contato);
-//
-//        contato = new Contato(currentUserId,CurrentUser.getUser().getName(),CurrentUser.getUser().getFotoperfil());
-//        myRef.child("contats").child(id).child(currentUserId).setValue(contato);
+        myRef.child("contats").child(CurrentUser.getUser().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.hasChild(id)) {
 
+                    Contato contato = new Contato(id,"", Calendar.getInstance().getTime().toString());
+
+                    myRef.child("contats").child(CurrentUser.getUser().getId()).child(id).setValue(contato);
+                    contato = new Contato(mAuth.getCurrentUser().getUid(), "", Calendar.getInstance().getTime().toString());
+                    myRef.child("contats").child(id).child(CurrentUser.getUser().getId()).setValue(contato);
+                    // run some code
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public Bitmap StringToBitMap(String image){

@@ -84,7 +84,7 @@ public class ResizeAnimation extends Animation {
             @Override
             public void onAnimationStart(Animation animation) {
                 arrow.setClickable(false);
-                arrow.animate().rotation(180).setDuration(time);
+                arrow.animate().rotationXBy(180).setDuration(time);
             }
 
             @Override

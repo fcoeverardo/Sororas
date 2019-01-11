@@ -107,7 +107,7 @@ public class FragmentActivityPerfilFavoritos extends android.support.v4.app.Frag
     public void loadFavoritos(){
 
         final User user = main.perfilUser;
-
+        favoritos.clear();
         if(user.getFavoritosIds() != null){
 
             for(String favoriteId : user.getFavoritosIds()){
@@ -132,6 +132,13 @@ public class FragmentActivityPerfilFavoritos extends android.support.v4.app.Frag
                     }
                 });
             }
+        }
+
+        else{
+            AnuncioRecyclerView adapter = new AnuncioRecyclerView(context,favoritos,anunciosIds,progress);
+            mRecyclerView.setAdapter(adapter);
+
+            count.setText(countFavorites + " Favoritos");
         }
     }
 }

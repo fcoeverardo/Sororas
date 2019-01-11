@@ -65,7 +65,7 @@ public class AdapterChatRecycleView extends RecyclerView.Adapter{
             materialHolder.chatMessageView.setArrowPosition(ChatMessageView.ArrowPosition.LEFT);
 
             materialHolder.chatMessageView.setShowArrow(true);
-            materialHolder.chatMessageView.setBackgroundColor(context.getResources().getColor(R.color.textoCinza),context.getResources().getColor(R.color.textocinzaDark));
+            materialHolder.chatMessageView.setBackgroundColor(context.getResources().getColor(R.color.textoCinza),context.getResources().getColor(R.color.branco));
 
             materialHolder.message.setTextColor(context.getResources().getColor(R.color.preto));
         }

@@ -54,6 +54,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.ResourceCallback;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.storage.UploadTask;
@@ -688,11 +690,17 @@ public class FragmentPerfil extends Fragment {
 
                         final Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
                         byte[] data = baos.toByteArray();
 
-                        main.storageRef.child(id).putBytes(data);
-                        main.changesPhoto = true;
+                        main.storageRef.child(id).putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                main.changesPhoto = true;
+                                main.setPhotoUriCurrentUser();
+                            }
+                        });
+
 
                         return false;
                     }

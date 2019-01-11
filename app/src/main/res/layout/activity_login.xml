@@ -10,13 +10,14 @@
     <ImageView
         android:id="@+id/imageView9"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="64dp"
         android:layout_marginEnd="64dp"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/letring" />
+        app:srcCompat="@drawable/letring2" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"

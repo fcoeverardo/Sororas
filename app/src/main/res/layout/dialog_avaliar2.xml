@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="Se desejar. deixe um comentário"
+        android:text="Se desejar, deixe um comentário"
         android:textAlignment="textStart"
         android:textColor="@color/azul"
         android:textSize="16sp"
@@ -114,6 +114,6 @@
             android:id="@+id/comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Se desejar. deixe um comentário" />
+            android:hint="Se desejar, deixe um comentário" />
     </android.support.design.widget.TextInputLayout>
 </android.support.constraint.ConstraintLayout>

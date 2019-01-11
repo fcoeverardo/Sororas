@@ -70,6 +70,8 @@ public class SearchActivity extends BasicActivity {
 
     TextView count,keyTv,filtrar;
 
+    TextView stars[];
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -138,6 +140,14 @@ public class SearchActivity extends BasicActivity {
 
         progress = findViewById(R.id.progress);
 
+        stars = new TextView[6];
+        stars[0] = findViewById(R.id.textView26);
+        stars[1] = findViewById(R.id.textView27);
+        stars[2] = findViewById(R.id.textView28);
+        stars[3] = findViewById(R.id.textView29);
+        stars[4] = findViewById(R.id.textView30);
+        stars[5] = findViewById(R.id.textView31);
+
         count = findViewById(R.id.resultcont);
         keyTv = findViewById(R.id.key);
 
@@ -164,38 +174,38 @@ public class SearchActivity extends BasicActivity {
             }
         });
 
-//        drawer = findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        toggle.setDrawerIndicatorEnabled(false);
-//
-//        toolbar.setNavigationIcon(R.drawable.ic_menu);
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                drawer.openDrawer(Gravity.LEFT);
-////                if(changesPhoto)
-////                    updateNavigationView();
-//            }
-//        });
-//
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
-//
-//        navigationView = findViewById(R.id.nav_view);
-//        clasificaoarrow = navigationView.getHeaderView(0).findViewById(R.id.classificacaoarrow);
-//
-//        clasificaoarrow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ResizeAnimation animation = new ResizeAnimation(navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout),
-//                        v,2,300);
-//
-//                navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout).startAnimation(animation);
-//
-//            }
-//        });
+        drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.setDrawerIndicatorEnabled(false);
+
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                drawer.openDrawer(Gravity.LEFT);
+//                if(changesPhoto)
+//                    updateNavigationView();
+            }
+        });
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = findViewById(R.id.nav_view);
+        clasificaoarrow = navigationView.getHeaderView(0).findViewById(R.id.classificacaoarrow);
+
+        clasificaoarrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ResizeAnimation animation = new ResizeAnimation(navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout),
+                        v,2,300);
+
+                navigationView.getHeaderView(0).findViewById(R.id.classificacaolayout).startAnimation(animation);
+
+            }
+        });
 
     }
 
@@ -311,6 +321,20 @@ public class SearchActivity extends BasicActivity {
 //
 //        return true;
 //    }
+
+
+    public void clickStars(View view){
+
+        for(int i = 0; i < stars.length;i++){
+
+            stars[i].setBackgroundResource(R.drawable.circular_stroke_button);
+            stars[i].setTextColor(getResources().getColor(R.color.cinza_texto_escuro2));
+        }
+
+        view.setBackgroundResource(R.drawable.circular_stroke_button_azul);
+        ((TextView) view).setTextColor(getResources().getColor(R.color.white));
+
+    }
 
     public String[] getCategoryTag(){
 

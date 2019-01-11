@@ -13,6 +13,30 @@
         android:layout_height="match_parent">
 
 
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Mínimo de 6 caracteres"
+            android:textColor="@color/cinza_text_light"
+            android:textSize="12sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/createsenha"
+            app:layout_constraintTop_toBottomOf="@+id/createsenha" />
+
+        <TextView
+            android:id="@+id/textView47"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Mínimo de 6 caracteres"
+            android:textColor="@color/cinza_text_light"
+            android:textSize="12sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="@+id/createsenha"
+            app:layout_constraintTop_toBottomOf="@+id/confirmCreatesenha" />
+
         <FrameLayout
             android:id="@+id/createFacebbokButton"
             android:layout_width="0dp"
@@ -193,7 +217,6 @@
             android:id="@+id/confirmCreatesenha"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:drawableLeft="@drawable/ic_password"
             android:drawablePadding="10dp"
             android:hint="Confirmar senha"
@@ -201,7 +224,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/createname"
             app:layout_constraintStart_toStartOf="@+id/createname"
-            app:layout_constraintTop_toBottomOf="@+id/createsenha">
+            app:layout_constraintTop_toBottomOf="@+id/textView22">
 
         </EditText>
 
@@ -235,16 +258,16 @@
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/confirmCreatesenha" />
+            app:layout_constraintTop_toBottomOf="@+id/textView47" />
 
         <TextView
             android:id="@+id/textView36"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/termodeuso"
-            android:textColor="@color/colorAccent"
             android:onClick="openDialogTermos"
+            android:text="Termos de Uso"
+            android:textColor="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="@+id/textView23"
             app:layout_constraintStart_toStartOf="@+id/textView23"
             app:layout_constraintTop_toBottomOf="@+id/textView23" />

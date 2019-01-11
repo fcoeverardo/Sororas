@@ -15,9 +15,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -82,6 +84,8 @@ public class LoginActivity extends BasicActivity {
 
     TabLayout tabLayout;
     ViewPager viewPager;
+
+    ImageView lettring;
 
     String id;
     int code = 0;
@@ -376,6 +380,9 @@ public class LoginActivity extends BasicActivity {
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.pager);
 
+        lettring = findViewById(R.id.imageView9);
+        Glide.with(this).load(R.drawable.letring3).into(lettring);
+
     }
 
     public void clickLoginfacebook(View v){
@@ -652,7 +659,7 @@ public class LoginActivity extends BasicActivity {
 
     public void firebaseCreateUser(final User user){
 
-        final DocumentReference doc = db.collection("users").document();
+        final DocumentReference doc = db.collection("users").document(user.getId());
 
         doc.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

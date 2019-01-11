@@ -259,7 +259,7 @@ public class AnuncioRecyclerView extends RecyclerView.Adapter{
                                        card.setVisibility(View.VISIBLE);
 
                                         //if(progress!= null && position == 0)
-                                            progress.setVisibility(View.GONE);
+                                        progress.setVisibility(View.GONE);
                                     }
 
                                     @Override

@@ -34,6 +34,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
+import com.lek.sororas.Fragments.FragmentAjustes;
+import com.lek.sororas.Fragments.FragmentCategorias;
 import com.lek.sororas.Fragments.FragmentHome;
 import com.lek.sororas.Fragments.FragmentMessages;
 import com.lek.sororas.Fragments.FragmentPerfil;
@@ -58,6 +60,7 @@ public class MainActivity extends BasicActivity
 //    private RecyclerView.LayoutManager mLayoutManager;
 
     TextView logo,title;
+    ImageView logo2;
     TextView entrar;
     public Bitmap fotoPerfil,fotoBanner;
 
@@ -89,7 +92,8 @@ public class MainActivity extends BasicActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
-        logo = findViewById(R.id.logo);
+        logo2 = findViewById(R.id.imageView20);
+        Glide.with(this).load(R.drawable.letring4).into(logo2);
         title = findViewById(R.id.title);
 
         blankLayout = findViewById(R.id.blank);
@@ -223,8 +227,9 @@ public class MainActivity extends BasicActivity
 
         if (id == R.id.nav_home) {
             // Handle the camera action
-            //logo.setVisibility(View.VISIBLE);
-            title.setText(getString(R.string.app_name));
+            logo2.setVisibility(View.VISIBLE);
+            title.setText("");
+
             //title.setVisibility(View.GONE);
 
             cl = FragmentHome.class;
@@ -234,6 +239,8 @@ public class MainActivity extends BasicActivity
             title.setText("Perfil");
             title.setVisibility(View.VISIBLE);
 
+            logo2.setVisibility(View.INVISIBLE);
+
             cl = FragmentPerfil.class;
 
         } else if (id == R.id.nav_mensages) {
@@ -241,6 +248,8 @@ public class MainActivity extends BasicActivity
             //logo.setVisibility(View.GONE);
             title.setText("Mensagens");
             //title.setVisibility(View.VISIBLE);
+
+            logo2.setVisibility(View.INVISIBLE);
 
             cl = FragmentMessages.class;
 
@@ -250,12 +259,18 @@ public class MainActivity extends BasicActivity
             //logo.setVisibility(View.GONE);
             title.setText("Categorias");
             //title.setVisibility(View.VISIBLE);
-
-            //cl = FragmentCategorias.class;
+            logo2.setVisibility(View.INVISIBLE);
+            cl = FragmentCategorias.class;
 
         } else if (id == R.id.nav_support) {
 
         } else if (id == R.id.nav_configs) {
+
+            title.setText("Configurações");
+            //title.setVisibility(View.VISIBLE);
+            logo2.setVisibility(View.INVISIBLE);
+
+            cl = FragmentAjustes.class;
 
         } else if(id == R.id.nav_exit){
 
@@ -328,12 +343,33 @@ public class MainActivity extends BasicActivity
 
     public void clickCategorias(View v){
 
+        Class cl = null;
+        currentFragment = null;
+
+        title.setText("Categorias");
+        //title.setVisibility(View.VISIBLE);
+        logo2.setVisibility(View.INVISIBLE);
+
+        cl = FragmentCategorias.class;
+        //changeNavigationFragment(cl);
+
+        try {
+
+            currentFragment = (Fragment) cl.newInstance();
+            blankLayout.setVisibility(View.VISIBLE);
+            setFragment(currentFragment);
+
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
 //        title.setText("Categorias");
 //
 //        changeNavigationFragment(FragmentCategorias.class);
 //        setFragment(currentFragment);
     }
-
 
     public void getCurrentUser(){
 
@@ -362,7 +398,6 @@ public class MainActivity extends BasicActivity
            });
 
     }
-
 
     public void updateNavigationView(){
 
@@ -476,7 +511,10 @@ public class MainActivity extends BasicActivity
         Glide.with(this).load(R.drawable.ic_account).into(photo);
         banner.setImageResource(R.drawable.background_perfil);
 
-        Toast.makeText(this,"Usuario desconectado",Toast.LENGTH_SHORT).show();
+        logo2.setVisibility(View.VISIBLE);
+        title.setText("");
+
+        Toast.makeText(this,"Usuário desconectado",Toast.LENGTH_SHORT).show();
         setFragment(new FragmentHome());
 
     }

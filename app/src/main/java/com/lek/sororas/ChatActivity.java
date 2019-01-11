@@ -210,31 +210,37 @@ public class ChatActivity extends BasicActivity {
 
         storageRef = FirebaseStorage.getInstance().getReference();
         String id = contactId + "_perfil";
-        storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
 
-                //ImageView photo = .findViewById(R.id.perfil_photo);
-                if(uri != null){
+        if(contactUser.getPhotoPerfil()!= null)
+            storageRef.child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // Got the download URL for 'users/me/profile.png'
 
-                    Glide.with(getApplicationContext()).load(uri).into(foto);
-                    defaultPhoto.setVisibility(View.INVISIBLE);
+                    //ImageView photo = .findViewById(R.id.perfil_photo);
+                    if(uri != null){
+
+                        Glide.with(getApplicationContext()).load(uri).into(foto);
+                        defaultPhoto.setVisibility(View.INVISIBLE);
+                    }
+                    else
+                        defaultPhoto.setVisibility(View.VISIBLE);
+
+                    container.setVisibility(View.VISIBLE);
+
                 }
-                else
-                    defaultPhoto.setVisibility(View.VISIBLE);
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                    Log.d("getUser", "DocumentSnapshot data: ");
 
-                container.setVisibility(View.VISIBLE);
+                }
+            });
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Log.d("getUser", "DocumentSnapshot data: ");
-
-            }
-        });
+        else{
+            container.setVisibility(View.VISIBLE);
+        }
 
     }
 

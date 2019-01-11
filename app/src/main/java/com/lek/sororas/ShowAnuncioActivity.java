@@ -102,66 +102,6 @@ public class ShowAnuncioActivity extends BasicActivity {
         findViews();
         loadAnuncio();
 
-//        if(CurrentUser.getUser().getFavoritosIds() == null)
-//            CurrentUser.getUser().setFavoritosIds(new ArrayList<String>());
-//        else if(CurrentUser.getUser().getFavoritosIds().indexOf(anuncio.id) != -1){
-//
-//            favorite.setImageResource(R.drawable.ic_favoritorosa);
-//            favorite.setTag("rosa");
-//        }
-
-
-//        denuncia.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                dialog = new Dialog(ShowAnuncioActivity.this);
-//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//
-//                dialog.setCancelable(true);
-//                dialog.setContentView(R.layout.dialog_denuncia);
-//
-//                final EditText comment = dialog.findViewById(R.id.comment);
-//
-//                Button confirm = dialog.findViewById(R.id.confirmbtn);
-//                confirm.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        String text = comment.getText().toString();
-//                        myRef.child("denuncias").push().setValue(new Denuncia(id,text));
-//                        dialog.dismiss();
-//
-//                        Toast.makeText(ShowAnuncioActivity.this,"Sua denuncia será analisada",Toast.LENGTH_SHORT).show();
-//
-//                        //getPhotoFromGallery();
-//                    }
-//                });
-//
-//                Button cancel = dialog.findViewById(R.id.cancelarbtn);
-//                cancel.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        dialog.dismiss();
-//                        //openCamera()
-//                    }
-//                });
-//
-//                dialog.show();
-//                Window window = dialog.getWindow();
-//                window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-//
-//
-//            }
-//        });
-
-//        if(CurrentUser.getUser().getFavoritos().indexOf(id) != -1){
-//
-//            favorite.setImageResource(R.drawable.ic_favoritorosa);
-//            favoriteLayout.setTag("rosa");
-//
-//        }
 
     }
 
@@ -371,7 +311,6 @@ public class ShowAnuncioActivity extends BasicActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 if (!snapshot.hasChild(proprietariaId)) {
 
-                    DocumentReference proprietaria = anuncio.getProprietaria();
                     Contato contato = new Contato(proprietariaId,"", Calendar.getInstance().getTime().toString());
 
                     myRef.child("contats").child(CurrentUser.getUser().getId()).child(proprietariaId).setValue(contato);

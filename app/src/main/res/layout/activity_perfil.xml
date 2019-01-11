@@ -5,8 +5,7 @@
     android:id="@+id/containerChange"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fundo"
-    android:visibility="invisible">
+    android:background="@color/fundo">
 
     <ImageView
         android:id="@+id/banner"
@@ -34,11 +33,31 @@
         app:layout_constraintStart_toEndOf="@+id/perfil_photo"
         app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="clickBack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_left" />
+    </FrameLayout>
+
     <ImageView
         android:id="@+id/chat"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginEnd="16dp"
+        android:onClick="openChat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/name"
         app:srcCompat="@drawable/ic_chat2" />
@@ -117,5 +136,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+    <FrameLayout
+        android:id="@+id/foreground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fundo"
+        android:elevation="2dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

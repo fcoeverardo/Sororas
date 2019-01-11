@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:fontFamily="@font/rio_glamour"
+        android:fontFamily="@font/roboto_regular"
         android:text="Editar seus dados"
         android:textColor="@color/white"
         android:textSize="24sp"

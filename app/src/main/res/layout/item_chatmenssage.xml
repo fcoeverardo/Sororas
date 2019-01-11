@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linha"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,12 +10,15 @@
 
     <me.himanshusoni.chatmessageview.ChatMessageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/chatview"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:layout_marginStart="5dp"
         app:cmv_backgroundColor="#88BABABA"
         app:cmv_backgroundColorPressed="#FFBABABA"
-        app:cmv_cornerRadius="3dp">
+        app:cmv_cornerRadius="3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/messageTv"
@@ -26,4 +30,4 @@
 
     </me.himanshusoni.chatmessageview.ChatMessageView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

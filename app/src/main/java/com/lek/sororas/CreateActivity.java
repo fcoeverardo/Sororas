@@ -168,7 +168,7 @@ public class CreateActivity extends BasicActivity {
 
             Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(),images.get(i));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 5, baos);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 10, baos);
             byte[] data = baos.toByteArray();
 
             UploadTask uploadTask = storageRef.child(fotoId).putBytes(data);

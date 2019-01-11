@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -36,7 +35,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.lek.sororas.Adapters.AdapterChatRecycleView;
 import com.lek.sororas.Models.Message;
 import com.lek.sororas.Models.User;
-import com.lek.sororas.Utils.CurrentUser;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -102,7 +100,7 @@ public class ChatActivity extends BasicActivity {
 
     public void findViews(){
 
-        container = findViewById(R.id.container);
+        container = findViewById(R.id.containerChange);
 
         contactNameTv = findViewById(R.id.contactName);
         recyclerView = findViewById(R.id.recyclerview);

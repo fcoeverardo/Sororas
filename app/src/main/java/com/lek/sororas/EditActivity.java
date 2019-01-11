@@ -1,5 +1,6 @@
 package com.lek.sororas;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -10,7 +11,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,7 +34,10 @@ public class EditActivity extends BasicActivity {
     TextView nometv,senhatv,cidadetv,datatv,emailtv;
     ViewFlipper viewFlipper;
     User user;
-    ConstraintLayout containerEdit;
+    ConstraintLayout containerChange;
+    int count=0;
+
+    EditText createNome,createEmail,createCidade,createdate,createsenha,createNewsenha,createconfirmsenha;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,8 @@ public class EditActivity extends BasicActivity {
         user = CurrentUser.getUser();
 
         findViews();
+
+
 
     }
 
@@ -51,9 +60,17 @@ public class EditActivity extends BasicActivity {
         datatv = findViewById(R.id.datatv);
         emailtv = findViewById(R.id.emailtv);
 
+        createEmail = findViewById(R.id.createEmail);
+        createNome = findViewById(R.id.createNome);
+        createCidade = findViewById(R.id.createCidade);
+        createsenha = findViewById(R.id.createsenha);
+        createNewsenha = findViewById(R.id.confirmNewesenha);
+        createconfirmsenha = findViewById(R.id.confirmCreatesenha2);
+        createdate = findViewById(R.id.createdate);
+
         viewFlipper = findViewById(R.id.viewFlipper);
 
-        containerEdit = findViewById(R.id.containerEdit);
+        containerChange = findViewById(R.id.containerChange);
 
         setInfos();
 
@@ -68,6 +85,11 @@ public class EditActivity extends BasicActivity {
         datatv.setText(user.getNascimento());
         emailtv.setText(user.getEmail());
 
+        createEmail.setText(user.getEmail());
+        createNome.setText(user.getNome());
+        createCidade.setText(user.getCidade());
+        createdate.setText(user.getNascimento());
+
     }
 
 
@@ -75,9 +97,9 @@ public class EditActivity extends BasicActivity {
 
         String i = (String) v.getTag();
 
-        int count = Integer.parseInt(i);
+        count = Integer.parseInt(i);
 
-        ConstraintLayout item = ((ConstraintLayout) containerEdit.getChildAt(count));
+        ConstraintLayout item = ((ConstraintLayout) containerChange.getChildAt(count));
         item.setVisibility(View.VISIBLE);
 
         flipperNext();
@@ -106,6 +128,9 @@ public class EditActivity extends BasicActivity {
     public void flipperBack() {
 
 
+        ConstraintLayout item = ((ConstraintLayout) containerChange.getChildAt(count));
+        item.setVisibility(View.GONE);
+
         viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.right_in));
         viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.right_out));
 
@@ -122,6 +147,65 @@ public class EditActivity extends BasicActivity {
         else
             finish();
 
+    }
+
+
+    public void updateUser(View v){
+
+
+        switch (count){
+            case 0:
+                String email = createEmail.getText().toString();
+                nometv.setText(email);
+                user.setEmail(email);
+
+                break;
+
+            case 1:
+                String nome = createNome.getText().toString();
+                nometv.setText(nome);
+                user.setNome(nome);
+
+                break;
+            case 2:
+                String cidade = createCidade.getText().toString();
+                nometv.setText(cidade);
+                user.setNome(cidade);
+
+                break;
+            case 3:
+
+
+                break;
+            case 4:
+
+                String data = createdate.getText().toString();
+                nometv.setText(data);
+                user.setNascimento(data);
+                break;
+
+        }
+
+        user.setBannerPhoto(null);
+        user.setPerfilPhoto(null);
+
+        db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
+        CurrentUser.setUser(user);
+
+        Toast.makeText(this,"Seu dados foram atualizados",Toast.LENGTH_SHORT).show();
+        flipperBack();
+        hideKeyboard(this);
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 

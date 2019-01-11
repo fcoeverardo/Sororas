@@ -723,6 +723,7 @@ public class FragmentPerfil extends Fragment {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
+                    // functionality that depends on this permission.
                 }
                 return;
             }

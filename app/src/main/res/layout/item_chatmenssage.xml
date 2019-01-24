@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linha"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,24 +9,24 @@
 
     <me.himanshusoni.chatmessageview.ChatMessageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/chatview"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         app:cmv_backgroundColor="#88BABABA"
         app:cmv_backgroundColorPressed="#FFBABABA"
-        app:cmv_cornerRadius="3dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:cmv_cornerRadius="3dp">
 
         <TextView
             android:id="@+id/messageTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="text|textMultiLine"
+            android:maxWidth="280dp"
             android:text="Hello"
             android:textColor="@android:color/background_light" />
 
     </me.himanshusoni.chatmessageview.ChatMessageView>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

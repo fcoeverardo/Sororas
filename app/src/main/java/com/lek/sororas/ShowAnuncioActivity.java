@@ -71,6 +71,8 @@ public class ShowAnuncioActivity extends BasicActivity {
     ImageView perfilPhoto;
     FrameLayout favoriteLayout;
 
+    ImageView chat;
+
     Anuncio anuncio;
     ArrayList<Uri> fotos;
 
@@ -124,6 +126,8 @@ public class ShowAnuncioActivity extends BasicActivity {
 
         materialRatingBar = findViewById(R.id.materialRatingBar4);
         evaluationCount = findViewById(R.id.evaluationCount2);
+
+        chat = findViewById(R.id.imageView15);
 
 
     }
@@ -258,6 +262,14 @@ public class ShowAnuncioActivity extends BasicActivity {
                 setProprietariaFoto(proprietaria.getId());
 
                 proprietariaId = proprietaria.getId();
+
+                String currentUserId="";
+
+                if(mAuth.getCurrentUser()!= null)
+                    currentUserId = mAuth.getCurrentUser().getUid();
+
+                if( proprietariaId.equals(currentUserId))
+                    chat.setVisibility(View.GONE);
 
                 setAvaliacoesTexts(proprietariaId,materialRatingBar, evaluationCount);
 

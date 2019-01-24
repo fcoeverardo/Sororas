@@ -195,6 +195,9 @@ public class CreateActivity extends BasicActivity {
                     User user = CurrentUser.getUser();
                     user.setAnunciosIds(ids);
 
+                    user.setBannerPhoto(null);
+                    user.setPerfilPhoto(null);
+
                     CurrentUser.setUser(user);
                     db.collection("users").document(mAuth.getCurrentUser().getUid()).set( CurrentUser.getUser());
 

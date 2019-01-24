@@ -41,4 +41,6 @@
     <color name="statusbar2">#E5B721</color>
     <color name="statusbar3">#D98712</color>
     <color name="statusbar4">#E0B320</color>
+
+    <color name="cinzachat">#F1F0F0</color>
 </resources>

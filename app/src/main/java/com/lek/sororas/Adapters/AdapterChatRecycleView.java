@@ -55,7 +55,7 @@ public class AdapterChatRecycleView extends RecyclerView.Adapter{
             materialHolder.chatMessageView.setGravity(Gravity.RIGHT);
             materialHolder.chatMessageView.setArrowPosition(ChatMessageView.ArrowPosition.RIGHT);
             materialHolder.chatMessageView.setShowArrow(true);
-            materialHolder.chatMessageView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary),context.getResources().getColor(R.color.branco));
+            materialHolder.chatMessageView.setBackgroundColor(context.getResources().getColor(R.color.colorAccent),context.getResources().getColor(R.color.branco));
 
             materialHolder.message.setTextColor(context.getResources().getColor(R.color.white));
         }
@@ -65,7 +65,7 @@ public class AdapterChatRecycleView extends RecyclerView.Adapter{
             materialHolder.chatMessageView.setArrowPosition(ChatMessageView.ArrowPosition.LEFT);
 
             materialHolder.chatMessageView.setShowArrow(true);
-            materialHolder.chatMessageView.setBackgroundColor(context.getResources().getColor(R.color.textoCinza),context.getResources().getColor(R.color.branco));
+            materialHolder.chatMessageView.setBackgroundColor(context.getResources().getColor(R.color.cinzachat),context.getResources().getColor(R.color.preto));
 
             materialHolder.message.setTextColor(context.getResources().getColor(R.color.preto));
         }

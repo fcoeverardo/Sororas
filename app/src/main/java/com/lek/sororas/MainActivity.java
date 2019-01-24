@@ -34,6 +34,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
+import com.lek.sororas.Fragments.FragmentAjuda;
 import com.lek.sororas.Fragments.FragmentAjustes;
 import com.lek.sororas.Fragments.FragmentCategorias;
 import com.lek.sororas.Fragments.FragmentHome;
@@ -70,6 +71,8 @@ public class MainActivity extends BasicActivity
     TextView name,city;
     ImageView photo,banner;
 
+    ImageView categorias;
+
     DrawerLayout drawer;
     NavigationView navigationView;
     Fragment currentFragment;
@@ -97,6 +100,8 @@ public class MainActivity extends BasicActivity
         title = findViewById(R.id.title);
 
         blankLayout = findViewById(R.id.blank);
+
+        categorias = findViewById(R.id.categorias);
 
         drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -222,6 +227,7 @@ public class MainActivity extends BasicActivity
 
         Class cl = null;
         currentFragment = null;
+        categorias.setVisibility(View.GONE);
 
         int id = item.getItemId();
 
@@ -229,6 +235,8 @@ public class MainActivity extends BasicActivity
             // Handle the camera action
             logo2.setVisibility(View.VISIBLE);
             title.setText("");
+
+            categorias.setVisibility(View.VISIBLE);
 
             //title.setVisibility(View.GONE);
 
@@ -263,6 +271,12 @@ public class MainActivity extends BasicActivity
             cl = FragmentCategorias.class;
 
         } else if (id == R.id.nav_support) {
+
+            title.setText("Ajuda");
+            //title.setVisibility(View.VISIBLE);
+            logo2.setVisibility(View.INVISIBLE);
+
+            cl = FragmentAjuda.class;
 
         } else if (id == R.id.nav_configs) {
 

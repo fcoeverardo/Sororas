@@ -62,6 +62,7 @@ import com.google.firebase.storage.UploadTask;
 import com.lek.sororas.CreateActivity;
 import com.lek.sororas.EditActivity;
 import com.lek.sororas.MainActivity;
+import com.lek.sororas.Models.User;
 import com.lek.sororas.Models.UserEvaluation;
 import com.lek.sororas.R;
 import com.lek.sororas.Utils.CurrentUser;
@@ -678,13 +679,18 @@ public class FragmentPerfil extends Fragment {
                         String id = main.mAuth.getUid();
                         if(perfil){
                             id = id+ "_perfil";
-                            CurrentUser.getUser().perfilPhoto = uri;
+                            User user = CurrentUser.getUser();
+                            user.perfilPhoto = uri;
+
+                            user.setPhotoPerfil(id);
                         }
                         else{
                             id = id+ "_banner";
-                            CurrentUser.getUser().bannerPhoto = uri;
-                        }
+                            User user = CurrentUser.getUser();
+                            user.bannerPhoto = uri;
 
+                            user.setPhotoBanner(id);
+                        }
 
 
 

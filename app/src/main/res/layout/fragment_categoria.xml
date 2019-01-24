@@ -57,7 +57,8 @@
         android:fontFamily="@font/roboto_regular"
         android:gravity="center_vertical"
         android:paddingLeft="36dp"
-        android:textSize="20sp"
+        android:text="Selecione uma categoria"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/searchBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/searchBar" />
@@ -99,4 +100,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resultcont"
         app:stackFromEnd="true" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@color/fundo_branco"
+        android:clickable="false"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tvcategorias"
+        app:layout_constraintEnd_toEndOf="@+id/tvcategorias"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>

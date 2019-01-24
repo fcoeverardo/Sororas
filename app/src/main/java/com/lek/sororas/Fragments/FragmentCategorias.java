@@ -243,7 +243,9 @@ public class FragmentCategorias extends Fragment {
                         Log.d("loadingAnuncio", document.getId() + " => " + document.getData());
                         Anuncio anuncio = document.toObject(Anuncio.class);
 
-                        if (anuncio.getAllText().contains(key.toLowerCase())) {
+                        String ajustedKey = key.toLowerCase().replaceAll(" ","");
+
+                        if (anuncio.getAllText().contains(ajustedKey)) {
                             anuncios.add(anuncio);
                             anuncio.id = document.getId();
 
